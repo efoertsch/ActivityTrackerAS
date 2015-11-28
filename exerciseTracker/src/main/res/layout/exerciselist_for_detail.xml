@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/lblAdditionaInfo"
+        android:layout_width="287dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/exercise_list"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+         />
+
+    <ListView
+        android:id="@+id/exerciseListView"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="0.60"
+        android:clickable="true"
+        android:divider="#fff"
+        android:dividerHeight="@dimen/ts1sp"
+        android:footerDividersEnabled="true"
+        android:headerDividersEnabled="true"
+        android:isScrollContainer="true"
+        android:padding="@dimen/default_gap"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbars="vertical" />
+
+    <Button
+        android:id="@+id/exerciselist_btnAddNewActivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add_new_exercise" />
+
+</LinearLayout>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/activity_detail_showMap"
+        android:title="@string/show_map">
+    </item>
+     <item
+        android:id="@+id/activity_detail_showChart"
+        android:title="@string/elevation_vs_distance">
+    </item>
+
+</menu>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/activities_list_options_sort"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/sort">
+
+        <!-- same list as in activities_sort_menu -->
+        <menu>
+            <group android:id="@+id/activities_list_options_sort_group" >
+                <item
+                    android:id="@+id/activities_sort_menu_activity_asc"
+                    android:title="@string/exercise_asc"/>
+                <item
+                    android:id="@+id/activities_sort_menu_activity_desc"
+                    android:title="@string/exercise_desc"/>
+                <item
+                    android:id="@+id/activities_sort_menu_location_asc"
+                    android:title="@string/location_asc"/>
+                <item
+                    android:id="@+id/activities_sort_menu_location_desc"
+                    android:title="@string/location_desc"/>
+                <item
+                    android:id="@+id/activities_sort_menu_date_asc"
+                    android:title="@string/date_asc"/>
+                <item
+                    android:id="@+id/activities_sort_menu_date_desc"
+                    android:title="@string/date_desc"/>
+                <item
+                    android:id="@+id/activities_sort_menu_description_asc"
+                    android:title="@string/description_asc"/>
+                <item
+                    android:id="@+id/activities_sort_menu_description_desc"
+                    android:title="@string/description_desc"/>
+            </group>
+        </menu>
+    </item>
+    <item
+        android:id="@+id/activities_list_filter"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/filter_list" 
+        android:visible="true">
+        <menu>
+            <group android:id="@+id/activities_list_filter_group" >
+                <item
+                    android:id="@+id/activities_list_filter_by_exercise"
+                    android:title="@string/filter_by_exercise"
+                    android:visible="true"/>
+                <item
+                    android:id="@+id/activities_list_filter_by_location"
+                    android:title="@string/filter_by_location"
+                    android:visible="true"/>
+                <item
+                    android:id="@+id/activities_list_filter_clear_all"
+                    android:title="@string/clear_all_filters"
+                    android:visible="true"/>
+            </group>
+        </menu>
+    </item>
+    <item
+        android:id="@+id/activities_list_chart"
+        android:showAsAction="ifRoom|withText" 
+        android:title="@string/chart"
+        android:visible="true">
+        <menu>
+            <group android:id="@+id/activities_list_chart_group" >
+                <item
+                    android:id="@+id/activities_list_distance_in_last_month"
+                    android:title="@string/distance_in_last_month"
+                    android:visible="true">
+                </item>
+                <item
+                    android:id="@+id/activities_list_distance_by_week"
+                    android:title="@string/distance_per_week"
+                    android:visible="true">
+                </item>
+                 <item
+                    android:id="@+id/activities_list_distance_by_month"
+                    android:title="@string/distance_per_month"
+                    android:visible="true">
+                </item>
+                 <item
+                    android:id="@+id/activities_list_distance_by_year"
+                    android:title="@string/distance_per_year"
+                    android:visible="true">
+                </item>
+            </group>
+        </menu>
+    </item>
+    <item
+        android:id="@+id/activities_list_options_delete"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/delete"
+        android:visible="true">
+    </item>
+
+</menu>

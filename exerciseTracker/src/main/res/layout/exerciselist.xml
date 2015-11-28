@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/lblAdditionaInfo"
+        android:layout_width="287dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/exercise_list"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <RelativeLayout
+        android:id="@+id/buttonfooter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" >
+
+        <Button
+            android:id="@+id/exerciselist_btnAddNewActivity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@+dimen/dp8dp"
+            android:paddingRight="@+dimen/dp8dp"
+            android:text="@string/add_new_exercise" />
+    </RelativeLayout>
+
+    <ListView
+        android:id="@id/android:list"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_above="@id/buttonfooter"
+        android:layout_below="@+id/lblAdditionaInfo"
+        android:clickable="true"
+        android:divider="#fff"
+        android:dividerHeight="@dimen/ts1sp"
+        android:footerDividersEnabled="true"
+        android:headerDividersEnabled="true"
+        android:isScrollContainer="true"
+        android:padding="@dimen/default_gap"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbars="vertical" />
+
+</RelativeLayout>

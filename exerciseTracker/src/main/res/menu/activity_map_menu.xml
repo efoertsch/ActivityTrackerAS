@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+   <item
+        android:id="@+id/activity_map_change_terrain"
+        android:title="@string/change_map_type">
+         <menu >
+       <item android:id="@+id/activity_map_type_satellite_plus_streets"
+        android:title="@string/satellite_plus_streets" />
+       <item android:id="@+id/activity_map_type_satellite"
+        android:title="@string/satellite" />
+       <item android:id="@+id/activity_map_type_normal"
+        android:title="@string/normal" />
+       <item android:id="@+id/activity_map_type_terrain" 
+        android:title="@string/terrain" />
+     </menu> 
+   </item>
+<!-- removed as causes ViewPager error for phone type display
+    <item
+        android:id="@+id/activity_map_show_stats"
+        android:title="@string/show_statistics"> 
+   </item>  
+        <item
+        android:id="@+id/activity_map_show_chart"
+        android:title="@string/elevation_vs_distance">
+    </item>
+    --> 
+   <item
+        android:id="@+id/activity_map_email"
+        android:title="@string/email_activity_details"> 
+   </item>   
+ 
+
+</menu>

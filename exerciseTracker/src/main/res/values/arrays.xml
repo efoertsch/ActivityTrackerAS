@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="aplineSkiing">
+        <item name="exercise">Alpine Skiing</item>
+        <item name="logInterval">"20"</item>
+        <item name="logDetail">"0"</item>
+        <item name="minDistanceToLog">"10"</item>
+        <item name="elevationInDistCalcs">"0"</item>
+    </array>
+    <array name="biking">
+        <item name="exercise">Biking</item>
+        <item name="logInterval">"20"</item>
+        <item name="logDetail">"0"</item>
+        <item name="minDistanceToLog">"10"</item>
+        <item name="elevationInDistCalcs">"0"</item>
+    </array>
+    <array name="crossCountrySkiing">
+        <item name="exercise">Cross Country Skiing</item>
+        <item name="logInterval">"60"</item>
+        <item name="logDetail">"0"</item>
+        <item name="minDistanceToLog">"10"</item>
+        <item name="elevationInDistCalcs">"0"</item>
+    </array>
+    <array name="hiking">
+        <item name="exercise">Hiking</item>
+        <item name="logInterval">"60"</item>
+        <item name="logDetail">"1"</item>
+        <item name="minDistanceToLog">"10"</item>
+        <item name="elevationInDistCalcs">"0"</item>
+    </array>
+    <array name="running">
+        <item name="exercise">Running</item>
+        <item name="logInterval">"10"</item>
+        <item name="logDetail">"1"</item>
+        <item name="minDistanceToLog">"15"</item>
+        <item name="elevationInDistCalcs">"0"</item>
+    </array>
+    <array name="walking">
+        <item name="exercise">Walking</item>
+        <item name="logInterval">"30"</item>
+        <item name="logDetail">"1"</item>
+        <item name="minDistanceToLog">"10"</item>
+        <item name="elevationInDistCalcs">"0"</item>
+    </array>
+    <array name="exerciseList">
+        <item>@array/aplineSkiing</item>
+        <item>@array/biking</item>
+        <item>@array/crossCountrySkiing</item>
+        <item>@array/hiking</item>
+        <item>@array/running</item>
+        <item>@array/walking</item>
+    </array>
+    <array name="displayUnits">
+        <item name="Metric">@string/metric</item>
+        <item name="Imperial">@string/imperial</item>
+    </array>
+    <array name="default_display">
+        <item name="display_units">@string/display_units</item>
+        <item name="value">@string/imperial</item>
+    </array>
+    <array name="defaultSettings">
+        <item>@array/default_display</item>
+    </array>
+
+</resources>

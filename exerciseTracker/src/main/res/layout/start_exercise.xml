@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/tvStartActivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/start_activity"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbars="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <RelativeLayout
+                android:id="@+id/start_exercise_rl2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/default_gap" >
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/location"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <!--
+                     style="@style/AutoCompleteTextViewLight" get black on black with V3.2 default theme
+                 	android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                -->
+
+                <AutoCompleteTextView
+                    android:id="@+id/start_exercise_actvLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/textView3"
+                    android:hint="@string/where_are_we"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:width="220dp" >
+
+                    <requestFocus android:layout_width="wrap_content" />
+                </AutoCompleteTextView>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/start_exercise_rl1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/default_gap" >
+
+                <TextView
+                    android:id="@+id/start_exercise_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/exercise"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <!-- android:textColor="@android:color/primary_text_light" -->
+
+                <Spinner
+                    android:id="@+id/start_exercise_spnrExercise"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="30dp"
+                    android:layout_toRightOf="@+id/start_exercise_tv" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/start_exercise_lblAdditionalInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/additional_activity_info"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <EditText
+                    android:id="@+id/start_exercise_additional_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/start_exercise_lblAdditionalInfo"
+                    android:hint="@string/additional_activity_hint" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/ts10sp" >
+
+                <TextView
+                    android:id="@+id/lblLog_GPS_points"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/log_gps_points"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <CheckBox
+                    android:id="@+id/start_exercise_chkbxLog_Detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/lblLog_GPS_points"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/ts20sp" >
+
+                <Button
+                    android:id="@+id/start_exercise_btnStart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:paddingLeft="@+dimen/dp8dp"
+                    android:paddingRight="@+dimen/dp8dp"
+                    android:text="@string/start" />
+
+                <Button
+                    android:id="@+id/start_exercise_btnCancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:paddingLeft="@+dimen/dp8dp"
+                    android:paddingRight="@+dimen/dp8dp"
+                    android:text="@string/cancel" />
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

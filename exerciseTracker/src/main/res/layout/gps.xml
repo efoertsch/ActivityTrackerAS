@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" xmlns:app="http://schemas.android.com/apk/res/">
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/exercise_information" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/start_exercise" />
+
+        <Button
+            android:id="@+id/stop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/stop_exercise"
+            android:visibility="visible" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/lblDistanceTraveled"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/distance_traveled"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/tvDistanceTraveled"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+           android:textAppearance="?android:attr/textAppearanceMedium"  />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/lblAltitudeGained"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/altitude_gained"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+       <TextView
+           android:id="@+id/tvAltitudeGained"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:textAppearance="?android:attr/textAppearanceMedium"  />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/lblAltitudeLost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/altitude_lost"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+       <TextView
+           android:id="@+id/tvAltitudeLost"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:textAppearance="?android:attr/textAppearanceMedium"  />
+
+    </LinearLayout>
+        <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/lblOverallAltitudeChange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/overall_altitude_change"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+       <TextView
+           android:id="@+id/tvOverallAltitudeChange"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:textAppearance="?android:attr/textAppearanceMedium"  />
+
+    </LinearLayout>
+    <TextView
+        android:id="@+id/tvCurrentLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""  />
+    
+    <TextView
+        android:id="@+id/status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""  />
+
+
+    <Button
+        android:id="@+id/show_map"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/show_map"
+        android:visibility="visible" />
+
+  
+
+</LinearLayout>

@@ -1,0 +1,27 @@
+
+<p>ActivityTracker was created to learn Android programming.</p>
+
+<p> It is however a very useable app to keep track of your exercise activities. 
+Activities can be tracked at a summary level( 
+start/finish time and points along with distance covered), 
+or at a detail level by recording a GPS track.    
+The GPS track can then be used to display the exercise track on Google Maps. 
+In addition the details of your activity can be emailed with the GPS track. 
+The email recipient can display the track on Google Earth.
+</p>
+
+<p>The app comes with default exercises, but you can add new ones as you like.</p>
+
+<p>Five charts are currently available.</p>
+ <p> 1. For a particular activity, display distance vs elevation changes (if a GPS track was made.)</p>
+ <p> 2. Distance summary by activity for the last month.</p>
+ <p> 3. Distance summary by activity for by week.</p>
+ <p> 4. Distance summary by activity for by month.</p>
+ <p> 5. Distance summary by activity for by year.</p> 
+ <p> The distance summaries can be customized by filtering on exercise and location.</p> 
+ 
+
+<p>Please email Eric Foertsch (efoertsch@fisincorporated.com) with any bugs found (hopefully you won't find any!) or enhancement requests
+</p>
+
+<p>The activity graph is implemented using AChartEngine (http://code.google.com/p/achartengine ).</p>

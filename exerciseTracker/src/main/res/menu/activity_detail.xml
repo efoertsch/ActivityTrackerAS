@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/activity_detail_showMap"
+        android:title="@string/show_map">
+    </item>
+     <item
+        android:id="@+id/activity_detail_showChart"
+        android:title="@string/elevation_vs_distance">
+    </item>
+   <!--  <item
+        android:id="@+id/post_to_facebook"
+        android:title="@string/post_to_facebook">
+    </item>
+     -->
+    <item
+        android:id="@+id/activity_detail_delete"
+        android:title="@string/delete">
+        <menu>
+            <item
+                android:id="@+id/activity_delete_activity"
+                android:title="@string/delete_prior_activity">
+            </item>
+            <item
+                android:id="@+id/activity_delete_trace"
+                android:title="@string/delete_trace">
+            </item>
+        </menu>
+    </item>
+
+</menu>

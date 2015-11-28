@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--  this refs file is used (most likely by phones) where the refs.xml files in values-sw600dp and values-xlarge don't apply -->
+<resources>
+
+    <item name="activity_masterdetail" 
+        type="layout">@layout/activity_fragment</item>
+
+</resources>

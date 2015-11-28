@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+      this alias in values-xlarge is used for v3.0 and v3.1 but was deprecated in later
+      versions and replaced with the values-sw600dp folder
+-->
+<resources>
+
+    <item name="activity_masterdetail" type="layout">@layout/activity_twopane</item>
+
+</resources>

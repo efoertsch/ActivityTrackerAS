@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+      This alias in values-sw600dp was added to V3.2  (sw short for smallest width and is independent of screen orientation)
+      Prior to V3.2 the file in values-xlarge folder will be used
+-->
+<resources>
+
+    <item name="activity_masterdetail" 
+        type="layout">@layout/activity_twopane</item>
+
+</resources>

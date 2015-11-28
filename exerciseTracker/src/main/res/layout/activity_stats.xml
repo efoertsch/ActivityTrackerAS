@@ -1,0 +1,90 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/activity_detail_header"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <!-- 1st row -->
+
+        <TextView
+            android:id="@+id/activity_detail_lblActivityStats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/activity_stats"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+        <!-- 2nd row -->
+
+        <TextView
+            android:id="@+id/activity_detail_tvExerciseLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/activity_detail_lblActivityStats"
+            android:hint="@string/hint_activity_at_location"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/buttonfooter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone" >
+
+        <Button
+            android:id="@+id/activity_stats_stop_restart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:paddingLeft="@+dimen/dp8dp"
+            android:paddingRight="@+dimen/dp8dp"
+            android:text="@string/stop"
+            android:visibility="visible" />
+
+        <!-- android:layout_toRightOf="@+id/activity_stats_stop_restart" -->
+
+        <Button
+            android:id="@+id/activity_stats_show_map"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:paddingLeft="@+dimen/dp8dp"
+            android:paddingRight="@+dimen/dp8dp"
+            android:text="@string/map"
+            android:visibility="visible" />
+
+        <!-- android:layout_toRightOf="@+id/activity_stats_show_map" -->
+
+        <Button
+            android:id="@+id/activity_stats_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:paddingLeft="@+dimen/dp8dp"
+            android:paddingRight="@+dimen/dp8dp"
+            android:text="@string/cancel" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/activity_detail_section"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/buttonfooter"
+        android:layout_below="@+id/activity_detail_header" >
+
+        <ListView
+            android:id="@+id/activity_detail_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:isScrollContainer="true"
+            android:padding="@dimen/default_gap"
+            android:scrollbarAlwaysDrawVerticalTrack="true"
+            android:scrollbars="vertical" />
+    </RelativeLayout>
+
+</RelativeLayout>

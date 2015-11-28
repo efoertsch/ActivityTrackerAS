@@ -1,0 +1,180 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:fillViewport="true" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <!-- 1st row -->
+
+            <TextView
+                android:id="@+id/activity_detail_lblActivityStats"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_stats"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+            <!-- 2nd row -->
+
+            <TextView
+                android:id="@+id/activity_detail_tvExerciseLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/activity_detail_lblActivityStats"
+                android:hint="@string/hint_activity_at_location"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            <!-- 3rd row -->
+
+            <TextView
+                android:id="@+id/activity_detail_lblDistanceTraveled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/activity_detail_tvExerciseLocation"
+                android:paddingRight="@dimen/default_gap"
+                android:text="@string/distance_traveled"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/activity_detail_tvDistanceTraveled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/activity_detail_lblDistanceTraveled"
+                android:layout_alignParentRight="true"
+                android:layout_toRightOf="@+id/activity_detail_lblDistanceTraveled"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            <!-- 4th row -->
+
+            <TextView
+                android:id="@+id/activity_detail_lblTimeOnActivity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/activity_detail_lblDistanceTraveled"
+                android:paddingRight="@dimen/default_gap"
+                android:text="@string/time_on_activity"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/activity_detail_tvTimeOnActivity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/activity_detail_lblTimeOnActivity"
+                android:layout_alignParentRight="true"
+                android:layout_toRightOf="@+id/activity_detail_lblTimeOnActivity"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            <!-- 5th row -->
+
+            <TextView
+                android:id="@+id/activity_detail_lblAverageSpeed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/activity_detail_lblTimeOnActivity"
+                android:paddingRight="@dimen/default_gap"
+                android:text="@string/average_speed"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/activity_detail_tvAverageSpeed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/activity_detail_lblAverageSpeed"
+                android:layout_alignParentRight="true"
+                android:layout_toRightOf="@+id/activity_detail_lblAverageSpeed"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            <!-- 6th row -->
+          
+
+            <TextView
+                android:id="@+id/activity_detail_lblMaxSpeedToPoint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/activity_detail_lblAverageSpeed"
+                android:paddingRight="@dimen/default_gap"
+                android:text="@string/max_speed"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/activity_detail_tvMaxSpeed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/activity_detail_lblMaxSpeedToPoint"
+                android:layout_alignParentRight="true"
+                android:layout_toRightOf="@+id/activity_detail_lblMaxSpeedToPoint"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        
+			 <!-- 7th row -->
+            <TextView
+                android:id="@+id/activity_detail_lblAltitudeGained"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/activity_detail_lblMaxSpeedToPoint"
+                android:paddingRight="@dimen/default_gap"
+                android:text="@string/altitude_gained"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/activity_detail_tvAltitudeGained"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/activity_detail_lblAltitudeGained"
+                android:layout_alignParentRight="true"
+                android:layout_toRightOf="@+id/activity_detail_lblAltitudeGained"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            <!-- 8th row -->
+
+            <TextView
+                android:id="@+id/activity_detail_lblAltitudeLost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/activity_detail_lblAltitudeGained"
+                android:paddingRight="@dimen/default_gap"
+                android:text="@string/altitude_lost"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/activity_detail_tvAltitudeLost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/activity_detail_lblAltitudeLost"
+                android:layout_alignParentRight="true"
+                android:layout_toRightOf="@+id/activity_detail_lblAltitudeLost"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <!-- 9th row -->
+
+            <TextView
+                android:id="@+id/activity_detail_lblOverallAltitudeChange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/activity_detail_lblAltitudeLost"
+                android:paddingRight="@dimen/default_gap"
+                android:text="@string/overall_altitude_change"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/activity_detail_tvOverallAltitudeChange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/activity_detail_lblOverallAltitudeChange"
+                android:layout_alignParentRight="true"
+                android:layout_toRightOf="@+id/activity_detail_lblOverallAltitudeChange"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </RelativeLayout>
+    </ScrollView>
+
+</LinearLayout>

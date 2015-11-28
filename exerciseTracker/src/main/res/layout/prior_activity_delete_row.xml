@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--   style="@style/standard_display"  -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/prior_activity_row_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/activity"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/prior_activity_row_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="60dp"
+        android:layout_toRightOf="@+id/prior_activity_row_activity"
+        android:text="@string/location"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/prior_activity_row_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/prior_activity_row_activity"
+        android:text="@string/date"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/prior_activity_row_description"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="2"
+        android:layout_toRightOf="@+id/prior_activity_row_date"
+        android:layout_toLeftOf="@+id/prior_activity_row_delete_checkbox"
+        android:layout_below="@+id/prior_activity_row_location"
+        android:paddingLeft="@dimen/default_gap"
+        android:text="@string/description"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <CheckBox
+        android:id="@+id/prior_activity_row_delete_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:focusable="false"
+        android:clickable="false"
+        android:text="" />
+    
+    </RelativeLayout>

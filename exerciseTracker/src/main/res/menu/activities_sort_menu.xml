@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+   <!--  same list as in activities_list_options submenu -->
+    <item
+        android:id="@+id/activities_sort_menu_activity_asc" 
+        android:title="@string/exercise_asc" 
+        />
+    <item
+    	android:id="@+id/activities_sort_menu_activity_desc"
+        android:title="@string/exercise_desc" />
+    <item
+        android:id="@+id/activities_sort_menu_location_asc"
+        android:title="@string/location_asc" />
+    <item
+        android:id="@+id/activities_sort_menu_location_desc"
+        android:title="@string/location_desc" />
+    <item
+        android:id="@+id/activities_sort_menu_date_asc"
+        android:title="@string/date_asc"  />
+    <item
+        android:id="@+id/activities_sort_menu_date_desc"
+        android:title="@string/date_desc" />
+    <item
+        android:id="@+id/activities_sort_menu_description_asc"
+        android:title="@string/description_asc" />
+    <item
+        android:id="@+id/activities_sort_menu_description_desc"
+        android:title="@string/description_desc" />
+  
+</menu>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--   style="@style/standard_display" -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/exerciserow_lblExercise"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:paddingRight="@dimen/default_gap"
+        android:text="@string/exercise"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/exerciserow_exercise"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/exerciserow_lblExercise"
+        android:ems="10"
+        android:paddingRight="@dimen/default_gap"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <RelativeLayout
+        android:id="@+id/exerciserow_rlForCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/exerciserow_lblExercise" >
+
+        <TextView
+            android:id="@+id/exerciserow_lblLog_GPS_points"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:paddingRight="@dimen/default_gap"
+            android:text="@string/log_gps_points"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <CheckBox
+            android:id="@+id/exerciserow_chkbxLog_Detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_toRightOf="@+id/exerciserow_lblLog_GPS_points"
+            android:clickable="false"
+            android:focusable="false"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/exerciserow_rlForLogInterval"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/exerciserow_rlForCheckBox" >
+
+        <TextView
+            android:id="@+id/exerciserow_lblLog_Interval"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:paddingRight="@dimen/default_gap"
+            android:text="@string/log_interval"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/exerciserow_logInterval"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/exerciserow_lblLog_Interval"
+            android:ems="10"
+            android:paddingRight="@dimen/default_gap"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/exerciserow_rlForDefaultLogInterval"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/exerciserow_rlForLogInterval" >
+
+        <TextView
+            android:id="@+id/exerciserow_lblDefault_Log_Interval"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:paddingRight="@dimen/default_gap"
+            android:text="@string/default_log_interval"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/exerciserow_defaultLogInterval"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/exerciserow_lblDefault_Log_Interval"
+            android:layout_alignBottom="@+id/exerciserow_lblDefault_Log_Interval"
+            android:layout_toRightOf="@+id/exerciserow_lblDefault_Log_Interval"
+            android:paddingRight="@dimen/default_gap"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/exerciserow_rlMinDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/exerciserow_rlForDefaultLogInterval" >
+
+        <TextView
+            android:id="@+id/exerciserow_lblMinDistance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="@string/minimum_distance_to_travel_to_log_gps_points"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/exerciserow_tvMinDistance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/exerciserow_lblMinDistance"
+            android:ems="10" />
+
+       
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/exerciserow_rlElevationInCalcs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/exerciserow_rlMinDistance" >
+
+        <TextView
+            android:id="@+id/exerciserow_lvlElevationInCalcs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="@string/use_elevation_in_distance_calculations"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <CheckBox
+            android:id="@+id/exerciserow_chkbxElevationInCalcs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/exerciserow_lvlElevationInCalcs" />
+    </RelativeLayout>
+
+</RelativeLayout>

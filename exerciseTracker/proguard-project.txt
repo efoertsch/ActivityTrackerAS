@@ -42,3 +42,10 @@
 -dontwarn android.net.http.AndroidHttpClient
 -dontwarn com.google.android.gms.**
 -dontwarn com.android.volley.toolbox.**
+
+# added to keep AChartEngine giving error with obfuscated code
+-keep public class org.achartengine.. { *; }
+-keep public class org.achartengine.** { *; }
+
+-renamesourcefileattribute SourceFile
+-keepattributes SourceFile,LineNumberTable

@@ -2,12 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fisincorporated.ExerciseTracker"
     android:installLocation="auto"
-    android:versionCode="11"
-    android:versionName="1.5.5" >
+    android:versionCode="12"
+    android:versionName="1.5.6" >
 
     <uses-sdk
-        android:minSdkVersion="9"
-        android:targetSdkVersion="17" />
+        android:minSdkVersion="15"
+        android:targetSdkVersion="19" />
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -70,12 +70,12 @@
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/app_id" />
+            android:value="@string/facebook_app_id" />
 
         <!--  needed for uploading content such as photos -->
         <provider
-            android:name="com.facebook.NativeAppCallContentProvider"
-            android:authorities="com.facebook.app.NativeAppCallContentProvider682608938461276"
+            android:name="com.facebook.FacebookContentProvider"
+            android:authorities="com.facebook.app.FacebookContentProvider682608938461276"
             android:exported="true" />
 		<!--  needed for uploading content such as photos -->
         <receiver android:name="com.fisincorporated.facebook.ExerciseTrackerFacebookBroadcastReceiver" >
@@ -89,7 +89,7 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="@string/GoogleMapsKeyTest" />
+            android:value="@string/GoogleMapsKeyProd" />
     </application>
 
 </manifest>

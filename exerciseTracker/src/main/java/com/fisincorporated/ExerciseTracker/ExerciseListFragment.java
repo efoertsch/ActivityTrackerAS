@@ -6,16 +6,15 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
-import android.support.v4.widget.SimpleCursorAdapter;
 
 import com.fisincorporated.database.ExerciseDAO;
-import com.fisincorporated.database.ExerciseRecord;
 import com.fisincorporated.database.SQLiteCursorLoader;
 import com.fisincorporated.database.TrackerDatabase.Exercise;
 import com.fisincorporated.database.TrackerDatabase.ExrcsLocation;
@@ -46,17 +45,19 @@ public class ExerciseListFragment extends AbstractListFragment implements
 		final Button btnAddNewActivity = (Button) view
 				.findViewById(R.id.exerciselist_btnAddNewActivity);
 
+		View footerView = ((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.exerciselist_footer, null, false);
+		exerciseListView.addFooterView(footerView);
 		// Handle Add new Button
-		btnAddNewActivity.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				// Go to the exercise maintenance activity to add new exercise
-				// mod for tablets, return selected (new) exercise to acivity and it will determine 
-				// if for detail fragment or call activity to display exercise fragment
-				 Bundle args = new Bundle();
-				 args.putParcelable(Exercise.EXERCISE_TABLE, new ExerciseRecord());
-				 callBacks.onExerciseSelected(args); 
-			}
-		});
+//		btnAddNewActivity.setOnClickListener(new View.OnClickListener() {
+//			public void onClick(View v) {
+//				// Go to the exercise maintenance activity to add new exercise
+//				// mod for tablets, return selected (new) exercise to acivity and it will determine
+//				// if for detail fragment or call activity to display exercise fragment
+//				 Bundle args = new Bundle();
+//				 args.putParcelable(Exercise.EXERCISE_TABLE, new ExerciseRecord());
+//				 callBacks.onExerciseSelected(args);
+//			}
+//		});
 
 		return view;
 

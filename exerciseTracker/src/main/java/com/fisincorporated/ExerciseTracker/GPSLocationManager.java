@@ -1,9 +1,6 @@
 package com.fisincorporated.ExerciseTracker;
 
-import java.sql.Timestamp;
-
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,7 +10,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.fisincorporated.broadcastreceiver.LocationReceiver;
 import com.fisincorporated.database.GPSLogDAO;
 import com.fisincorporated.database.GPSLogRecord;
 import com.fisincorporated.database.LocationExerciseDAO;
@@ -21,6 +17,8 @@ import com.fisincorporated.database.LocationExerciseRecord;
 import com.fisincorporated.database.TrackerDatabase.Exercise;
 import com.fisincorporated.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.database.TrackerDatabaseHelper;
+
+import java.sql.Timestamp;
 
 // Adapted from Android Programming - The Big Nerd Ranch Guide. Modified to retrofit into existing system
 public class GPSLocationManager {
@@ -103,7 +101,7 @@ public class GPSLocationManager {
 					.getParcelable(LocationExercise.LOCATION_EXERCISE_TABLE);
 			if (sLer.get_id() != sCurrentLerId) {
 				sCurrentLerId = sLer.get_id();
-				sPrefs.edit().putLong(PREF_CURRENT_LER_ID, sCurrentLerId).commit();
+				sPrefs.edit().putLong(PREF_CURRENT_LER_ID, sCurrentLerId).apply();
 			}
 
 			sUpdateRate = sLer.getLogInterval() * 1000;
@@ -173,7 +171,7 @@ public class GPSLocationManager {
 		// keep the ID
 		sCurrentLerId = ler.get_id();
 		// store it in shared preferences
-		sPrefs.edit().putLong(PREF_CURRENT_LER_ID, sCurrentLerId).commit();
+		sPrefs.edit().putLong(PREF_CURRENT_LER_ID, sCurrentLerId).apply();
 		// start location updates
 		startLocationUpdates();
 	}
@@ -181,7 +179,7 @@ public class GPSLocationManager {
 	public void stopTrackingLer() {
 		stopLocationUpdates();
 		sCurrentLerId = -1;
-		sPrefs.edit().remove(PREF_CURRENT_LER_ID).commit();
+		sPrefs.edit().remove(PREF_CURRENT_LER_ID).apply();
 	}
 
 	public void stopLocationUpdates() {

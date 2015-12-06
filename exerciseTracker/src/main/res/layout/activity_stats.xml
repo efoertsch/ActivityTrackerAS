@@ -39,9 +39,9 @@
             android:id="@+id/activity_stats_stop_restart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:paddingLeft="@+dimen/dp8dp"
-            android:paddingRight="@+dimen/dp8dp"
+            android:layout_alignParentRight="true"
+            android:paddingLeft="@dimen/dp8dp"
+            android:paddingRight="@dimen/dp8dp"
             android:text="@string/stop"
             android:visibility="visible" />
 
@@ -52,8 +52,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:paddingLeft="@+dimen/dp8dp"
-            android:paddingRight="@+dimen/dp8dp"
+            android:paddingLeft="@dimen/dp8dp"
+            android:paddingRight="@dimen/dp8dp"
             android:text="@string/map"
             android:visibility="visible" />
 
@@ -63,9 +63,9 @@
             android:id="@+id/activity_stats_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:paddingLeft="@+dimen/dp8dp"
-            android:paddingRight="@+dimen/dp8dp"
+            android:layout_alignParentLeft="true"
+            android:paddingLeft="@dimen/dp8dp"
+            android:paddingRight="@dimen/dp8dp"
             android:text="@string/cancel" />
     </RelativeLayout>
 

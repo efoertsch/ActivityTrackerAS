@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical" >
 
     <RelativeLayout
@@ -15,6 +15,8 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:text="@string/display_units"
+            android:layout_marginBottom="@dimen/dp8dp"
+            android:layout_marginTop="@dimen/dp8dp"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <Spinner
@@ -23,58 +25,26 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/dp8dp"
+            android:layout_marginTop="@dimen/dp8dp"
             android:layout_toRightOf="@+id/program_options_lblUnit_Options" />
     </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
 
-        <Button
-            android:id="@+id/program_options_btnSave"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/program_options_btnSave"
-            android:paddingLeft="@+dimen/dp8dp"
-            android:paddingRight="@+dimen/dp8dp"
-            android:text="@string/save" />
+    <View style="@style/Divider"
+        android:layout_marginBottom="@dimen/dp8dp"
+        android:layout_marginTop="@dimen/dp8dp"/>
 
-        <Button
-            android:id="@+id/program_options_btnCancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:paddingLeft="@+dimen/dp8dp"
-            android:paddingRight="@+dimen/dp8dp"
-            android:text="@string/cancel" />
-    </RelativeLayout>
-
-    <View style="@style/Divider" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="2dp" >
 
         <TextView
-            android:id="@+id/program_options_lblBackupDatabase"
+            android:id="@+id/tvBackupDatabase"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:layout_marginTop="2dp"
             android:maxLines="2"
             android:text="@string/backup_restore_database"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <Button
-            android:id="@+id/program_options_btnBackupRestore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/program_options_lblBackupDatabase"
-            android:paddingLeft="@+dimen/dp8dp"
-            android:paddingRight="@+dimen/dp8dp"
-            android:text="@string/backup_restore" />
-    </RelativeLayout>
 
 </LinearLayout>

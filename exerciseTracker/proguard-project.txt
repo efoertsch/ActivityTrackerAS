@@ -34,3 +34,11 @@
 -keepnames class * implements android.os.Parcelable {
     public static final ** CREATOR;
 }
+
+# following added to get past
+# Error:Execution failed for task ':exerciseTracker:packageRelease'.
+# > Unable to compute hash of /Users/ericfoertsch/Documents/git/ExerciseTracker_AS/exerciseTracker/build/intermediates/classes-proguard/release/classes.jar
+-dontwarn org.apache.http.**
+-dontwarn android.net.http.AndroidHttpClient
+-dontwarn com.google.android.gms.**
+-dontwarn com.android.volley.toolbox.**

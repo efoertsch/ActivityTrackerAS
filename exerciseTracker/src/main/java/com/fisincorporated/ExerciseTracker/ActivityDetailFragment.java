@@ -1,14 +1,10 @@
 package com.fisincorporated.ExerciseTracker;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,6 +22,9 @@ import com.fisincorporated.database.LocationExerciseRecord;
 import com.fisincorporated.database.TrackerDatabase.GPSLog;
 import com.fisincorporated.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.utility.Utility;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
 
 public class ActivityDetailFragment extends ExerciseMasterFragment {
 	private static final int DELETE_REQUESTCODE = 1;
@@ -156,7 +155,7 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
 			args.putString(LocationExercise.DESCRIPTION, description) ;
 			args.putInt(GlobalValues.DISPLAY_TARGET, GlobalValues.DISPLAY_MAP);
 			Toast.makeText(getActivity().getBaseContext(),
-					getActivity().getResources().getString(R.string.displaying_the_map_may_take_a_moment), Toast.LENGTH_LONG)
+					getActivity().getResources().getString(R.string.displaying_the_map_may_take_a_moment), Toast.LENGTH_SHORT)
 					.show();
 			callBacks.onSelectedAction(args);
 			return true;

@@ -1,7 +1,5 @@
 package com.fisincorporated.ExerciseTracker;
 
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,6 +23,8 @@ import com.fisincorporated.database.TrackerDatabase.Exercise;
 import com.fisincorporated.database.TrackerDatabase.ExrcsLocation;
 import com.fisincorporated.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.utility.Utility;
+
+import java.util.ArrayList;
 
 //Removed service logic and updated to location logic from Android Programming - The Big Nerd Ranch Guide
 
@@ -151,7 +151,7 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
 					args.putString(LocationExercise.DESCRIPTION, description) ;
 					args.putInt(GlobalValues.DISPLAY_TARGET, GlobalValues.DISPLAY_MAP);
 					Toast.makeText(getActivity().getBaseContext(),
-							getActivity().getResources().getString(R.string.displaying_the_map_may_take_a_moment), Toast.LENGTH_LONG)
+							getActivity().getResources().getString(R.string.displaying_the_map_may_take_a_moment), Toast.LENGTH_SHORT)
 							.show();
 					callBacks.onSelectedAction(args);
 				} else {

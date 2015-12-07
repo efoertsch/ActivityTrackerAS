@@ -1,18 +1,16 @@
 package com.fisincorporated.ExerciseTracker;
 
-import java.text.DateFormat;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +20,8 @@ import com.fisincorporated.database.TrackerDatabase.Exercise;
 import com.fisincorporated.database.TrackerDatabase.ExrcsLocation;
 import com.fisincorporated.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.utility.Utility;
+
+import java.text.DateFormat;
 
 public class PriorActivitiesListFragment extends ActivityListFragment  {
 
@@ -88,7 +88,7 @@ public class PriorActivitiesListFragment extends ActivityListFragment  {
 			infoButton.setOnClickListener(new OnClickListener() {
 				public void onClick(View v) {
 					Toast.makeText(getActivity().getBaseContext(),
-							getActivity().getResources().getString(R.string.displaying_the_map_may_take_a_moment), Toast.LENGTH_LONG)
+							getActivity().getResources().getString(R.string.displaying_the_map_may_take_a_moment), Toast.LENGTH_SHORT)
 							.show();
 					 Bundle args = new Bundle();
 					 args.putLong(LocationExercise._ID, (Long) v.getTag());

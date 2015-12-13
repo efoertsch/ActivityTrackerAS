@@ -1,17 +1,5 @@
 package com.fisincorporated.ExerciseTracker;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-
-import org.achartengine.GraphicalView;
-import org.achartengine.chart.BarChart.Type;
-import org.achartengine.model.XYMultipleSeriesDataset;
-import org.achartengine.renderer.XYMultipleSeriesRenderer;
-
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -27,6 +15,18 @@ import com.fisincorporated.database.TrackerDatabase.Exercise;
 import com.fisincorporated.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.utility.Chart;
 import com.fisincorporated.utility.Utility;
+
+import org.achartengine.GraphicalView;
+import org.achartengine.chart.BarChart.Type;
+import org.achartengine.model.XYMultipleSeriesDataset;
+import org.achartengine.renderer.XYMultipleSeriesRenderer;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class ActivityDistanceChartFragment extends ExerciseMasterFragment {
 	private LinearLayout chartLayout = null;
@@ -256,8 +256,9 @@ public class ActivityDistanceChartFragment extends ExerciseMasterFragment {
 		if (0 == getMinDateAndNumberTimeUnits(query.toString())){
 			return false;
 		}
-		// check this
-		// ++numberOfTimeUnits ;
+		// TODO: Need to fix sql as it is calculating number of time units 1 less that what is needed
+		// eg. First exercise 10-14-2014, current date 12-13-2015 it returns 14 but it should be 15.
+		++numberOfTimeUnits ;
 		// 2. Create date array sized on number of months from the min date (month) found
 		activityDates = constructConsecutiveDates(minDate, numberOfTimeUnits,
 				Calendar.MONTH, 1);

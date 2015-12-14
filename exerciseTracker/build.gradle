@@ -17,14 +17,21 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-project.txt'
         }
     }
+
 }
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    // Unit testing dependencies
+    testCompile 'junit:junit:4.12'
+    // Set this dependency if you want to use the Hamcrest matcher library
+    testCompile 'org.hamcrest:hamcrest-library:1.3'
+    testCompile "org.mockito:mockito-core:1.9.5"
     compile 'com.facebook.android:facebook-android-sdk:4.7.0'
     compile 'com.google.android.gms:play-services:+'
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile files('libs/achartengine-1.1.0.jar')
+
 }

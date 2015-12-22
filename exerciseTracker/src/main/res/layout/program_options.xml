@@ -2,11 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:padding="@dimen/default_gap">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/program_options_lblUnit_Options"
@@ -14,9 +15,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
+            android:layout_marginBottom="@dimen/dp8"
+            android:layout_marginTop="@dimen/dp8"
             android:text="@string/display_units"
-            android:layout_marginBottom="@dimen/dp8dp"
-            android:layout_marginTop="@dimen/dp8dp"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <Spinner
@@ -25,26 +26,27 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/dp8dp"
-            android:layout_marginTop="@dimen/dp8dp"
+            android:layout_marginBottom="@dimen/dp8"
+            android:layout_marginTop="@dimen/dp8"
             android:layout_toRightOf="@+id/program_options_lblUnit_Options" />
     </RelativeLayout>
 
 
-    <View style="@style/Divider"
-        android:layout_marginBottom="@dimen/dp8dp"
-        android:layout_marginTop="@dimen/dp8dp"/>
+    <View
+        style="@style/Divider"
+        android:layout_marginBottom="@dimen/dp8"
+        android:layout_marginTop="@dimen/dp8" />
 
 
-        <TextView
-            android:id="@+id/tvBackupDatabase"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginTop="2dp"
-            android:maxLines="2"
-            android:text="@string/backup_restore_database"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+    <TextView
+        android:id="@+id/tvBackupDatabase"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="2dp"
+        android:maxLines="2"
+        android:text="@string/backup_restore_database"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 
 </LinearLayout>

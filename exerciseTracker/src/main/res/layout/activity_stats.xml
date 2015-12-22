@@ -1,12 +1,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:layout_margin="@dimen/default_gap">
 
     <RelativeLayout
         android:id="@+id/activity_detail_header"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default_gap">
 
         <!-- 1st row -->
 
@@ -40,8 +42,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:paddingLeft="@dimen/dp8dp"
-            android:paddingRight="@dimen/dp8dp"
+            android:paddingLeft="@dimen/dp8"
+            android:paddingRight="@dimen/dp8"
             android:text="@string/stop"
             android:visibility="visible" />
 
@@ -52,8 +54,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:paddingLeft="@dimen/dp8dp"
-            android:paddingRight="@dimen/dp8dp"
+            android:paddingLeft="@dimen/dp8"
+            android:paddingRight="@dimen/dp8"
             android:text="@string/map"
             android:visibility="visible" />
 
@@ -64,8 +66,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:paddingLeft="@dimen/dp8dp"
-            android:paddingRight="@dimen/dp8dp"
+            android:paddingLeft="@dimen/dp8"
+            android:paddingRight="@dimen/dp8"
             android:text="@string/cancel" />
     </RelativeLayout>
 

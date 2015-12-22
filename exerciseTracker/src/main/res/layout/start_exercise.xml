@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:layout_margin="@dimen/default_gap">
 
     <TextView
         android:id="@+id/tvStartActivity"
@@ -15,44 +16,41 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:scrollbarAlwaysDrawVerticalTrack="true"
-        android:scrollbars="vertical" >
+        android:scrollbars="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <RelativeLayout
                 android:id="@+id/start_exercise_rl2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/default_gap" >
+                android:paddingTop="@dimen/default_gap">
 
                 <TextView
                     android:id="@+id/textView3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                    android:layout_centerHorizontal="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
                     android:text="@string/location"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
-
-                <!--
-                     style="@style/AutoCompleteTextViewLight" get black on black with V3.2 default theme
-                 	android:layout_alignParentRight="true"
-                    android:layout_alignParentTop="true"
-                -->
 
                 <AutoCompleteTextView
                     android:id="@+id/start_exercise_actvLocation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+
+                    android:layout_marginLeft="@dimen/default_gap"
                     android:layout_toRightOf="@+id/textView3"
                     android:hint="@string/where_are_we"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:width="220dp" >
+                    android:textAppearance="?android:attr/textAppearanceMedium">
 
-                    <requestFocus android:layout_width="wrap_content" />
+                    <requestFocus />
                 </AutoCompleteTextView>
             </RelativeLayout>
 
@@ -60,14 +58,14 @@
                 android:id="@+id/start_exercise_rl1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/default_gap" >
+                android:layout_marginTop="@dimen/default_gap">
 
                 <TextView
                     android:id="@+id/start_exercise_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
                     android:text="@string/exercise"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -77,14 +75,15 @@
                     android:id="@+id/start_exercise_spnrExercise"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginLeft="30dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/default_gap"
                     android:layout_toRightOf="@+id/start_exercise_tv" />
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_gap">
 
                 <TextView
                     android:id="@+id/start_exercise_lblAdditionalInfo"
@@ -104,7 +103,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/ts10sp" >
+                android:layout_marginTop="@dimen/ts10sp">
 
                 <TextView
                     android:id="@+id/lblLog_GPS_points"
@@ -125,15 +124,15 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/ts20sp" >
+                android:paddingTop="@dimen/ts20sp">
 
                 <Button
                     android:id="@+id/start_exercise_btnStart"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:paddingLeft="@dimen/dp8dp"
-                    android:paddingRight="@dimen/dp8dp"
+                    android:paddingLeft="@dimen/dp8"
+                    android:paddingRight="@dimen/dp8"
                     android:text="@string/start" />
 
                 <Button
@@ -141,8 +140,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                    android:paddingLeft="@dimen/dp8dp"
-                    android:paddingRight="@dimen/dp8dp"
+                    android:paddingLeft="@dimen/dp8"
+                    android:paddingRight="@dimen/dp8"
                     android:text="@string/cancel" />
             </RelativeLayout>
         </LinearLayout>

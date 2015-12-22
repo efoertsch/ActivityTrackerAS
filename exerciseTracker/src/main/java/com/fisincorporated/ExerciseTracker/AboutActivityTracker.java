@@ -1,20 +1,20 @@
 package com.fisincorporated.ExerciseTracker;
 
+import android.content.res.AssetManager;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import android.content.res.AssetManager;
-import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
-import android.widget.TextView;
-import android.widget.Toast;
-
-public class AboutActivityTracker extends FragmentActivity {
+public class AboutActivityTracker extends AppCompatActivity {
 	TextView tvAbout;
 
 	@Override

@@ -87,7 +87,7 @@
     <string name="exercise_information">Exercise Information</string>
     <string name="exercise_list">Exercise List</string>
     <string name="exercise_not_defined_nothing_to_save">"Exercise not defined. Nothing to save."</string>
-    <string name="exercise_maintenance">Exercise Maintenace</string>
+    <string name="exercise_maintenance">Exercise Maintenance</string>
     <string name="exercise_map">Exercise Map</string>
     <string name="facebook_posting_error">Facebook posting error</string>
     <string name="filter_by">Filter by</string>
@@ -115,11 +115,12 @@
     <string name="log_interval">Log Interval</string>
     <string name="longitude">Longitude</string>
     <string name="main_menu">Main Menu</string>
-    <string name="main_menu_start_activity">1. Start Activity</string>
-    <string name="main_menu_list_prior_activities">"2. List Prior Activities</string>
-    <string name="main_menu_exercise_setup">3. Exercise Setup</string>
-    <string name="main_menu_program_options">4. Program Options</string>
-    <string name="main_menu_about_activity_tracker">5. About ActivityTracker</string>
+    <string name="main_menu_start_activity">Start Activity</string>
+    <string name="main_menu_list_prior_activities">List Prior Activities</string>
+    <string name="main_menu_activity_history">History</string>
+    <string name="main_menu_exercise_setup">Exercise Setup</string>
+    <string name="main_menu_program_options">Options</string>
+    <string name="main_menu_about_activity_tracker">About ActivityTracker</string>
     <string name="map">Map</string>
     <string name="map_exercise">Map Exercise</string>
     <string name="maps_not_available">Maps not available. Please check to see if Google Maps available on your device.</string>

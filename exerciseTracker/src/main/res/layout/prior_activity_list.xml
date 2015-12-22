@@ -1,56 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/prior_activity_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" 
-    android:id="@+id/prior_activity_list" >
+    android:orientation="vertical">
 
-<LinearLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal" 
-    android:id="@+id/prior_activity_list_columns"
-    android:clickable="true">
-
-    <TextView
-        android:id="@+id/prior_activity_list_activity"
+    <LinearLayout
+        android:id="@+id/prior_activity_list_columns"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/exercise"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:clickable="true"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/dp8">
 
-    <TextView
-        android:id="@+id/prior_activity_list_location"
+        <TextView
+            android:id="@+id/prior_activity_list_activity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/default_gap"
+            android:text="@string/exercise"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/prior_activity_list_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="44dp"
+            android:text="@string/location"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@id/android:list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/location"
-        android:layout_marginLeft="60dp"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:clickable="true"
+        android:divider="#fff"
+        android:dividerHeight="@dimen/ts1sp"
+        android:footerDividersEnabled="true"
+        android:headerDividersEnabled="true"
+        android:isScrollContainer="true"
+        android:padding="@dimen/default_gap"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbars="vertical" />
 
-    
-</LinearLayout>
-  
-     <ListView    
-         android:id="@id/android:list"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:clickable="true"
-         android:divider="#fff"
-         android:dividerHeight="@dimen/ts1sp"
-         android:footerDividersEnabled="true"
-         android:headerDividersEnabled="true"
-         android:isScrollContainer="true"
-         android:padding="@dimen/default_gap"
-         android:scrollbarAlwaysDrawVerticalTrack="true"
-         android:scrollbars="vertical" />
-      <TextView
+    <TextView
         android:id="@+id/empty_activity_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        android:text="@string/no_activities_to_display" />
-    
-     
-     
+        android:text="@string/no_activities_to_display"
+        android:visibility="gone" />
+
 
 </LinearLayout>

@@ -1,7 +1,5 @@
 package com.fisincorporated.ExerciseTracker;
 
-import java.util.Locale;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentValues;
@@ -34,6 +32,8 @@ import com.fisincorporated.database.TrackerDatabase.Exercise;
 import com.fisincorporated.database.TrackerDatabase.ExrcsLocation;
 import com.fisincorporated.database.TrackerDatabase.LocationExercise;
 
+import java.util.Locale;
+
 public class StartExerciseFragment extends ExerciseMasterFragment {
 	private static final String TAG = "StartExerciseFragment";
 	protected Cursor csrLocationAutoComplete;
@@ -59,6 +59,7 @@ public class StartExerciseFragment extends ExerciseMasterFragment {
 
 	private int logInterval = 0;
 	private boolean startPressed = false;
+	private ActivityDialogFragment activityDialog = null;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -74,6 +75,7 @@ public class StartExerciseFragment extends ExerciseMasterFragment {
 	private void getReferencedViews(View view) {
 		spnrExercise = (Spinner) view
 				.findViewById(R.id.start_exercise_spnrExercise);
+
 		// get this defined first so you can get colors for actvLocation 
 		etAdditionalInfo = (EditText) view
 				.findViewById(R.id.start_exercise_additional_info);
@@ -151,14 +153,13 @@ public class StartExerciseFragment extends ExerciseMasterFragment {
 	}
 
 	public void showAddLocationDialog() {
- 
-		ActivityDialogFragment dialog;
-		dialog = ActivityDialogFragment.newInstance(-1,
+
+		activityDialog = ActivityDialogFragment.newInstance(-1,
 				"Do you want to create new location "
 						+ actvLocation.getText().toString().trim() + "?",
 				R.string.ok, R.string.no, -1);
-		dialog.setTargetFragment(StartExerciseFragment.this, DIALOG_SAVE_LOCATION);
-		dialog.show(getActivity().getSupportFragmentManager(), "confirmDialog");
+		activityDialog.setTargetFragment(StartExerciseFragment.this, DIALOG_SAVE_LOCATION);
+		activityDialog.show(getActivity().getSupportFragmentManager(), "confirmDialog");
 
 	}
 
@@ -377,6 +378,8 @@ public class StartExerciseFragment extends ExerciseMasterFragment {
 	}
 
 	private void cancelExercise() {
+        // to prevent listener from firing and causing abend
+        actvLocation.setOnFocusChangeListener(null);
 		getActivity().finish();
 	}
 
@@ -439,7 +442,7 @@ public class StartExerciseFragment extends ExerciseMasterFragment {
 		// if location/exercise record already exists for today then see if you
 		// should continue using it
 		if (checkForSameToday()) {
-			// show dialog and act on response
+			// show activityDialog and act on response
 			Cursor csr = (Cursor) spnrExercise.getSelectedItem();
 
 			ActivityDialogFragment dialog;

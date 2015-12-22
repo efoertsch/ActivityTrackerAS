@@ -1,23 +1,22 @@
 package com.fisincorporated.ExerciseTracker;
 
-import com.fisincorporated.database.TrackerDatabaseHelper;
-import com.fisincorporated.database.TrackerDatabase.LocationExercise;
-import com.fisincorporated.facebook.FacebookPostStatsActivity;
-import com.fisincorporated.facebook.FacebookPostStatsFragment;
-import com.fisincorporated.interfaces.IHandleSelectedAction;
-import com.fisincorporated.utility.Utility;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 
-public class ExerciseMasterActivity extends FragmentActivity implements IHandleSelectedAction {
+import com.fisincorporated.database.TrackerDatabase.LocationExercise;
+import com.fisincorporated.database.TrackerDatabaseHelper;
+import com.fisincorporated.facebook.FacebookPostStatsActivity;
+import com.fisincorporated.facebook.FacebookPostStatsFragment;
+import com.fisincorporated.interfaces.IHandleSelectedAction;
+
+public class ExerciseMasterActivity extends AppCompatActivity implements IHandleSelectedAction {
 	protected TrackerDatabaseHelper databaseHelper = null;
 	protected SQLiteDatabase database = null;
 	protected Cursor csrUtility;

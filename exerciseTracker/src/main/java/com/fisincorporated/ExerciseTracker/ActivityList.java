@@ -23,7 +23,7 @@ public class ActivityList extends ExerciseMasterFragmentActivity {
 		// backstack listener from
 		// http://stackoverflow.com/questions/6503189/fragments-onresume-from-back-stack
 		getSupportFragmentManager().addOnBackStackChangedListener(getListener());
-		return alf = new PriorActivitiesListFragment();
+		return alf = new ActivityHistoryListFragment();
 	}
 
 	// added for tablet

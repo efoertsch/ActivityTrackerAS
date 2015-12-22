@@ -1,8 +1,8 @@
 package com.fisincorporated.utility;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Paint.Align;
 
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
@@ -19,9 +19,9 @@ import org.achartengine.renderer.SimpleSeriesRenderer;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
 
-import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Paint.Align;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 // Took logic from AbstractDemoChart   , dropped interface 
 // I think all methods could be converted to public static 
@@ -45,7 +45,7 @@ public class Chart {
 			BarChart.Type barChartType) {
 		XYMultipleSeriesRenderer renderer = buildBarRenderer(colors);
 		setChartSettings(renderer, chartTitle, xAxisTitle, yAxisTitle, minX,
-				maxX, minY, maxY, Color.GRAY, Color.LTGRAY);
+				maxX, minY, (maxY * 1.1), Color.LTGRAY, Color.LTGRAY);
 		for (int i = 0; i < values.size(); ++i) {
 			renderer.getSeriesRendererAt(i).setDisplayChartValues(true);
 		}
@@ -135,10 +135,18 @@ public class Chart {
 
 	protected void setRenderer(XYMultipleSeriesRenderer renderer, int[] colors,
 			PointStyle[] styles) {
-		renderer.setAxisTitleTextSize(16);
-		renderer.setChartTitleTextSize(20);
-		renderer.setLabelsTextSize(15);
-		renderer.setLegendTextSize(15);
+//        renderer.setAxisTitleTextSize(16);
+//        renderer.setChartTitleTextSize(20);
+//        renderer.setLabelsTextSize(15);
+//        renderer.setLegendTextSize(15);
+//		renderer.setAxisTitleTextSize(32);
+//		renderer.setChartTitleTextSize(40);
+//		renderer.setLabelsTextSize(30);
+//		renderer.setLegendTextSize(30);
+        renderer.setAxisTitleTextSize(64);
+        renderer.setChartTitleTextSize(80);
+        renderer.setLabelsTextSize(60);
+        renderer.setLegendTextSize(60);
 		renderer.setPointSize(5f);
 		renderer.setMargins(new int[] { 20, 30, 15, 20 });
 		int length = colors.length;
@@ -219,8 +227,8 @@ public class Chart {
 	/**
 	 * Builds a category series using the provided values.
 	 * 
-	 * @param titles
-	 *           the series titles
+	 * @param title
+	 *           the series title
 	 * @param values
 	 *           the values
 	 * @return the category series
@@ -264,8 +272,11 @@ public class Chart {
 	 */
 	protected DefaultRenderer buildCategoryRenderer(int[] colors) {
 		DefaultRenderer renderer = new DefaultRenderer();
-		renderer.setLabelsTextSize(15);
-		renderer.setLegendTextSize(15);
+//		renderer.setLabelsTextSize(15);
+//		renderer.setLegendTextSize(15);
+        renderer.setLabelsTextSize(30);
+        renderer.setLegendTextSize(30);
+		renderer.setLabelsColor(Color.BLACK);
 		renderer.setMargins(new int[] { 20, 30, 15, 0 });
 		for (int color : colors) {
 			SimpleSeriesRenderer r = new SimpleSeriesRenderer();
@@ -309,10 +320,15 @@ public class Chart {
 	 */
 	protected XYMultipleSeriesRenderer buildBarRenderer(int[] colors) {
 		XYMultipleSeriesRenderer renderer = new XYMultipleSeriesRenderer();
-		renderer.setAxisTitleTextSize(16);
-		renderer.setChartTitleTextSize(20);
-		renderer.setLabelsTextSize(15);
-		renderer.setLegendTextSize(15);
+//		renderer.setAxisTitleTextSize(16);
+//		renderer.setChartTitleTextSize(20);
+//		renderer.setLabelsTextSize(15);
+//		renderer.setLegendTextSize(15);
+        renderer.setAxisTitleTextSize(32);
+        renderer.setChartTitleTextSize(40);
+        renderer.setLabelsTextSize(30);
+        renderer.setLegendTextSize(30);
+        renderer.setLabelsColor(Color.BLACK);
 		int length = colors.length;
 		for (int i = 0; i < length; i++) {
 			SimpleSeriesRenderer r = new SimpleSeriesRenderer();

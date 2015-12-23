@@ -17,11 +17,11 @@
     <dimen name="ts80sp">80sp</dimen>
     <dimen name="ts90sp">90sp</dimen>
     <dimen name="ts100sp">100sp</dimen>
-    <dimen name="default_gap">16dip</dimen>
+    <dimen name="default_gap">16dp</dimen>
     <!-- dp (density independent pixel) is used for everything else -->
-    <dimen name="dp2dp">2dp</dimen>
-    <dimen name="dp4dp">4dp</dimen>
-    <dimen name="dp6dp">6dp</dimen>
-    <dimen name="dp8dp">8dp</dimen>
+    <dimen name="dp2">2dp</dimen>
+    <dimen name="dp4">4dp</dimen>
+    <dimen name="dp6">6dp</dimen>
+    <dimen name="dp8">8dp</dimen>
 
 </resources>

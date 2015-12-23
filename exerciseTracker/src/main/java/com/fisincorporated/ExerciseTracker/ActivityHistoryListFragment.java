@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,25 +23,14 @@ import com.fisincorporated.utility.Utility;
 
 import java.text.DateFormat;
 
-public class PriorActivitiesListFragment extends ActivityListFragment  {
+public class ActivityHistoryListFragment extends ActivityListFragment  {
 
 	ButtonCursorAdapter buttonCursorAdapter = null;
   
-
-	// Called (after onCreate) when the Fragment is attached to its parent
-	// Activity.
-	// Create, or inflate the Fragment's UI, and return it.
-	// Wait till this point if fragment needs to interact with UI of parent
-	// Activity
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		// Get views from fragment layout
-		// Bind data to views (array adapters etc
-		// Create/Assign listeners
-		// Create services/timers
-		// If this Fragment has no UI then return null
-	
+
 		restoreSortFilter(getArguments());
 		View view = inflater.inflate(R.layout.prior_activity_list, container,
 				false);
@@ -81,7 +70,7 @@ public class PriorActivitiesListFragment extends ActivityListFragment  {
 		}
 
 		public void bindView(View view, Context context, Cursor cursor) {
-			Button infoButton = (Button) view
+			ImageButton infoButton = (ImageButton) view
 					.findViewById(R.id.prior_activity_row_btnshowMap);
 			long row_id = cursor.getLong(cursor.getColumnIndex(LocationExercise._ID));
 			infoButton.setTag((Long) row_id);

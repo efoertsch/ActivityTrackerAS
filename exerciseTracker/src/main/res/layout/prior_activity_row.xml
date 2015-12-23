@@ -5,9 +5,10 @@
 
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:descendantFocusability="blocksDescendants">
 
-    <Button
+    <ImageButton
         android:id="@+id/prior_activity_row_btnshowMap"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
@@ -15,6 +16,8 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:focusable="false"
+        android:src="@drawable/ic_device_gps_fixed"
+        android:background="@android:color/transparent"
         android:text="@string/map"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 

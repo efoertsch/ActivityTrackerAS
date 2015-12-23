@@ -43,8 +43,8 @@ public class ActivityDistanceChartFragment extends ExerciseMasterFragment {
 	private double[] totalDistanceValues;
 	private double maxDistanceInDay = 0;
 	private ArrayList<double[]> values = new ArrayList<double[]>();
-	private int[] colorList = new int[] { Color.CYAN, Color.GREEN,
-			Color.MAGENTA, Color.RED, Color.YELLOW, Color.BLUE };
+	private int[] colorList = new int[] {Color.RED,  Color.BLUE , Color.GREEN,
+			Color.MAGENTA, Color.YELLOW, Color.CYAN };
 	private int[] colors;
 	private Chart chart = new Chart();
 	private GraphicalView mChartView;

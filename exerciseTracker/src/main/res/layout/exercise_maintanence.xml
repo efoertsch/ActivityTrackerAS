@@ -2,15 +2,17 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/scrollView1"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:layout_margin="@dimen/default_gap">
 
         <TextView
-            android:id="@+id/lblAdditionaInfo"
+            android:id="@+id/lblAdditionalInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/exercise_maintenance"
@@ -19,13 +21,14 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/default_gap" >
+            android:paddingTop="@dimen/default_gap">
 
             <TextView
                 android:id="@+id/exercise_maintenance_lblexercise"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
                 android:text="@string/exercise"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -33,10 +36,11 @@
                 android:id="@+id/exercise_maintenance_actvExercise"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp8"
                 android:layout_toRightOf="@+id/exercise_maintenance_lblexercise"
                 android:ems="10"
-                android:hint="@string/add_new_exercise" >
+                android:hint="@string/add_new_exercise">
 
                 <requestFocus />
             </AutoCompleteTextView>
@@ -45,7 +49,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/ts10sp" >
+            android:layout_marginTop="@dimen/ts10sp">
 
             <TextView
                 android:id="@+id/exercise_maintenance_lblLog_GPS_points"
@@ -64,13 +68,14 @@
         </RelativeLayout>
 
         <TableLayout
+            android:id="@+id/table"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
 
             <TableRow
                 android:id="@+id/tableRow3"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/textView3"
@@ -83,11 +88,11 @@
                     android:id="@+id/exercise_maintenance_etLogInterval"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:width="@dimen/ts80sp"
                     android:ems="10"
                     android:inputType="number"
                     android:maxWidth="@dimen/ts20sp"
-                    android:text="@string/thirty"
-                    android:width="@dimen/ts80sp" />
+                    android:text="@string/thirty" />
 
                 <TextView
                     android:id="@+id/textView5"
@@ -100,7 +105,7 @@
             <TableRow
                 android:id="@+id/tableRow4"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/textView4"
@@ -113,11 +118,11 @@
                     android:id="@+id/exercise_maintenance_DefaultLogInterval"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:width="@dimen/ts80sp"
                     android:ems="10"
                     android:inputType="number"
                     android:maxWidth="@dimen/ts20sp"
-                    android:text="@string/thirty"
-                    android:width="@dimen/ts80sp" >
+                    android:text="@string/thirty">
 
                     <requestFocus />
                 </EditText>
@@ -131,34 +136,37 @@
             </TableRow>
         </TableLayout>
 
+        <TextView
+            android:id="@+id/exercise_maintenance_lblMinDistToTravel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/table"
+            android:text="@string/minimum_distance_to_travel_to_log_gps_points"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
         <RelativeLayout
             android:id="@+id/rlMinDistToTravel"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-
-            <TextView
-                android:id="@+id/exercise_maintenance_lblMinDistToTravel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/minimum_distance_to_travel_to_log_gps_points"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/exercise_maintenance_lblMinDistToTravel">
 
             <EditText
                 android:id="@+id/exercise_maintenance_etMinDistToTravel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/exercise_maintenance_lblMinDistToTravel"
+                android:width="@dimen/ts50sp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
                 android:ems="10"
                 android:inputType="number"
                 android:maxWidth="@dimen/ts20sp"
-                android:text="@string/ten"
-                android:width="@dimen/ts50sp" />
+                android:text="@string/ten" />
 
             <TextView
                 android:id="@+id/exercise_maintenance_tvUnits"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/exercise_maintenance_lblMinDistToTravel"
+                android:layout_centerVertical="true"
                 android:layout_toRightOf="@+id/exercise_maintenance_etMinDistToTravel"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
         </RelativeLayout>
@@ -166,7 +174,7 @@
         <RelativeLayout
             android:id="@+id/exercise_maintenance_rlElevationInCalcs"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/exercise_maintenance_lblElevationInCalcs"
@@ -185,15 +193,15 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
 
             <Button
                 android:id="@+id/btnSave"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:paddingLeft="@dimen/dp8dp"
-                android:paddingRight="@dimen/dp8dp"
+                android:paddingLeft="@dimen/dp8"
+                android:paddingRight="@dimen/dp8"
                 android:text="@string/save" />
 
             <Button
@@ -201,8 +209,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:paddingLeft="@dimen/dp8dp"
-                android:paddingRight="@dimen/dp8dp"
+                android:paddingLeft="@dimen/dp8"
+                android:paddingRight="@dimen/dp8"
                 android:text="@string/cancel" />
 
             <Button
@@ -210,8 +218,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:paddingLeft="@dimen/dp8dp"
-                android:paddingRight="@dimen/dp8dp"
+                android:paddingLeft="@dimen/dp8"
+                android:paddingRight="@dimen/dp8"
                 android:text="@string/delete" />
         </RelativeLayout>
     </LinearLayout>

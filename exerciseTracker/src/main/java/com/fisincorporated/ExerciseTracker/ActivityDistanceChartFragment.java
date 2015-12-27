@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fisincorporated.database.TrackerDatabase.Exercise;
@@ -79,6 +80,8 @@ public class ActivityDistanceChartFragment extends ExerciseMasterFragment {
 
 	private void getReferencedViews(View view) {
 		chartLayout = (LinearLayout) view.findViewById(R.id.chart);
+		((TextView) view.findViewById(R.id.chart_title)).setVisibility(View.GONE);
+
 	}
 
 	public void onResume() {

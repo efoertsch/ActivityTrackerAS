@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fisincorporated.ExerciseTracker"
     android:installLocation="auto"
-    android:versionCode="13"
-    android:versionName="1.5.7" >
+    android:versionCode="14"
+    android:versionName="1.5.8" >
 
     <uses-sdk
         android:minSdkVersion="15"
@@ -91,7 +91,7 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="@string/GoogleMapsKeyTest" />
+            android:value="@string/GoogleMapsKeyProd" />
     </application>
 
 </manifest>

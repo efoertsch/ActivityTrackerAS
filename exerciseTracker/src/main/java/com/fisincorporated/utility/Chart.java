@@ -45,7 +45,7 @@ public class Chart {
 			BarChart.Type barChartType) {
 		XYMultipleSeriesRenderer renderer = buildBarRenderer(colors);
 		setChartSettings(renderer, chartTitle, xAxisTitle, yAxisTitle, minX,
-				maxX, minY, (maxY * 1.1), Color.LTGRAY, Color.LTGRAY);
+				maxX, minY, (maxY * 1.1), Color.BLACK, Color.BLACK);
 		for (int i = 0; i < values.size(); ++i) {
 			renderer.getSeriesRendererAt(i).setDisplayChartValues(true);
 		}
@@ -79,6 +79,11 @@ public class Chart {
 		for (int i = 0; i < xLabels.length; i++) {
 			renderer.addXTextLabel(i + 1, xLabels[i]);
 		}
+
+		// avoid black border
+		//http://www.survivingwithandroid.com/2014/06/android-chart-tutorial-achartengine.html
+		renderer.setMarginsColor(Color.argb(0x00, 0xff, 0x00, 0x00));
+
 
 		return ChartFactory.getBarChartView(context,
 				buildBarDataset(valueTitles, values), renderer, Type.DEFAULT);
@@ -194,6 +199,7 @@ public class Chart {
 		renderer.setYAxisMax(yMax);
 		renderer.setAxesColor(axesColor);
 		renderer.setLabelsColor(labelsColor);
+        renderer.setGridColor(Color.BLACK);
 	}
 
 	/**

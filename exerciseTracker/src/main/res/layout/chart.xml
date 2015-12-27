@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
       	android:maxLines="2"
         android:textAppearance="?android:attr/textAppearanceMedium" />
-	
+
     <LinearLayout
         android:id="@+id/chart"
         android:layout_width="match_parent"

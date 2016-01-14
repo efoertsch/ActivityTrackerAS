@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 
 import com.fisincorporated.database.TrackerDatabase.LocationExercise;
@@ -27,9 +28,12 @@ public class ExerciseMasterActivity extends AppCompatActivity implements IHandle
 	protected static String milesKm;
 	protected static String mphKph;
 
+	protected ActionBar actionBar;
+
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		actionBar = getSupportActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
 	}
 
 	public void getDatabaseSetup() {

@@ -35,7 +35,7 @@
         android:logo="@drawable/icon"
         android:label="@string/app_name" >
         <activity
-            android:name="com.fisincorporated.ExerciseTracker.FunctionListActivity"
+            android:name=".FunctionListActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -43,18 +43,150 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.fisincorporated.ExerciseTracker.StartExercise" />
-        <activity android:name="ActivityList" />
-        <activity android:name="ActivityPager" />
-        <activity android:name="ActivityLogger" />
-        <activity android:name="ActivityMap" />
-        <activity android:name="ActivityChart" />
-        <activity android:name="ExerciseList" />
-        <activity android:name="ExercisePager" />
-        <activity android:name="ExerciseMaintenance" />
-        <activity android:name="ProgramOptions" />
-        <activity android:name="AboutActivityTracker" />
-        <activity android:name="BackupRestore" />
+        <activity android:name=".StartExercise"
+            android:parentActivityName=".FunctionListActivity"
+            android:uiOptions="splitActionBarWhenNarrow">
+
+        <!-- Parent activity meta-data to support API level 7+ -->
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".FunctionListActivity" />
+        <meta-data
+            android:name="android.support.UI_OPTIONS"
+            android:value="splitActionBarWhenNarrow"/>
+        </activity>
+        <activity android:name="ActivityList"
+            android:parentActivityName=".FunctionListActivity"
+            android:uiOptions="splitActionBarWhenNarrow">
+
+            <!-- Parent activity meta-data to support API level 7+ -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FunctionListActivity" />
+            <meta-data
+                android:name="android.support.UI_OPTIONS"
+                android:value="splitActionBarWhenNarrow"/>
+        </activity>
+        <activity android:name="ActivityPager"
+            android:parentActivityName=".FunctionListActivity"
+            android:uiOptions="splitActionBarWhenNarrow">
+
+            <!-- Parent activity meta-data to support API level 7+ -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FunctionListActivity" />
+            <meta-data
+                android:name="android.support.UI_OPTIONS"
+                android:value="splitActionBarWhenNarrow"/>
+        </activity>
+        <activity android:name="ActivityLogger"
+            android:parentActivityName=".FunctionListActivity"
+            android:uiOptions="splitActionBarWhenNarrow">
+
+            <!-- Parent activity meta-data to support API level 7+ -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FunctionListActivity" />
+            <meta-data
+                android:name="android.support.UI_OPTIONS"
+                android:value="splitActionBarWhenNarrow"/>
+        </activity>
+        <activity android:name="ActivityMap"
+            android:parentActivityName=".FunctionListActivity"
+            android:uiOptions="splitActionBarWhenNarrow">
+
+            <!-- Parent activity meta-data to support API level 7+ -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FunctionListActivity" />
+            <meta-data
+                android:name="android.support.UI_OPTIONS"
+                android:value="splitActionBarWhenNarrow"/>
+        </activity>
+        <activity android:name="ActivityChart"
+            android:parentActivityName=".FunctionListActivity"
+            android:uiOptions="splitActionBarWhenNarrow">
+
+            <!-- Parent activity meta-data to support API level 7+ -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FunctionListActivity" />
+            <meta-data
+                android:name="android.support.UI_OPTIONS"
+                android:value="splitActionBarWhenNarrow"/>
+        </activity>
+        <activity android:name="ExerciseList"
+            android:parentActivityName=".FunctionListActivity"
+            android:uiOptions="splitActionBarWhenNarrow">
+
+            <!-- Parent activity meta-data to support API level 7+ -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FunctionListActivity" />
+            <meta-data
+                android:name="android.support.UI_OPTIONS"
+                android:value="splitActionBarWhenNarrow"/>
+        </activity>
+        <activity android:name="ExercisePager"
+            android:parentActivityName=".FunctionListActivity"
+            android:uiOptions="splitActionBarWhenNarrow">
+
+            <!-- Parent activity meta-data to support API level 7+ -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FunctionListActivity" />
+            <meta-data
+                android:name="android.support.UI_OPTIONS"
+                android:value="splitActionBarWhenNarrow"/>
+        </activity>
+        <activity android:name="ExerciseMaintenance"
+            android:parentActivityName=".FunctionListActivity"
+            android:uiOptions="splitActionBarWhenNarrow">
+
+            <!-- Parent activity meta-data to support API level 7+ -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FunctionListActivity" />
+            <meta-data
+                android:name="android.support.UI_OPTIONS"
+                android:value="splitActionBarWhenNarrow"/>
+        </activity>
+        <activity android:name="ProgramOptions"
+            android:parentActivityName=".FunctionListActivity"
+            android:uiOptions="splitActionBarWhenNarrow">
+
+            <!-- Parent activity meta-data to support API level 7+ -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FunctionListActivity" />
+            <meta-data
+                android:name="android.support.UI_OPTIONS"
+                android:value="splitActionBarWhenNarrow"/>
+        </activity>
+        <activity android:name="AboutActivityTracker"
+            android:parentActivityName=".FunctionListActivity"
+            android:uiOptions="splitActionBarWhenNarrow">
+
+            <!-- Parent activity meta-data to support API level 7+ -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FunctionListActivity" />
+            <meta-data
+                android:name="android.support.UI_OPTIONS"
+                android:value="splitActionBarWhenNarrow"/>
+        </activity>
+        <activity android:name="BackupRestore"
+            android:parentActivityName=".FunctionListActivity"
+            android:uiOptions="splitActionBarWhenNarrow">
+
+            <!-- Parent activity meta-data to support API level 7+ -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FunctionListActivity" />
+            <meta-data
+                android:name="android.support.UI_OPTIONS"
+                android:value="splitActionBarWhenNarrow"/>
+        </activity>
         <activity android:name="com.fisincorporated.facebook.FacebookPostStatsActivity" />
         <activity android:name="com.facebook.FacebookActivity"
           android:configChanges=

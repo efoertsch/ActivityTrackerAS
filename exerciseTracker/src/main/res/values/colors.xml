@@ -13,6 +13,7 @@
     <!-- blue-gray '500' color -->
     <item name="colorAccent" type="color">#607D8B</item>
 
+    <item name="fab_background" type="color">#CFD8DC</item>
 
 
 

@@ -35,7 +35,8 @@
     <View
         style="@style/Divider"
         android:layout_marginBottom="@dimen/dp8"
-        android:layout_marginTop="@dimen/dp8" />
+        android:layout_marginTop="@dimen/dp8"
+        android:background="#fff"/>
 
 
     <TextView

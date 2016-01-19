@@ -1,14 +1,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:layout_margin="@dimen/default_gap">
+    android:layout_margin="@dimen/default_gap"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/activity_detail_header"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/default_gap">
+        android:layout_height="wrap_content">
 
         <!-- 1st row -->
 
@@ -35,7 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:visibility="gone" >
+        android:visibility="gone">
 
         <Button
             android:id="@+id/activity_stats_stop_restart"
@@ -49,7 +50,7 @@
 
         <!-- android:layout_toRightOf="@+id/activity_stats_stop_restart" -->
 
-        <Button
+        <!--<Button
             android:id="@+id/activity_stats_show_map"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -58,6 +59,7 @@
             android:paddingRight="@dimen/dp8"
             android:text="@string/map"
             android:visibility="visible" />
+            -->
 
         <!-- android:layout_toRightOf="@+id/activity_stats_show_map" -->
 
@@ -76,7 +78,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/buttonfooter"
-        android:layout_below="@+id/activity_detail_header" >
+        android:layout_below="@+id/activity_detail_header">
 
         <ListView
             android:id="@+id/activity_detail_list"
@@ -89,4 +91,19 @@
             android:scrollbars="vertical" />
     </RelativeLayout>
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabMap"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="16dp"
+        android:scaleType="center"
+        app:backgroundTint="@color/fab_background"
+        android:src="@drawable/ic_device_gps_fixed"
+        app:elevation="4dp"
+        android:visibility="gone"/>
+
 </RelativeLayout>
+
+

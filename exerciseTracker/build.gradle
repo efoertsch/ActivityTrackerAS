@@ -34,6 +34,7 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:4.7.0'
     compile 'com.google.android.gms:play-services:+'
     compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.android.support:design:23.1.1'
     compile files('libs/achartengine-1.1.0.jar')
 
     // Unit testing dependencies
@@ -45,7 +46,7 @@ dependencies {
     // following added from
     //http://stackoverflow.com/questions/32600204/warningconflict-with-dependency-com-android-supportsupport-annotations
     // explanation and resolution
-    androidTestCompile 'com.android.support:support-annotations:23.0.1'
+    androidTestCompile 'com.android.support:support-annotations:23.1.1'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.1'
 
 

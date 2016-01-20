@@ -48,6 +48,9 @@ public class GlobalValues {
 
 	// for Facebook posting
 	public static final String ACTIVITY_STATS = "activity_stats";
+
+	// For notifications
+	public static final int NOTIFICATION_LOGGER = 1;
 	 
 
 	

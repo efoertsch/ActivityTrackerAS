@@ -179,6 +179,9 @@ public class DeletePriorActivitiesFragment extends ActivityListFragment
 	}
 
 	private void deletePriorActivities() {
+		// May want to delete activity that is currently running
+		GPSLocationManager gpsLocationManager = GPSLocationManager.get(getActivity());
+		long currentLerId = gpsLocationManager.getCurrentLer();
 		if (leDAO == null) {
 			leDAO = new LocationExerciseDAO(databaseHelper);
 		}
@@ -188,6 +191,9 @@ public class DeletePriorActivitiesFragment extends ActivityListFragment
 		database.beginTransaction();
 		try {
 			for (Long key : deleteList.keySet()) {
+				if (key == currentLerId){
+					gpsLocationManager.stopTrackingLer();
+				}
 				gpslrDAO.deleteGPSLogbyLerRowId(key);
 				if (deleteDetailType == 1) {
 					leDAO.deleteLocationExercise(key);

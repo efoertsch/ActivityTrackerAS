@@ -42,18 +42,18 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
     //private Button btnShowMap = null;
     private Button btnCancel = null;
 
-    private String exrcsLocation;
-    private String exercise;
-    private String description;
+    private String mExrcsLocation;
+    private String mExercise;
+    private String mDescription;
 
-    private ArrayList<String[]> stats = new ArrayList<String[]>();
+    private ArrayList<String[]> mStats = new ArrayList<String[]>();
 
-    protected LocationExerciseRecord ler = null;
-    private LocationExerciseDAO leDAO = null;
-    private ExerciseDAO exerciseDAO = null;
+    protected LocationExerciseRecord mLer = null;
+    private LocationExerciseDAO mLeDAO = null;
+    private ExerciseDAO mExerciseDAO = null;
 
-    private GPSLocationManager gpsLocationManager = null;
-    private UpdateLerReceiver updateLerReceiver = new UpdateLerReceiver() {
+    private GPSLocationManager mGpsLocationManager = null;
+    private UpdateLerReceiver mUpdateLerReceiver = new UpdateLerReceiver() {
         @Override
         protected void onLerUpdate(LocationExerciseRecord ler) {
             if (isVisible())
@@ -75,10 +75,13 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         Bundle bundle = lookForArguments(savedInstanceState);
-        gpsLocationManager = GPSLocationManager.get(getActivity());
+        mGpsLocationManager = GPSLocationManager.get(getActivity());
+        // Created 2nd call for notification as passing in the get() method above would cause
+        // problem in LocationReceiver.onLocationReceived() with passes just context
+        mGpsLocationManager.setNotification(getActivity(), mExercise, mExrcsLocation);
         GPSLocationManager.setActivityDetails(bundle);
         findDisplayUnits();
-        gpsLocationManager.startNewLer(ler);
+        mGpsLocationManager.startNewLer(mLer);
     }
 
     private Bundle lookForArguments(Bundle savedInstanceState) {
@@ -91,15 +94,15 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
         } else if (savedInstanceState != null) {
             bundle = savedInstanceState;
         }
-        ler = (LocationExerciseRecord) bundle
+        mLer = (LocationExerciseRecord) bundle
                 .getParcelable(LocationExercise.LOCATION_EXERCISE_TABLE);
         // exerciseRowId = ler.get_id();
-        exercise = bundle.getString(Exercise.EXERCISE);
+        mExercise = bundle.getString(Exercise.EXERCISE);
         // locationRowid = ler.getLocationId();
-        exrcsLocation = bundle.getString(ExrcsLocation.LOCATION);
-        description = bundle.getString(LocationExercise.DESCRIPTION);
-        if (description == null)
-            description = "";
+        mExrcsLocation = bundle.getString(ExrcsLocation.LOCATION);
+        mDescription = bundle.getString(LocationExercise.DESCRIPTION);
+        if (mDescription == null)
+            mDescription = "";
         return bundle;
 
     }
@@ -116,26 +119,30 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (ler.get_id() != -1) {
+        if (mLer.get_id() != -1) {
             // may be coming back from showing map so make sure ler is most current
-            leDAO = new LocationExerciseDAO(databaseHelper);
-            ler = leDAO.loadLocationExerciseRecordById(ler.get_id());
-            displayActivityStats(ler);
+            getCurrentLer();
+            displayActivityStats(mLer);
         }
 
+    }
+
+    private void getCurrentLer() {
+        mLeDAO = new LocationExerciseDAO(databaseHelper);
+        mLer = mLeDAO.loadLocationExerciseRecordById(mLer.get_id());
     }
 
     private void getReferencedViews(View view) {
         tvExerciseLocation = (TextView) view
                 .findViewById(R.id.activity_detail_tvExerciseLocation);
-        tvExerciseLocation.setText(exercise + "@" + exrcsLocation + " "
-                + description);
+        tvExerciseLocation.setText(mExercise + "@" + mExrcsLocation + " "
+                + mDescription);
 
         View buttonView = (View) view.findViewById(R.id.buttonfooter);
         buttonView.setVisibility(View.VISIBLE);
-        // stats.add(new String[] {"xxxx", "yyyy"});
+        // mStats.add(new String[] {"xxxx", "yyyy"});
         statsArrayAdapter = new StatsArrayAdapter(getActivity(),
-                stats.toArray(new String[][]{}));
+                mStats.toArray(new String[][]{}));
         statsList = (ListView) view.findViewById(R.id.activity_detail_list);
         statsList.setAdapter(statsArrayAdapter);
 
@@ -146,15 +153,15 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
                 if (btnStopRestart.getText().equals(
                         getResources().getString(R.string.stop))) {
 
-                    // gpsLocationManager.stopLocationUpdates();
-                    gpsLocationManager.stopTrackingLer();
+                    // mGpsLocationManager.stopLocationUpdates();
+                    mGpsLocationManager.stopTrackingLer();
 
                     Toast.makeText(getActivity(), "Stopping GPS logging",
                             Toast.LENGTH_SHORT).show();
                     checkStopRestartButton();
                 } else {
-                    // gpsLocationManager.startLocationUpdates();
-                    gpsLocationManager.startTrackingLer(ler);
+                    // mGpsLocationManager.startLocationUpdates();
+                    mGpsLocationManager.startTrackingLer(mLer);
                     Toast.makeText(getActivity(), "Continuing GPS logging",
                             Toast.LENGTH_SHORT).show();
                     checkStopRestartButton();
@@ -191,10 +198,10 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
         Bundle args = new Bundle();
         switch (item.getItemId()) {
             case R.id.activity_detail_showMap:
-                if (ler.getStartLatitude() != null) {
-                    args.putLong(LocationExercise._ID, ler.get_id());
-                    args.putString(GlobalValues.TITLE, exercise + "@" + exrcsLocation);
-                    args.putString(LocationExercise.DESCRIPTION, description);
+                if (mLer.getStartLatitude() != null) {
+                    args.putLong(LocationExercise._ID, mLer.get_id());
+                    args.putString(GlobalValues.TITLE, mExercise + "@" + mExrcsLocation);
+                    args.putString(LocationExercise.DESCRIPTION, mDescription);
                     args.putInt(GlobalValues.DISPLAY_TARGET, GlobalValues.DISPLAY_MAP);
                     Toast.makeText(getActivity().getBaseContext(),
                             getActivity().getResources().getString(R.string.displaying_the_map_may_take_a_moment), Toast.LENGTH_SHORT)
@@ -209,9 +216,9 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
 
                 return true;
             case R.id.activity_detail_showChart:
-                args.putLong(LocationExercise._ID, ler.get_id());
-                args.putString(GlobalValues.TITLE, exercise + "@" + exrcsLocation);
-                args.putString(LocationExercise.DESCRIPTION, description);
+                args.putLong(LocationExercise._ID, mLer.get_id());
+                args.putString(GlobalValues.TITLE, mExercise + "@" + mExrcsLocation);
+                args.putString(LocationExercise.DESCRIPTION, mDescription);
                 args.putInt(GlobalValues.DISPLAY_TARGET, GlobalValues.DISPLAY_CHART);
                 args.putInt(GlobalValues.BAR_CHART_TYPE, GlobalValues.DISTANCE_VS_ELEVATION);
                 callBacks.onSelectedAction(args);
@@ -228,15 +235,15 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
             int buttonPressed = intent.getIntExtra(
                     ActivityDialogFragment.DIALOG_RESPONSE, -1);
             if (buttonPressed == DialogInterface.BUTTON_POSITIVE) {
-                gpsLocationManager.stopTrackingLer();
+                mGpsLocationManager.stopTrackingLer();
                 GPSLogDAO gpslogDAO = new GPSLogDAO(databaseHelper);
                 database.beginTransaction();
                 try {
-                    gpslogDAO.deleteGPSLogbyLerRowId(ler.get_id());
-                    leDAO = new LocationExerciseDAO(databaseHelper);
-                    leDAO.deleteLocationExercise(ler);
-                    exerciseDAO = new ExerciseDAO(databaseHelper);
-                    exerciseDAO.updateTimesUsed(ler.get_id(), -1);
+                    gpslogDAO.deleteGPSLogbyLerRowId(mLer.get_id());
+                    mLeDAO = new LocationExerciseDAO(databaseHelper);
+                    mLeDAO.deleteLocationExercise(mLer);
+                    mExerciseDAO = new ExerciseDAO(databaseHelper);
+                    mExerciseDAO.updateTimesUsed(mLer.get_id(), -1);
                     database.setTransactionSuccessful();
                 } finally {
                     database.endTransaction();
@@ -251,12 +258,11 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
     public void displayActivityStats(LocationExerciseRecord ler) {
         // UI updates must be on UI thread of course
         // update the instance copy
-        this.ler = ler;
+        mLer = ler;
         if (ler != null && ler.getStartAltitude() != null) {
             statsArrayAdapter.clear();
-            Utility.formatActivityStats(getActivity(), stats, ler, imperialMetric,
-                    imperial, feetMeters, milesKm, mphKph);
-            statsArrayAdapter.resetValues(stats.toArray(new String[][]{}));
+            formatLerStarts(ler);
+            statsArrayAdapter.resetValues(mStats.toArray(new String[][]{}));
             statsList.postInvalidate();
             statsList.refreshDrawableState();
         } else {
@@ -269,10 +275,15 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
 
     }
 
+    private void formatLerStarts(LocationExerciseRecord ler) {
+        Utility.formatActivityStats(getActivity(), mStats, ler, imperialMetric,
+                imperial, feetMeters, milesKm, mphKph);
+    }
+
     private void checkStopRestartButton() {
-        if (gpsLocationManager == null)
+        if (mGpsLocationManager == null)
             return;
-        boolean started = gpsLocationManager.isTrackingLer();
+        boolean started = mGpsLocationManager.isTrackingLer();
         if (started) {
             btnStopRestart.setText(getResources()
                     .getString(R.string.stop));
@@ -285,13 +296,16 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
 
     public void onStart() {
         super.onStart();
-        getActivity().registerReceiver(updateLerReceiver,
+        getActivity().registerReceiver(mUpdateLerReceiver,
                 new IntentFilter(GPSLocationManager.LER_UPDATE));
     }
 
     public void onStop() {
-        getActivity().unregisterReceiver(updateLerReceiver);
+        getActivity().unregisterReceiver(mUpdateLerReceiver);
         super.onStop();
     }
+
+
+
 
 }

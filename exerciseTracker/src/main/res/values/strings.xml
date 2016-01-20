@@ -51,8 +51,8 @@
     <string name="default_exercise_can_not_be_deleted">A default exercise can not be deleted</string>
     <string name="default_log_interval">Default Log Interval</string>
     <string name="delete">Delete</string>
-    <string name="delete_complete_activity">Delete complete activity?</string>
-    <string name="delete_only_gps_detail">Delete only GPS detail?</string>
+    <string name="delete_complete_activity">Activities?</string>
+    <string name="delete_only_gps_detail">GPS detail?</string>
     <string name="delete_detail">Delete Detail</string>
     <string name="delete_prior_activity">Delete this activity</string>
     <string name="delete_trace">Delete only GPS trace</string>

@@ -24,4 +24,7 @@
     <dimen name="dp6">6dp</dimen>
     <dimen name="dp8">8dp</dimen>
 
+    <!-- for .AppBarLayout height -->
+    <dimen name="detail_backdrop_height">256dp</dimen>
+
 </resources>

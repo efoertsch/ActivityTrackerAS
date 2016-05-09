@@ -9,7 +9,8 @@ public class FunctionListActivity extends ExerciseMasterFragmentActivity {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		actionBar.setDisplayHomeAsUpEnabled(false);
+		mActionBar.setDisplayHomeAsUpEnabled(false);
+		mAppBarLayout.setExpanded(true);
 	}
 
 	@Override

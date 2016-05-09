@@ -208,4 +208,7 @@
     <!-- Titles for bar charts -->
     <string name="daily_chart">Daily Activity Chart</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
 import com.fisincorporated.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.database.TrackerDatabaseHelper;
@@ -17,7 +18,7 @@ import com.fisincorporated.facebook.FacebookPostStatsActivity;
 import com.fisincorporated.facebook.FacebookPostStatsFragment;
 import com.fisincorporated.interfaces.IHandleSelectedAction;
 
-public class ExerciseMasterActivity extends AppCompatActivity implements IHandleSelectedAction {
+abstract public class ExerciseMasterActivity extends AppCompatActivity implements IHandleSelectedAction {
 	protected TrackerDatabaseHelper databaseHelper = null;
 	protected SQLiteDatabase database = null;
 	protected Cursor csrUtility;
@@ -28,12 +29,12 @@ public class ExerciseMasterActivity extends AppCompatActivity implements IHandle
 	protected static String milesKm;
 	protected static String mphKph;
 
-	protected ActionBar actionBar;
+	protected ActionBar mActionBar;
+	protected Toolbar mToolbar;
+
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		actionBar = getSupportActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
 	}
 
 	public void getDatabaseSetup() {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.MyTheme" parent="Theme.AppCompat.Light">
+    <style name="Theme.MyTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Set AppCompat’s actionBarStyle -->
         <item name="android:actionBarStyle">@style/ActionBar</item>
         <!-- Set AppCompat’s color theming attrs -->

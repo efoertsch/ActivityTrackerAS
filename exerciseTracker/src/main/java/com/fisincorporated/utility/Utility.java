@@ -14,9 +14,9 @@ import android.content.Context;
 import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
 
-import com.fisincorporated.ExerciseTracker.GlobalValues;
-import com.fisincorporated.ExerciseTracker.R;
-import com.fisincorporated.database.LocationExerciseRecord;
+import com.fisincorporated.exercisetracker.GlobalValues;
+import com.fisincorporated.exercisetracker.R;
+import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
 
 public class Utility {
 	

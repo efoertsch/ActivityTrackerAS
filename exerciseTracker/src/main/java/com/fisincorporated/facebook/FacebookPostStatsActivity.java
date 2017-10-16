@@ -2,9 +2,9 @@ package com.fisincorporated.facebook;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
-import com.fisincorporated.ExerciseTracker.ExerciseMasterFragmentActivity;
-import com.fisincorporated.ExerciseTracker.GlobalValues;
-import com.fisincorporated.database.TrackerDatabase.LocationExercise;
+import com.fisincorporated.exercisetracker.ExerciseMasterFragmentActivity;
+import com.fisincorporated.exercisetracker.GlobalValues;
+import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 
 import android.content.Intent;
 import android.os.Bundle;

@@ -10,9 +10,9 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.facebook.login.widget.ProfilePictureView;
-import com.fisincorporated.ExerciseTracker.GlobalValues;
-import com.fisincorporated.ExerciseTracker.R;
-import com.fisincorporated.database.TrackerDatabase.LocationExercise;
+import com.fisincorporated.exercisetracker.GlobalValues;
+import com.fisincorporated.exercisetracker.R;
+import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 
 import android.content.Intent;
 import android.os.Bundle;

@@ -7,12 +7,13 @@ android {
 
     defaultConfig {
         applicationId "com.fisincorporated.ExerciseTracker"
-        minSdkVersion 15
+        minSdkVersion 19
         targetSdkVersion 25
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
+        debug {}
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-project.txt'
@@ -38,6 +39,8 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:design:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'
+    compile 'com.android.support:preference-v14:25.3.1'
+
 
     // For user selected startup image
     compile 'com.github.bumptech.glide:glide:4.2.0'

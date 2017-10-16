@@ -1,15 +1,14 @@
 package com.fisincorporated.exercisetracker.ui.preferences;
 
-import android.os.Bundle;
-import android.support.v4.app.SupportActivity;
+import android.support.v4.app.Fragment;
 
-public class SettingsActivity extends SupportActivity {
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+import com.fisincorporated.exercisetracker.ExerciseMasterFragmentActivity;
 
-        // Display the fragment as the main content.
-        getFragmentManager().beginTransaction()
-                .replace(android.R.id.content, new SettingsFragment())
-                .commit();
+public class SettingsActivity extends ExerciseMasterFragmentActivity {
+
+    @Override
+    protected Fragment createFragment() {
+        return new SettingsFragment();
     }
+
 }

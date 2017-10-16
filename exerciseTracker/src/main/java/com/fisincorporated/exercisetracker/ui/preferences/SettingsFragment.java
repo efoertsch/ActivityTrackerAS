@@ -1,47 +1,32 @@
 package com.fisincorporated.exercisetracker.ui.preferences;
 
 import android.Manifest;
-import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceFragmentCompat;
 
-import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import com.fisincorporated.exercisetracker.utility.PhotoUtils;
 
 import static android.app.Activity.RESULT_OK;
 
 
 
-public class SettingsFragment extends PreferenceFragment {
+public class SettingsFragment extends PreferenceFragmentCompat {
 
     private static final String TAG = SettingsFragment.class.getSimpleName();
     private static final int PICK_PHOTO = 54321;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         // Load the preferences from an XML resource
-        addPreferencesFromResource(R.xml.preferences);
+        setPreferencesFromResource(R.xml.preferences, rootKey);
         setupPreferences();
-
     }
 
     // cribbed some code from http://codetheory.in/android-pick-select-image-from-gallery-with-intents/
@@ -93,17 +78,8 @@ public class SettingsFragment extends PreferenceFragment {
         }
     }
 
-    private void selectPhotoFromGallery() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        // Always show the chooser (if there are multiple options available)
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_PHOTO);
-    }
-
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case PICK_PHOTO: {
                 // If request is cancelled, the result arrays are empty.
@@ -122,6 +98,14 @@ public class SettingsFragment extends PreferenceFragment {
         }
     }
 
+    private void selectPhotoFromGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        // Always show the chooser (if there are multiple options available)
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_PHOTO);
+    }
+
     public void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
         if (resultCode == RESULT_OK) {
@@ -129,44 +113,11 @@ public class SettingsFragment extends PreferenceFragment {
                     && resultCode == RESULT_OK
                     && imageReturnedIntent != null
                     && imageReturnedIntent.getData() != null) {
-                saveToInternalStorage(imageReturnedIntent.getData());
-
+                PhotoUtils.saveToInternalStorage(getActivity(), imageReturnedIntent.getData());
             }
         }
     }
 
-    private void saveToInternalStorage(Uri imageUri) {
-        InputStream imageStream = null;
-        FileOutputStream fos = null;
-        try {
-            imageStream = getActivity().getContentResolver().openInputStream(imageUri);
-            Bitmap bitmapImage = BitmapFactory.decodeStream(imageStream);
-            ContextWrapper cw = new ContextWrapper(getActivity());
-            // path to /data/data/yourapp/app_data/imageDir
-            File directory = cw.getDir(GlobalValues.IMAGE_DIR, Context.MODE_PRIVATE);
-            // Create imageDir
-            File mypath = new File(directory, GlobalValues.IMAGE_FILE_NAME);
-            fos = new FileOutputStream(mypath);
-            // Use the compress method on the BitMap object to write image to the OutputStream
-            Log.d(TAG, bitmapImage.compress(Bitmap.CompressFormat.JPEG, 50, fos) ? " Successful save of image" : " Unsuccessful save of image");
-        } catch (FileNotFoundException e) {
-            Log.d(TAG, e.toString());
 
-        } finally {
-            if (imageStream != null) {
-                try {
-                    imageStream.close();
-                } catch (IOException e) {
-                }
-            }
-            if (fos != null) {
-                try {
-                    fos.close();
-                } catch (IOException e) {
-                }
-            }
-
-        }
-    }
 
 }

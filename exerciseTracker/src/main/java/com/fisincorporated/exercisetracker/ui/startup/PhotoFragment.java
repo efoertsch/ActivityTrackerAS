@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
+import com.fisincorporated.exercisetracker.utility.PhotoUtils;
 
 import java.io.File;
 
@@ -23,17 +24,37 @@ public class PhotoFragment extends Fragment {
 
     View view;
 
+    ImageView imageView;
+
+    String photoPath;
+
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.startup_photo, container, false);
+        imageView = (ImageView) view.findViewById(R.id.startup_photo_view);
+        photoPath = PhotoUtils.getStartupPhotoPath(getActivity());
+        loadUserPhoto();
         return view;
     }
 
     @Override
     public void onResume() {
+        String currentPhotoPath;
         super.onResume();
-        getPhotoOrDefaultImage();
+        currentPhotoPath = PhotoUtils.getStartupPhotoPath(getActivity());
+        if (currentPhotoPath != null  &&
+                (photoPath == null ||  (photoPath != null && !currentPhotoPath.equals(photoPath)))) {
+            photoPath = currentPhotoPath;
+            loadUserPhoto();
+        }
+       // getPhotoOrDefaultImage();
+    }
+
+    private void loadUserPhoto() {
+        if (!PhotoUtils.loadPhotoToImageView(imageView, photoPath)) {
+            imageView.setImageResource(R.drawable.zion_canyon);
+        }
     }
 
     private void getPhotoOrDefaultImage() {

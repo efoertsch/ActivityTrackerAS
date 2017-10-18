@@ -143,14 +143,6 @@ public class ExerciseMaintenanceFragment extends ExerciseMasterFragment {
 			}
 		});
 
-		// Handle Cancel Button
-		btnCancel = (Button) view.findViewById(R.id.btnCancel);
-		btnCancel.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				goToExeciseList();
-			}
-		});
-
 		// Handle Delete Button
 		// See if any logging done using this exercise. If so you can't delete it
 		btnDelete = (Button) view.findViewById(R.id.btnDelete);
@@ -174,8 +166,6 @@ public class ExerciseMaintenanceFragment extends ExerciseMasterFragment {
 			exerciseRowId = origExerciseId;
 			actvExercise.setEnabled(false);
 			etDefaultLogInterval.setEnabled(false);
-			//chkbxLogDetail.requestFocus();
-			// etLogInterval.selectAll();
 			etLogInterval.requestFocus();
 			if (isDefaultExercise(exerciseRecord.getExercise())) {
 				// Toast.makeText(getActivity(),
@@ -359,8 +349,6 @@ public class ExerciseMaintenanceFragment extends ExerciseMasterFragment {
 
 	}
 
-
-
 	private void goToExeciseList() {
 		// This may not be best way to do this.
 		// if fragment displayed via ExerciseListActivity on table, prior state will be on
@@ -427,6 +415,8 @@ public class ExerciseMaintenanceFragment extends ExerciseMasterFragment {
 				.setChecked(exerciseRecord.getElevationInDistCalcs() == 1 ? true
 						: false);
 		tvUnits.setText(feetMeters);
+		etLogInterval.requestFocus();
+		etLogInterval.setCursorVisible(true);
 	}
 
 	public void onPause() {

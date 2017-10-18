@@ -15,6 +15,7 @@
 
     <item name="fab_background" type="color">#CFD8DC</item>
 
+    <item name="toolbarTextColor" type="color">#ffffffff</item>
 
 
 </resources> 

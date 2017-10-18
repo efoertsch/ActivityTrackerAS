@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker;
+package com.fisincorporated.exercisetracker.ui.backuprestore;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,10 +18,15 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fisincorporated.exercisetracker.ActivityDialogFragment;
+import com.fisincorporated.exercisetracker.GlobalValues;
+import com.fisincorporated.exercisetracker.R;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
+
 
 // code from http://stackoverflow.com/questions/6540906/android-simple-export-and-import-of-sqlite-com.fisincorporated.database
 // with slight modifications
-public class BackupRestoreFragment extends ExerciseMasterFragment  {
+public class BackupRestoreFragment extends ExerciseMasterFragment {
 	private Button btnBackup;
 	private Button btnRestore;
 	private String externalDir = "";

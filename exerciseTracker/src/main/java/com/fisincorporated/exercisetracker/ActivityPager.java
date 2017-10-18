@@ -1,9 +1,5 @@
 package com.fisincorporated.exercisetracker;
 
-import java.util.ArrayList;
-
-import com.fisincorporated.exercisetracker.database.SQLiteCursorLoader;
-
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -13,6 +9,11 @@ import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
+
+import com.fisincorporated.exercisetracker.database.SQLiteCursorLoader;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterActivity;
+
+import java.util.ArrayList;
 
 public class ActivityPager extends ExerciseMasterActivity implements
 		LoaderCallbacks<Cursor>   {

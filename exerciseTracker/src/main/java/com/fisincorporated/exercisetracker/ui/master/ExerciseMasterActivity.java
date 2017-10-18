@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker;
+package com.fisincorporated.exercisetracker.ui.master;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -12,6 +12,14 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.fisincorporated.exercisetracker.ActivityChart;
+import com.fisincorporated.exercisetracker.ActivityDetailFragment;
+import com.fisincorporated.exercisetracker.ActivityMap;
+import com.fisincorporated.exercisetracker.ActivityMapFragment;
+import com.fisincorporated.exercisetracker.ActivityPager;
+import com.fisincorporated.exercisetracker.ElevationVsDistanceFragment;
+import com.fisincorporated.exercisetracker.GlobalValues;
+import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 import com.fisincorporated.facebook.FacebookPostStatsActivity;
@@ -29,8 +37,8 @@ abstract public class ExerciseMasterActivity extends AppCompatActivity implement
 	protected static String milesKm;
 	protected static String mphKph;
 
-	protected ActionBar mActionBar;
-	protected Toolbar mToolbar;
+	protected ActionBar actionBar;
+	protected Toolbar toolbar;
 
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -75,9 +83,7 @@ abstract public class ExerciseMasterActivity extends AppCompatActivity implement
 			feetMeters = "m";
 			milesKm = "km";
 			mphKph = "kph";
-
 		}
-
 	}
 
 	public void onDestroy() {

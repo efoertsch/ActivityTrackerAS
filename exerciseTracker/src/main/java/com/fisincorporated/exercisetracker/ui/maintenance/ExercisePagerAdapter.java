@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker;
+package com.fisincorporated.exercisetracker.ui.maintenance;
 
 import android.database.Cursor;
 import android.os.Bundle;
@@ -44,6 +44,10 @@ public class ExercisePagerAdapter<F extends Fragment> extends
 		}
 
 		return frag;
+	}
+
+	public CharSequence getPageTitle (int position){
+		return "test";
 	}
 
 	@Override

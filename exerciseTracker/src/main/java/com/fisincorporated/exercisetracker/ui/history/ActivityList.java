@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker;
+package com.fisincorporated.exercisetracker.ui.history;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,14 +10,23 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.fisincorporated.exercisetracker.ActivityChart;
+import com.fisincorporated.exercisetracker.ActivityDistanceChartFragment;
+import com.fisincorporated.exercisetracker.ActivityListFragment;
+import com.fisincorporated.exercisetracker.DeletePriorActivitiesFragment;
+import com.fisincorporated.exercisetracker.GlobalValues;
+import com.fisincorporated.exercisetracker.R;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
+
 public class ActivityList extends ExerciseMasterFragmentActivity {
 	ActivityListFragment alf = null;
 	Menu myMenu = null;
 
-	public ActivityList() {
-		super();
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setActivityTitle(R.string.activity_history);
 	}
-
 	@Override
 	protected Fragment createFragment() {
 		// backstack listener from

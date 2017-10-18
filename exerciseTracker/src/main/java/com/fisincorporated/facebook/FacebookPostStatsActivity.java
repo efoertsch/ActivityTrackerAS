@@ -2,7 +2,7 @@ package com.fisincorporated.facebook;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
-import com.fisincorporated.exercisetracker.ExerciseMasterFragmentActivity;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 

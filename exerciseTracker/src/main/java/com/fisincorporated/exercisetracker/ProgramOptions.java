@@ -1,11 +1,16 @@
 package com.fisincorporated.exercisetracker;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
+
+import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
 
 public class ProgramOptions extends ExerciseMasterFragmentActivity {
 
-	public ProgramOptions() {
-		// TODO Auto-generated constructor stub
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setActivityTitle(R.string.activity_options);
 	}
 
 	@Override

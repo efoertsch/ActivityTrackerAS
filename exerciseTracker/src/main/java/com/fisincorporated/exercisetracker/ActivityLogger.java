@@ -3,6 +3,7 @@ package com.fisincorporated.exercisetracker;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.ExrcsLocation;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
 
 import android.content.Intent;
 import android.os.Bundle;

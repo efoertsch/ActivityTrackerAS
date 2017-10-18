@@ -1,7 +1,8 @@
-package com.fisincorporated.exercisetracker;
+package com.fisincorporated.exercisetracker.ui.master;
 
 
 
+import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 import com.fisincorporated.interfaces.IHandleSelectedAction;
 

@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker;
+package com.fisincorporated.exercisetracker.ui.history;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -14,6 +14,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fisincorporated.exercisetracker.ActivityListFragment;
+import com.fisincorporated.exercisetracker.GlobalValues;
+import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.LocationExerciseDAO;
 import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
@@ -23,7 +26,7 @@ import com.fisincorporated.utility.Utility;
 
 import java.text.DateFormat;
 
-public class ActivityHistoryListFragment extends ActivityListFragment  {
+public class ActivityHistoryListFragment extends ActivityListFragment {
 
 	ButtonCursorAdapter buttonCursorAdapter = null;
   
@@ -46,7 +49,7 @@ public class ActivityHistoryListFragment extends ActivityListFragment  {
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		Bundle args = new Bundle();
 		args.putLong(LocationExercise._ID, id);
-		args.putString(GlobalValues.TITLE, 
+		args.putString(GlobalValues.TITLE,
  				((TextView) v.findViewById(R.id.prior_activity_row_activity)).getText()
  				+ "@" + ((TextView) v.findViewById(R.id.prior_activity_row_location)).getText()
  				+ " " + 	((TextView) v.findViewById(R.id.prior_activity_row_date)).getText()); 

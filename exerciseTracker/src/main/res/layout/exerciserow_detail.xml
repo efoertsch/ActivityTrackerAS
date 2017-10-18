@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:paddingRight="@dimen/default_gap"
+        android:paddingRight="@dimen/margin_double"
         android:text="@string/exercise"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -23,7 +23,7 @@
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/exerciserow_lblExercise"
         android:ems="10"
-        android:paddingRight="@dimen/default_gap"
+        android:paddingRight="@dimen/margin_double"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <RelativeLayout
@@ -39,7 +39,7 @@
             android:layout_alignParentLeft="true"
             android:layout_centerInParent="true"
             android:layout_centerVertical="true"
-            android:paddingRight="@dimen/default_gap"
+            android:paddingRight="@dimen/margin_double"
             android:text="@string/log_gps_points"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -65,7 +65,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:paddingRight="@dimen/default_gap"
+            android:paddingRight="@dimen/margin_double"
             android:text="@string/log_interval"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -75,7 +75,7 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/exerciserow_lblLog_Interval"
             android:ems="10"
-            android:paddingRight="@dimen/default_gap"
+            android:paddingRight="@dimen/margin_double"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </RelativeLayout>
 
@@ -90,7 +90,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:paddingRight="@dimen/default_gap"
+            android:paddingRight="@dimen/margin_double"
             android:text="@string/default_log_interval"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -101,7 +101,7 @@
             android:layout_alignBaseline="@+id/exerciserow_lblDefault_Log_Interval"
             android:layout_alignBottom="@+id/exerciserow_lblDefault_Log_Interval"
             android:layout_toRightOf="@+id/exerciserow_lblDefault_Log_Interval"
-            android:paddingRight="@dimen/default_gap"
+            android:paddingRight="@dimen/margin_double"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </RelativeLayout>
 

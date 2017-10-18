@@ -19,7 +19,6 @@
     <dimen name="ts80sp">80sp</dimen>
     <dimen name="ts90sp">90sp</dimen>
     <dimen name="ts100sp">100sp</dimen>
-    <dimen name="default_gap">16dp</dimen>
 
     <dimen name="text_size_small">12sp</dimen>
     <dimen name="text_size_regular">14sp</dimen>
@@ -39,6 +38,7 @@
     <dimen name="margin_half">4dp</dimen>
     <dimen name="margin_standard">8dp</dimen>
     <dimen name="margin_double">16dp</dimen>
+    <dimen name="margin_triple">24dp</dimen>
 
     <!-- fab -->
     <dimen name="fab_margin">16dp</dimen>

@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker;
+package com.fisincorporated.exercisetracker.ui.stats;
 
 import java.text.SimpleDateFormat;
 
@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.ExrcsLocation;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
@@ -41,7 +42,7 @@ public class ActivityPagerAdapter<F extends Fragment> extends FragmentStatePager
        try {
       	 Bundle args = new Bundle();
           args.putLong(LocationExercise._ID, cursor.getLong(cursor.getColumnIndex(LocationExercise._ID)));
-     		args.putString(GlobalValues.TITLE, 
+     		args.putString(GlobalValues.TITLE,
      		cursor.getString(cursor.getColumnIndex(Exercise.EXERCISE))
      		+ "@" + 	cursor.getString(cursor.getColumnIndex(ExrcsLocation.LOCATION))	
      		+ " " +  Utility.formatDate(dateFormat,cursor.getString(cursor.getColumnIndex(GlobalValues.START_DATE))));

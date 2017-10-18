@@ -24,7 +24,7 @@
         android:footerDividersEnabled="true"
         android:headerDividersEnabled="true"
         android:isScrollContainer="true"
-        android:padding="@dimen/default_gap"
+        android:padding="@dimen/margin_double"
         android:scrollbarAlwaysDrawVerticalTrack="true"
         android:scrollbars="vertical" />
 

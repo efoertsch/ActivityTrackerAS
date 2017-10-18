@@ -9,12 +9,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_margin="@dimen/default_gap">
+        android:layout_margin="@dimen/margin_double">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/default_gap">
+            android:paddingTop="@dimen/margin_double">
 
             <TextView
                 android:id="@+id/exercise_maintenance_lblexercise"

@@ -54,13 +54,7 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
      * @return
      */
     public static ActivityDetailFragment newInstance(Bundle bundle) {
-//		Bundle args = new Bundle();
-//		args.putLong(LocationExercise._ID,
-//				bundle.getLong(LocationExercise._ID, -1));
-//		args.putString(GlobalValues.TITLE, bundle.getString(GlobalValues.TITLE));
-//		args.putString(LocationExercise.DESCRIPTION, bundle.getString(LocationExercise.DESCRIPTION));
         ActivityDetailFragment fragment = new ActivityDetailFragment();
-//		fragment.setArguments(args);
         fragment.setArguments(bundle);
         return fragment;
     }

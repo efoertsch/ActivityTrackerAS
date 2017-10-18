@@ -16,6 +16,7 @@ import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.SQLiteCursorLoader;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
+import com.fisincorporated.exercisetracker.ui.utils.DepthPageTransformer;
 
 import java.util.ArrayList;
 
@@ -35,7 +36,9 @@ public class ActivityPager extends ExerciseMasterFragmentActivity implements
 		super.onCreate(savedInstanceState);
 		viewPager = new ViewPager(this);
 		viewPager.setId(R.id.viewPager);
-		viewPager.setOnPageChangeListener(new OnPageChangeListener(){
+		viewPager.setPageTransformer(true, new DepthPageTransformer());
+
+		viewPager.addOnPageChangeListener(new OnPageChangeListener(){
 			@Override
 			public void onPageScrollStateChanged(int state) {
 				// TODO Auto-generated method stub

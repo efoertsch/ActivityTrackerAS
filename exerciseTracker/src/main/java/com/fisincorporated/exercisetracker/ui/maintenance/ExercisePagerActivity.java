@@ -16,6 +16,7 @@ import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.SQLiteCursorLoader;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
+import com.fisincorporated.exercisetracker.ui.utils.DepthPageTransformer;
 
 public class ExercisePagerActivity extends ExerciseMasterFragmentActivity implements
 		LoaderCallbacks<Cursor>, ExerciseListFragment.Callbacks {
@@ -29,6 +30,8 @@ public class ExercisePagerActivity extends ExerciseMasterFragmentActivity implem
 		viewPager = new ViewPager(this);
 		viewPager.setId(R.id.viewPager);
 		viewPager.setOffscreenPageLimit(1);
+		viewPager.setPageTransformer(true, new DepthPageTransformer());
+
 		FrameLayout frmLayout = (FrameLayout)findViewById(R.id.fragmentContainer);
 		frmLayout.addView(viewPager);
 		Intent intent = getIntent();

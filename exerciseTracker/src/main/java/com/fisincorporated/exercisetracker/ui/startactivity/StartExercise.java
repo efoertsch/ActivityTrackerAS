@@ -1,11 +1,12 @@
-package com.fisincorporated.exercisetracker;
+package com.fisincorporated.exercisetracker.ui.startactivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.util.Log;
 
+import com.fisincorporated.exercisetracker.ActivityLogger;
+import com.fisincorporated.exercisetracker.GPSLocationManager;
+import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.ExerciseDAO;
 import com.fisincorporated.exercisetracker.database.ExerciseRecord;
 import com.fisincorporated.exercisetracker.database.LocationExerciseDAO;
@@ -13,8 +14,9 @@ import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.ExrcsLocation;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
 
-public class StartExercise extends ExerciseMasterActivity {
+public class StartExercise extends ExerciseMasterFragmentActivity {
 	private static final String TAG = "StartExercise";
 	private LocationExerciseDAO leDAO = null;
 	private LocationExerciseRecord ler = null;
@@ -25,29 +27,15 @@ public class StartExercise extends ExerciseMasterActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		long id = -1;
 		super.onCreate(savedInstanceState);
-		// added for master/detail fragments as on tablet
-		// setContentView(R.layout.activity_fragment);
-		if ((id = GPSLocationManager.checkActivityId(this)) != -1) {
-			directToActivityLogger(id);
-		} else {
-			setContentView(getLayoutResId());
-			FragmentManager fm = getSupportFragmentManager();
-			Fragment fragment = fm.findFragmentById(R.id.fragmentContainer);
-			if (fragment == null) {
-				fragment = createFragment();
-				fm.beginTransaction().add(R.id.fragmentContainer, fragment)
-						.commit();
-			}
-		}
+        setActivityTitle(R.string.start_exercise);
+
+        if ((id = GPSLocationManager.checkActivityId(this)) != -1) {
+            directToActivityLogger(id);
+        }
 	}
 
 	protected Fragment createFragment() {
 		return new StartExerciseFragment();
-	}
-
-	// added for tablet
-	protected int getLayoutResId() {
-		return R.layout.activity_masterdetail;
 	}
 
 	private void directToActivityLogger(long id) {
@@ -67,19 +55,6 @@ public class StartExercise extends ExerciseMasterActivity {
 				er.getElevationInDistCalcs());
 		startActivity(intent);
 		this.finish();
-	}
-	
-	// Fix for at least 4.4.2 (may occur prior to at anything above 2.3.4)
-	public void onBackPressed(){
-		Log.i(TAG, "onBackPressed");
-		FragmentManager fm = getSupportFragmentManager();
-		// this must be true or big trouble
-		StartExerciseFragment fragment = (StartExerciseFragment)fm.findFragmentById(R.id.fragmentContainer);
-		fragment.removeListeners();
-		super.onBackPressed();
-		Log.i(TAG, "completed onBackPressed");
-		
-		
 	}
 
 }

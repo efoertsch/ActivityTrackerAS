@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <array name="aplineSkiing">
+    <array name="alpineSkiing">
         <item name="exercise">Alpine Skiing</item>
         <item name="logInterval">"20"</item>
         <item name="logDetail">"0"</item>
@@ -44,7 +44,7 @@
         <item name="elevationInDistCalcs">"0"</item>
     </array>
     <array name="exerciseList">
-        <item>@array/aplineSkiing</item>
+        <item>@array/alpineSkiing</item>
         <item>@array/biking</item>
         <item>@array/crossCountrySkiing</item>
         <item>@array/hiking</item>

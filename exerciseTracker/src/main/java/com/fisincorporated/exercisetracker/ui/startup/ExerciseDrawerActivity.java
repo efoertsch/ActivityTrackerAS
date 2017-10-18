@@ -14,11 +14,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.fisincorporated.exercisetracker.ui.about.AboutActivityTracker;
-import com.fisincorporated.exercisetracker.ActivityList;
-import com.fisincorporated.exercisetracker.ExerciseList;
+import com.fisincorporated.exercisetracker.ui.backuprestore.BackupRestoreActivity;
+import com.fisincorporated.exercisetracker.ui.history.ActivityList;
+import com.fisincorporated.exercisetracker.ui.maintenance.ExerciseListActivity;
 import com.fisincorporated.exercisetracker.ProgramOptions;
 import com.fisincorporated.exercisetracker.R;
-import com.fisincorporated.exercisetracker.StartExercise;
+import com.fisincorporated.exercisetracker.ui.startactivity.StartExercise;
 import com.fisincorporated.exercisetracker.ui.preferences.SettingsActivity;
 
 public class ExerciseDrawerActivity  extends AppCompatActivity  {
@@ -47,9 +48,6 @@ public class ExerciseDrawerActivity  extends AppCompatActivity  {
         setupDrawerContent(navigationView);
         displayPhotoFragment();
     }
-
-
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -110,6 +108,9 @@ public class ExerciseDrawerActivity  extends AppCompatActivity  {
             case R.id.nav_menu_settings:
                 displaySettings();
                 break;
+//            case R.id.nav_menu_backup_restore:
+//                displayBackupRestore();
+//                break;
             case R.id.nav_menu_options:
                 displayMenuOption();
                 break;
@@ -123,6 +124,7 @@ public class ExerciseDrawerActivity  extends AppCompatActivity  {
 
     }
 
+
     private void displayPhotoFragment() {
         Fragment fragment = new PhotoFragment();
         displayFragment(fragment);
@@ -135,13 +137,11 @@ public class ExerciseDrawerActivity  extends AppCompatActivity  {
         fragmentManager.beginTransaction().
                 replace(R.id.app_frame_layout, fragment).
                 commit();
-
     }
 
     private void displayStartActivity() {
         Intent intent = new Intent(this, StartExercise.class);
         startActivity(intent);
-
     }
 
     private void displayHistory() {
@@ -155,7 +155,12 @@ public class ExerciseDrawerActivity  extends AppCompatActivity  {
     }
 
     private void displayExerciseSetup() {
-        Intent intent = new Intent(this, ExerciseList.class);
+        Intent intent = new Intent(this, ExerciseListActivity.class);
+        startActivity(intent);
+    }
+
+    private void displayBackupRestore() {
+        Intent intent = new Intent(this, BackupRestoreActivity.class);
         startActivity(intent);
     }
 

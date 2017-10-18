@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker;
+package com.fisincorporated.exercisetracker.ui.maintenance;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,18 +6,19 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
+import com.fisincorporated.exercisetracker.ExerciseListFragment;
+import com.fisincorporated.exercisetracker.GlobalValues;
+import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.ExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
 
-public class ExerciseList extends ExerciseMasterFragmentActivity implements
-		ExerciseListFragment.Callbacks {
-
-	public ExerciseList() {
-		// TODO Auto-generated constructor stub
-	}
+public class ExerciseListActivity extends ExerciseMasterFragmentActivity implements
+        ExerciseListFragment.Callbacks {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setActivityTitle(R.string.exercise_list);
 
 	}
 
@@ -32,7 +33,7 @@ public class ExerciseList extends ExerciseMasterFragmentActivity implements
 		Fragment newDetail = null;
 		if (findViewById(R.id.detailFragmentContainer) == null) {
 			// start info from bundle to load to intent and start instance of
-			// ExercisePager
+			// ExercisePagerActivity
 			if (((ExerciseRecord) args.getParcelable(Exercise.EXERCISE_TABLE))
 					.get_id() == -1) {
 				// this is for and ADD of new exercise
@@ -42,7 +43,7 @@ public class ExerciseList extends ExerciseMasterFragmentActivity implements
 				startActivity(intent);
 			} else {
 				// this is for update/delete of existing exercise, use view pager
-				Intent intent = new Intent(this, ExercisePager.class);
+				Intent intent = new Intent(this, ExercisePagerActivity.class);
 				intent.putExtra(GlobalValues.CURSOR_POSITION,
 						args.getInt(GlobalValues.CURSOR_POSITION));
 				startActivity(intent);

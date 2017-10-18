@@ -1,7 +1,4 @@
-package com.fisincorporated.exercisetracker;
-
-import java.text.DecimalFormat;
-import java.util.Locale;
+package com.fisincorporated.exercisetracker.ui.maintenance;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -27,18 +24,26 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fisincorporated.exercisetracker.ActivityDialogFragment;
+import com.fisincorporated.exercisetracker.GlobalValues;
+import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.ExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
 import com.fisincorporated.utility.InputFilterMinMax;
 import com.fisincorporated.utility.Utility;
+
+import java.text.DecimalFormat;
+import java.util.Locale;
 
 public class ExerciseMaintenanceFragment extends ExerciseMasterFragment {
 
 	private long exerciseRowId = -1;
 	private long exerciseLocationRowId = -1;
 	private AutoCompleteTextView actvExercise;
-	private CheckBox chkbxLogDetail;
+	// Always log detail
+	//private CheckBox chkbxLogDetail;
 	private EditText etLogInterval;
 	private EditText etDefaultLogInterval;
 	private EditText etMinDistToTravel;
@@ -52,7 +57,6 @@ public class ExerciseMaintenanceFragment extends ExerciseMasterFragment {
 	private long origExerciseId;
 	private ExerciseRecord exerciseRecord = null;
 
-	// Map info from https://developers.google.com/maps/documentation/android/
 	public ExerciseMaintenanceFragment() {
 	}
 
@@ -110,8 +114,8 @@ public class ExerciseMaintenanceFragment extends ExerciseMasterFragment {
 	private void getReferencedViews(View view) {
 		actvExercise = (AutoCompleteTextView) view
 				.findViewById(R.id.exercise_maintenance_actvExercise);
-		chkbxLogDetail = (CheckBox) view
-				.findViewById(R.id.exercise_maintenance_chkbxLog_Detail);
+//		chkbxLogDetail = (CheckBox) view
+//				.findViewById(R.id.exercise_maintenance_chkbxLog_Detail);
 		etLogInterval = (EditText) view
 				.findViewById(R.id.exercise_maintenance_etLogInterval);
 		etDefaultLogInterval = (EditText) view
@@ -170,8 +174,9 @@ public class ExerciseMaintenanceFragment extends ExerciseMasterFragment {
 			exerciseRowId = origExerciseId;
 			actvExercise.setEnabled(false);
 			etDefaultLogInterval.setEnabled(false);
-			chkbxLogDetail.requestFocus();
+			//chkbxLogDetail.requestFocus();
 			// etLogInterval.selectAll();
+			etLogInterval.requestFocus();
 			if (isDefaultExercise(exerciseRecord.getExercise())) {
 				// Toast.makeText(getActivity(),
 				// getString(R.string.default_exercise_can_not_be_deleted),
@@ -184,7 +189,7 @@ public class ExerciseMaintenanceFragment extends ExerciseMasterFragment {
 			// exercise rowid not passed in so can add
 			actvExercise.setEnabled(true);
 			etDefaultLogInterval.setEnabled(true);
-			chkbxLogDetail.setEnabled(true);
+			//chkbxLogDetail.setEnabled(true);
 			actvExercise.requestFocus();
 			btnDelete.setVisibility(View.INVISIBLE);
 		}
@@ -249,7 +254,8 @@ public class ExerciseMaintenanceFragment extends ExerciseMasterFragment {
 
 	private void updateExerciseRecordFromScreen() {
 		exerciseRecord.setExercise(actvExercise.getText() + "");
-		exerciseRecord.setLogDetail(chkbxLogDetail.isChecked() == true ? 1 : 0);
+		//exerciseRecord.setLogDetail(chkbxLogDetail.isChecked() == true ? 1 : 0);
+		exerciseRecord.setLogDetail(1);
 		try {
 			exerciseRecord.setDefaultLogInterval(Integer
 					.parseInt(etDefaultLogInterval.getText().toString()));
@@ -357,7 +363,7 @@ public class ExerciseMaintenanceFragment extends ExerciseMasterFragment {
 
 	private void goToExeciseList() {
 		// This may not be best way to do this.
-		// if fragment displayed via ExerciseList on table, prior state will be on
+		// if fragment displayed via ExerciseListActivity on table, prior state will be on
 		// backstack
 		getActivity().onBackPressed();
 		// getFragmentManager().popBackStack();
@@ -408,8 +414,7 @@ public class ExerciseMaintenanceFragment extends ExerciseMasterFragment {
 	private void showExercise() {
 		exerciseRowId = exerciseRecord.get_id();
 		actvExercise.setText(exerciseRecord.getExercise());
-		chkbxLogDetail.setChecked(exerciseRecord.getLogDetail() == 1 ? true
-				: false);
+		//chkbxLogDetail.setChecked(exerciseRecord.getLogDetail() == 1 ? true : false);
 		etLogInterval.setText("" + exerciseRecord.getLogInterval());
 		etDefaultLogInterval.setText("" + exerciseRecord.getDefaultLogInterval());
 		if (feetMeters.equalsIgnoreCase("m")) {

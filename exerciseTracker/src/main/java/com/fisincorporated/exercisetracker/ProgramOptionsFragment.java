@@ -13,6 +13,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fisincorporated.exercisetracker.ui.backuprestore.BackupRestoreActivity;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
+
 public class ProgramOptionsFragment extends ExerciseMasterFragment implements
         OnItemSelectedListener {
     private Spinner spnrUnits;
@@ -49,7 +52,7 @@ public class ProgramOptionsFragment extends ExerciseMasterFragment implements
         TextView tvBackupDatabase = (TextView) view.findViewById(R.id.tvBackupDatabase);
         tvBackupDatabase.setOnClickListener(new View.OnClickListener() {
                public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), BackupRestore.class);
+                Intent intent = new Intent(getActivity(), BackupRestoreActivity.class);
                 startActivity(intent);
             }
         });

@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.GPSLog;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
 import com.fisincorporated.utility.Utility;
 
 // Code from AChartEngine demo, 1st attempt at chart

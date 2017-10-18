@@ -9,6 +9,10 @@
     <string name="activity_list">Activity List</string>
     <string name="activity_stats">Activity Statistics</string>
     <string name="activity_maintenance">Activity Maintenance</string>
+    <string name="activity_history">History</string>
+    <string name="activity_options">Options</string>
+    <string name="activity_backup_restore">Backup/Restore</string>"
+    <string name="activity_about">About</string>
     <string name="activitytracker_database_restored">ActivityTracker com.fisincorporated.database restored.</string>
     <string name="add_new_activity">Add New Activity</string>
     <string name="add_new_exercise">Add New Exercise</string>
@@ -24,7 +28,6 @@
     <string name="backup">Backup</string>
     <string name="backup_cancelled">Backup cancelled</string>
     <string name="backup_restore_database">Backup/Restore Database</string>
-    <string name="backup_restore">Backup/Restore</string>
     <string name="backup_database">Backup Database</string>
     <string name="backup_file_will_be_placed_at">Backup file will be placed on SD card at</string>
     <string name="button_tag">button_tag</string>
@@ -216,6 +219,7 @@
     <string name="action_history">History</string>
     <string name="action_exercise_setup">Exercise Setup</string>
     <string name="action_options">Options</string>
+    <string name="action_backup_restore">Backup/Restore</string>
     <string name="action_about">About</string>
     <string name="drawer_open">Drawer Open</string>
     <string name="drawer_close">Drawer Close</string>
@@ -224,6 +228,7 @@
     <!-- Preference screen -->
     <string name="startup_image" translatable="false">startup_image</string>
     <string name="select_startup_background">Select photo on startup screen</string>
+
 
 
 </resources>

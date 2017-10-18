@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
 import com.fisincorporated.utility.Chart;
 import com.fisincorporated.utility.Utility;
 

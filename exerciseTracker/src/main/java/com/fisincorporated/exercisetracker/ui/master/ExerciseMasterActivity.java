@@ -13,10 +13,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.fisincorporated.exercisetracker.ActivityChart;
-import com.fisincorporated.exercisetracker.ActivityDetailFragment;
+import com.fisincorporated.exercisetracker.ui.stats.ActivityDetailFragment;
 import com.fisincorporated.exercisetracker.ActivityMap;
 import com.fisincorporated.exercisetracker.ActivityMapFragment;
-import com.fisincorporated.exercisetracker.ActivityPager;
+import com.fisincorporated.exercisetracker.ui.stats.ActivityPager;
 import com.fisincorporated.exercisetracker.ElevationVsDistanceFragment;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
@@ -65,25 +65,6 @@ abstract public class ExerciseMasterActivity extends AppCompatActivity implement
 	@SuppressLint("NewApi")
 	public void deleteDatabase() {
 		databaseHelper.getDatabaseName();
-	}
-
-	/**
-	 * Find out if to display distances in ft/miles vs m/km
-	 */
-	protected void findDisplayUnits() {
-		imperial = getResources().getString(R.string.imperial);
-		imperialMetric = databaseHelper.getProgramOption(database, getResources()
-				.getString(R.string.display_units), imperial);
-		if (imperialMetric.equalsIgnoreCase(getResources().getString(
-				R.string.imperial))) {
-			feetMeters = "ft";
-			milesKm = "miles";
-			mphKph = "mph";
-		} else {
-			feetMeters = "m";
-			milesKm = "km";
-			mphKph = "kph";
-		}
 	}
 
 	public void onDestroy() {

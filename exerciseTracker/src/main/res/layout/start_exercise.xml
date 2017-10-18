@@ -3,7 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    android:layout_margin="@dimen/default_gap">
+    android:layout_margin="@dimen/margin_double">
 
     <ScrollView
         android:layout_width="fill_parent"
@@ -20,7 +20,7 @@
                 android:id="@+id/start_exercise_rl2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/default_gap">
+                android:paddingTop="@dimen/margin_double">
 
                 <TextView
                     android:id="@+id/textView3"
@@ -38,7 +38,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
 
-                    android:layout_marginLeft="@dimen/default_gap"
+                    android:layout_marginLeft="@dimen/margin_double"
                     android:layout_toRightOf="@+id/textView3"
                     android:hint="@string/where_are_we"
                     android:textAppearance="?android:attr/textAppearanceMedium">
@@ -51,7 +51,7 @@
                 android:id="@+id/start_exercise_rl1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/default_gap">
+                android:layout_marginTop="@dimen/margin_double">
 
                 <TextView
                     android:id="@+id/start_exercise_tv"
@@ -69,14 +69,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/default_gap"
+                    android:layout_marginLeft="@dimen/margin_double"
                     android:layout_toRightOf="@+id/start_exercise_tv" />
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/default_gap">
+                android:layout_marginTop="@dimen/margin_double">
 
                 <TextView
                     android:id="@+id/start_exercise_lblAdditionalInfo"

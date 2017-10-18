@@ -2,15 +2,18 @@ package com.fisincorporated.exercisetracker.ui.master;
 
 
 
-import com.fisincorporated.exercisetracker.R;
-import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
-import com.fisincorporated.interfaces.IHandleSelectedAction;
-
 import android.app.Activity;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+
+import com.fisincorporated.exercisetracker.R;
+import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
+import com.fisincorporated.interfaces.IHandleSelectedAction;
 
 public class ExerciseMasterFragment extends Fragment {
 	protected TrackerDatabaseHelper databaseHelper = null;
@@ -55,21 +58,18 @@ public class ExerciseMasterFragment extends Fragment {
 	 * Find out if to display distances in ft/miles vs m/km
 	 */
 	protected void findDisplayUnits() {
-		imperial = getResources().getString(R.string.imperial);
-		imperialMetric = databaseHelper.getProgramOption(database, getResources()
-				.getString(R.string.display_units), imperial);
-		if (imperialMetric.equalsIgnoreCase(getResources().getString(
-				R.string.imperial))) {
-			feetMeters = "ft";
-			milesKm = "miles";
-			mphKph = "mph";
+		Resources res = getResources();
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+		imperialMetric = sharedPref.getString(res.getString(R.string.display_units), res.getString(R.string.imperial));
+		if (imperialMetric.equalsIgnoreCase(res.getString(R.string.imperial))) {
+			feetMeters = res.getString(R.string.feet_abbrev);
+			milesKm = res.getString(R.string.miles);
+			mphKph = res.getString(R.string.miles_per_hour_abbrev);
 		} else {
-			feetMeters = "m";
-			milesKm = "km";
-			mphKph = "kph";
-
+			feetMeters = res.getString(R.string.meters_abbrev);
+			milesKm = res.getString(R.string.kilometers_abbrev);
+			mphKph = res.getString(R.string.kilometers_per_hours_abbrev);
 		}
-
 	}
 	
 	public void onDestroy() {

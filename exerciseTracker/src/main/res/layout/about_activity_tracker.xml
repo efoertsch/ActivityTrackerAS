@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/default_gap">
+        android:padding="@dimen/margin_double">
 
         <TextView
             android:id="@+id/about_activity_tracker_tvAbout"

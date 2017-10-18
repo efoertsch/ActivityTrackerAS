@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/activity_detail_tvExerciseLocation"
-                android:paddingRight="@dimen/default_gap"
+                android:paddingRight="@dimen/margin_double"
                 android:text="@string/distance_traveled"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/activity_detail_lblDistanceTraveled"
-                android:paddingRight="@dimen/default_gap"
+                android:paddingRight="@dimen/margin_double"
                 android:text="@string/time_on_activity"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -80,7 +80,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/activity_detail_lblTimeOnActivity"
-                android:paddingRight="@dimen/default_gap"
+                android:paddingRight="@dimen/margin_double"
                 android:text="@string/average_speed"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -101,7 +101,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/activity_detail_lblAverageSpeed"
-                android:paddingRight="@dimen/default_gap"
+                android:paddingRight="@dimen/margin_double"
                 android:text="@string/max_speed"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -121,7 +121,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/activity_detail_lblMaxSpeedToPoint"
-                android:paddingRight="@dimen/default_gap"
+                android:paddingRight="@dimen/margin_double"
                 android:text="@string/altitude_gained"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -141,7 +141,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/activity_detail_lblAltitudeGained"
-                android:paddingRight="@dimen/default_gap"
+                android:paddingRight="@dimen/margin_double"
                 android:text="@string/altitude_lost"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -162,7 +162,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/activity_detail_lblAltitudeLost"
-                android:paddingRight="@dimen/default_gap"
+                android:paddingRight="@dimen/margin_double"
                 android:text="@string/overall_altitude_change"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 

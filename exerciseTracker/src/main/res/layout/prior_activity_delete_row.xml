@@ -42,7 +42,7 @@
         android:layout_toRightOf="@+id/prior_activity_row_date"
         android:layout_toLeftOf="@+id/prior_activity_row_delete_checkbox"
         android:layout_below="@+id/prior_activity_row_location"
-        android:paddingLeft="@dimen/default_gap"
+        android:paddingLeft="@dimen/margin_double"
         android:text="@string/description"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 

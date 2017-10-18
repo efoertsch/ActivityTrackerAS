@@ -227,8 +227,15 @@
 
     <!-- Preference screen -->
     <string name="startup_image" translatable="false">startup_image</string>
-    <string name="select_startup_background">Select photo on startup screen</string>
+    <string name="select_startup_background">Main screen photo</string>
 
+    <!-- literals used for distance and speed -->
+    <string name="feet_abbrev" translatable="false">ft</string>
+    <string name="miles" translatable="false">miles</string>
+    <string name="miles_per_hour_abbrev" translatable="false">mph</string>
+    <string name="meters_abbrev" translatable="false">m</string>
+    <string name="kilometers_abbrev" translatable="false">km</string>
+    <string name="kilometers_per_hours_abbrev" translatable="false">kph</string>
 
 
 </resources>

@@ -13,14 +13,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.ui.about.AboutActivityTracker;
 import com.fisincorporated.exercisetracker.ui.backuprestore.BackupRestoreActivity;
 import com.fisincorporated.exercisetracker.ui.history.ActivityList;
 import com.fisincorporated.exercisetracker.ui.maintenance.ExerciseListActivity;
-import com.fisincorporated.exercisetracker.ProgramOptions;
-import com.fisincorporated.exercisetracker.R;
-import com.fisincorporated.exercisetracker.ui.startactivity.StartExercise;
 import com.fisincorporated.exercisetracker.ui.preferences.SettingsActivity;
+import com.fisincorporated.exercisetracker.ui.startactivity.StartExercise;
 
 public class ExerciseDrawerActivity  extends AppCompatActivity  {
 
@@ -108,11 +107,8 @@ public class ExerciseDrawerActivity  extends AppCompatActivity  {
             case R.id.nav_menu_settings:
                 displaySettings();
                 break;
-//            case R.id.nav_menu_backup_restore:
-//                displayBackupRestore();
-//                break;
-            case R.id.nav_menu_options:
-                displayMenuOption();
+            case R.id.nav_menu_backup_restore:
+                displayBackupRestore();
                 break;
             case R.id.nav_menu_about:
                 displayAbout();
@@ -161,11 +157,6 @@ public class ExerciseDrawerActivity  extends AppCompatActivity  {
 
     private void displayBackupRestore() {
         Intent intent = new Intent(this, BackupRestoreActivity.class);
-        startActivity(intent);
-    }
-
-    private void displayMenuOption() {
-        Intent intent = new Intent(this, ProgramOptions.class);
         startActivity(intent);
     }
 

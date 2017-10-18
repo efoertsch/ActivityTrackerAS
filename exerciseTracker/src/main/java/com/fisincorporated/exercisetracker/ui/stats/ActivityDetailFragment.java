@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker;
+package com.fisincorporated.exercisetracker.ui.stats;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -17,6 +17,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fisincorporated.exercisetracker.ActivityDialogFragment;
+import com.fisincorporated.exercisetracker.GlobalValues;
+import com.fisincorporated.exercisetracker.R;
+import com.fisincorporated.exercisetracker.StatsArrayAdapter;
 import com.fisincorporated.exercisetracker.database.GPSLogDAO;
 import com.fisincorporated.exercisetracker.database.LocationExerciseDAO;
 import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
@@ -39,12 +43,8 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
     private int deleteDetailType;
     private String description;
 
-    // Map info from https://developers.google.com/maps/documentation/android/
-    public ActivityDetailFragment() {
-    }
-
     /**
-     * Pass in the arguments needed by this
+     * Pass in the arguments needed by this fragment
      * The bundle must have
      * locationExerciseId = bundle.getLong(LocationExercise._ID, -1);
      * title = bundle.getString(GlobalValues.TITLE);

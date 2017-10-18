@@ -10,9 +10,9 @@
         android:id="@+id/exerciserow_exercise"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/default_gap"
-        android:layout_marginTop="@dimen/default_gap"
-        android:paddingRight="@dimen/default_gap"
+        android:layout_marginBottom="@dimen/margin_double"
+        android:layout_marginTop="@dimen/margin_double"
+        android:paddingRight="@dimen/margin_double"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </LinearLayout>

@@ -19,13 +19,11 @@ public class ExerciseListActivity extends ExerciseMasterFragmentActivity impleme
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setActivityTitle(R.string.exercise_list);
-
 	}
 
 	@Override
 	protected Fragment createFragment() {
 		return new ExerciseListFragment();
-
 	}
 
 	// for tablet implementation

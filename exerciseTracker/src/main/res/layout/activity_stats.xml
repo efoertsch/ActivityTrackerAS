@@ -1,35 +1,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
 
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:layout_margin="@dimen/default_gap"
-    android:orientation="vertical">
+                android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/activity_detail_header"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-
-        <!-- 1st row -->
-
-        <TextView
-            android:id="@+id/activity_detail_lblActivityStats"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/activity_stats"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-        <!-- 2nd row -->
-
-        <TextView
-            android:id="@+id/activity_detail_tvExerciseLocation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/activity_detail_lblActivityStats"
-            android:hint="@string/hint_activity_at_location"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-    </RelativeLayout>
+    <TextView
+        android:id="@+id/activity_detail_tvExerciseLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_margin="@dimen/margin_double"
+        android:hint="@string/hint_activity_at_location"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <RelativeLayout
         android:id="@+id/buttonfooter"
@@ -46,7 +29,7 @@
             android:paddingLeft="@dimen/dp8"
             android:paddingRight="@dimen/dp8"
             android:text="@string/stop"
-            android:visibility="visible" />
+            android:visibility="visible"/>
 
         <!-- android:layout_toRightOf="@+id/activity_stats_stop_restart" -->
 
@@ -70,15 +53,15 @@
             android:layout_alignParentLeft="true"
             android:paddingLeft="@dimen/dp8"
             android:paddingRight="@dimen/dp8"
-            android:text="@string/cancel" />
+            android:text="@string/cancel"/>
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/activity_detail_section"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/buttonfooter"
-        android:layout_below="@+id/activity_detail_header">
+        android:layout_below="@+id/activity_detail_tvExerciseLocation">
 
         <ListView
             android:id="@+id/activity_detail_list"
@@ -86,9 +69,10 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:isScrollContainer="true"
-            android:padding="@dimen/default_gap"
+            android:layout_marginStart="@dimen/margin_triple"
+            android:layout_marginEnd="@dimen/margin_double"
             android:scrollbarAlwaysDrawVerticalTrack="true"
-            android:scrollbars="vertical" />
+            android:scrollbars="vertical"/>
     </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton
@@ -99,10 +83,10 @@
         android:layout_alignParentRight="true"
         android:layout_margin="16dp"
         android:scaleType="center"
-        app:backgroundTint="@color/fab_background"
         android:src="@drawable/ic_device_gps_fixed"
-        app:elevation="4dp"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        app:backgroundTint="@color/fab_background"
+        app:elevation="4dp"/>
 
 </RelativeLayout>
 

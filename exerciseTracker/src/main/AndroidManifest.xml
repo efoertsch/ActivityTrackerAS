@@ -81,7 +81,7 @@
                 android:value="splitActionBarWhenNarrow"/>
         </activity>
 
-        <activity android:name=".ActivityPager"
+        <activity android:name=".ui.stats.ActivityPager"
             android:parentActivityName=".ui.startup.ExerciseDrawerActivity"
             android:uiOptions="splitActionBarWhenNarrow">
 
@@ -160,19 +160,6 @@
         </activity>
 
         <activity android:name=".ui.maintenance.ExerciseMaintenance"
-            android:parentActivityName=".ui.startup.ExerciseDrawerActivity"
-            android:uiOptions="splitActionBarWhenNarrow">
-
-            <!-- Parent activity meta-data to support API level 7+ -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.startup.ExerciseDrawerActivity" />
-            <meta-data
-                android:name="android.support.UI_OPTIONS"
-                android:value="splitActionBarWhenNarrow"/>
-        </activity>
-
-        <activity android:name=".ProgramOptions"
             android:parentActivityName=".ui.startup.ExerciseDrawerActivity"
             android:uiOptions="splitActionBarWhenNarrow">
 

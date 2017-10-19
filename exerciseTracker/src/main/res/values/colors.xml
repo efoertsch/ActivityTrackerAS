@@ -14,6 +14,7 @@
     <item name="colorAccent" type="color">#607D8B</item>
 
     <item name="fab_background" type="color">#CFD8DC</item>
+    <item name="fab_background_white" type="color">#ffffffff</item>
 
     <item name="toolbarTextColor" type="color">#ffffffff</item>
 

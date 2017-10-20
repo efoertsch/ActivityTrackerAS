@@ -4,8 +4,7 @@
               android:id="@+id/prior_activity_list"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:orientation="vertical"
-              app:layout_behavior="@string/appbar_scrolling_view_behavior">
+              android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/prior_activity_list_columns"
@@ -33,27 +32,25 @@
 
     </LinearLayout>
 
-    <ListView
-        android:id="@id/android:list"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/activity_history_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:clickable="true"
-        android:divider="#fff"
-        android:dividerHeight="@dimen/ts1sp"
-        android:footerDividersEnabled="true"
-        android:headerDividersEnabled="true"
-        android:isScrollContainer="true"
         android:padding="@dimen/margin_double"
         android:scrollbarAlwaysDrawVerticalTrack="true"
-        android:scrollbars="vertical"/>
+        android:scrollbars="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     <TextView
-        android:id="@+id/empty_activity_list"
+        android:id="@+id/activity_history_empty"
+        android:paddingTop="@dimen/margin_standard"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center_horizontal"
         android:text="@string/no_activities_to_display"
         android:visibility="gone"/>
+
 
 
 </LinearLayout>

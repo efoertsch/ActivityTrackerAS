@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -116,9 +115,9 @@ public class PhotoFragment extends Fragment {
                     // full display
                     fabAlpha = 255;
                 }
-                Log.d(TAG, "animatedFloat:" + animatedFloat +  " animatedInt:" + animatedInt
-                        +  " animatedDecimal:" + animatedDecimal
-                        + " Alpha:" +  fabAlpha);
+//                Log.d(TAG, "animatedFloat:" + animatedFloat +  " animatedInt:" + animatedInt
+//                        +  " animatedDecimal:" + animatedDecimal
+//                        + " Alpha:" +  fabAlpha);
 
                 if (i != animatedInt && i < ids.length) {
                     fab.setImageDrawable(getResources().getDrawable(ids[animatedInt]));

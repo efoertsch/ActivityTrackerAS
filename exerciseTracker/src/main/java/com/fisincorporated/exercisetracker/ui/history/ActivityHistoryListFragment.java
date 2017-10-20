@@ -38,7 +38,7 @@ public class ActivityHistoryListFragment extends ActivityListFragment {
 		View view = inflater.inflate(R.layout.prior_activity_list, container,
 				false);
 		activityListView = (ListView) view.findViewById(android.R.id.list);
-		//activityListView.setEmptyView(view.findViewById(R.id.empty_activity_list)); 
+		//activityListView.setEmptyView(view.findViewById(R.id.empty_activity_list));
 //		registerForContextMenu((View) view
 //				.findViewById(R.id.prior_activity_list_columns));
 		return view;

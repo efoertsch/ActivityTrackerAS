@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import com.fisincorporated.exercisetracker.ActivityChart;
 import com.fisincorporated.exercisetracker.ActivityDistanceChartFragment;
 import com.fisincorporated.exercisetracker.ActivityListFragment;
-import com.fisincorporated.exercisetracker.DeletePriorActivitiesFragment;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;

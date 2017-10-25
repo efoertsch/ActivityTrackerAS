@@ -51,4 +51,8 @@ public class ActivityHistorySummary {
     public String getDescription() {
         return description;
     }
+
+    public String createActivityTitle(){
+        return exercise + "@" + location + " " + activityDate;
+    }
 }

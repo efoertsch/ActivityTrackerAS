@@ -16,7 +16,7 @@ import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
 
 public class ActivityHistory extends ExerciseMasterFragmentActivity {
-    ActivityHistoryFragment alf = null;
+    AbstractActivityHistoryFragment alf = null;
     Menu myMenu = null;
 
     @Override
@@ -85,19 +85,19 @@ public class ActivityHistory extends ExerciseMasterFragmentActivity {
 
     private void getCurrentFragment() {
         FragmentManager fm = getSupportFragmentManager();
-        alf = (ActivityHistoryFragment) fm.findFragmentById(R.id.fragmentContainer);
+        alf = (AbstractActivityHistoryFragment) fm.findFragmentById(R.id.fragmentContainer);
     }
 
     public void switchToDeleteFragment() {
-//        FragmentManager fm = getSupportFragmentManager();
-//        Bundle sortFilter = ((ActivityListFragment) fm
-//                .findFragmentById(R.id.fragmentContainer)).getSortFilterValues();
-//        FragmentTransaction ft = fm.beginTransaction();
-//        alf = new DeletePriorActivitiesFragment();
-//        alf.setArguments(sortFilter);
-//        ft.replace(R.id.fragmentContainer, alf, "DeleteActivities");
-//        ft.addToBackStack(null);
-//        ft.commit();
+        FragmentManager fm = getSupportFragmentManager();
+        Bundle sortFilter = ((AbstractActivityHistoryFragment) fm
+                .findFragmentById(R.id.fragmentContainer)).getSortFilterValues();
+        FragmentTransaction ft = fm.beginTransaction();
+        alf = new DeleteHistoryFragment();
+        alf.setArguments(sortFilter);
+        ft.replace(R.id.fragmentContainer, alf, "DeleteActivities");
+        ft.addToBackStack(null);
+        ft.commit();
 
     }
 

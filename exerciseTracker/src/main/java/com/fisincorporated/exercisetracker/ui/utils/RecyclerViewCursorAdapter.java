@@ -15,17 +15,14 @@ public abstract class RecyclerViewCursorAdapter<VH extends RecyclerView.ViewHold
         swapCursor(c);
     }
 
-
     @Override
     public void onBindViewHolder(VH holder, int position) {
-
         if (!mDataValid) {
             throw new IllegalStateException("Cannot bind viewholder when cursor is in invalid state.");
         }
         if (!mCursor.moveToPosition(position)) {
             throw new IllegalStateException("Could not move cursor to position " + position + " when trying to bind viewholder");
         }
-
         onBindViewHolder(holder, mCursor);
     }
 
@@ -52,9 +49,9 @@ public abstract class RecyclerViewCursorAdapter<VH extends RecyclerView.ViewHold
 
     public void swapCursor(Cursor newCursor) {
         if (newCursor == mCursor) {
+            notifyDataSetChanged();
             return;
         }
-
         if (newCursor != null) {
             mCursor = newCursor;
             mRowIDColumn = mCursor.getColumnIndexOrThrow("_id");

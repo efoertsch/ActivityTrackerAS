@@ -4,21 +4,23 @@
               android:id="@+id/prior_activity_list"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:orientation="vertical">
+              android:orientation="vertical"
+              android:paddingLeft="@dimen/margin_double"
+              android:paddingRight="@dimen/margin_double">
 
     <LinearLayout
         android:id="@+id/prior_activity_list_columns"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_standard"
+        android:layout_marginBottom="@dimen/margin_standard"
         android:clickable="true"
-        android:orientation="horizontal"
-        android:paddingTop="@dimen/dp8">
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/prior_activity_list_activity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/margin_double"
             android:text="@string/exercise"
             android:textAppearance="?android:attr/textAppearanceMedium"/>
 
@@ -32,12 +34,14 @@
 
     </LinearLayout>
 
+    <include layout="@layout/divider_vertical"/>
+
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/activity_history_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
-        android:padding="@dimen/margin_double"
         android:scrollbarAlwaysDrawVerticalTrack="true"
         android:scrollbars="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>

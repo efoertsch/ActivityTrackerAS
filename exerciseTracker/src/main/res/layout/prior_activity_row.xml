@@ -9,7 +9,7 @@
     android:descendantFocusability="blocksDescendants">
 
     <ImageButton
-        android:id="@+id/prior_activity_row_btnshowMap"
+        android:id="@+id/activity_history_row_btnShowMap"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -22,10 +22,10 @@
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <RelativeLayout
-        android:id="@+id/prior_activity_text"
+        android:id="@+id/activity_row_summary_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/prior_activity_row_btnshowMap"
+        android:layout_toLeftOf="@id/activity_history_row_btnShowMap"
         android:layout_alignParentLeft="true">
 
 

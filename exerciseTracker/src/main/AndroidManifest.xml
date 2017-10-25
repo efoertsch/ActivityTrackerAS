@@ -68,7 +68,7 @@
             android:value="splitActionBarWhenNarrow"/>
         </activity>
 
-        <activity android:name=".ui.history.ActivityList"
+        <activity android:name=".ui.history.ActivityHistory"
             android:parentActivityName=".ui.startup.ExerciseDrawerActivity"
             android:uiOptions="splitActionBarWhenNarrow">
 

@@ -16,7 +16,7 @@ import android.view.MenuItem;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.ui.about.AboutActivityTracker;
 import com.fisincorporated.exercisetracker.ui.backuprestore.BackupRestoreActivity;
-import com.fisincorporated.exercisetracker.ui.history.ActivityList;
+import com.fisincorporated.exercisetracker.ui.history.ActivityHistory;
 import com.fisincorporated.exercisetracker.ui.maintenance.ExerciseListActivity;
 import com.fisincorporated.exercisetracker.ui.preferences.SettingsActivity;
 import com.fisincorporated.exercisetracker.ui.startactivity.StartExercise;
@@ -141,7 +141,7 @@ public class ExerciseDrawerActivity  extends AppCompatActivity  {
     }
 
     private void displayHistory() {
-        Intent intent = new Intent(this, ActivityList.class);
+        Intent intent = new Intent(this, ActivityHistory.class);
         startActivity(intent);
     }
 

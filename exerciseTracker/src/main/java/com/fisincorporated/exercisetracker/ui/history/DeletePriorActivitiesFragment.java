@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker;
+package com.fisincorporated.exercisetracker.ui.history;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -17,6 +17,11 @@ import android.widget.ListView;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+import com.fisincorporated.exercisetracker.ActivityDialogFragment;
+import com.fisincorporated.exercisetracker.ActivityListFragment;
+import com.fisincorporated.exercisetracker.GPSLocationManager;
+import com.fisincorporated.exercisetracker.GlobalValues;
+import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.GPSLogDAO;
 import com.fisincorporated.exercisetracker.database.LocationExerciseDAO;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;

@@ -5,21 +5,22 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:orientation="vertical"
-              app:layout_behavior="@string/appbar_scrolling_view_behavior">
+              android:paddingLeft="@dimen/margin_double"
+              android:paddingRight="@dimen/margin_double">
 
     <LinearLayout
         android:id="@+id/prior_activity_list_columns"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_standard"
+        android:layout_marginBottom="@dimen/margin_standard"
         android:clickable="true"
-        android:orientation="horizontal"
-        android:paddingTop="@dimen/dp8">
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/prior_activity_list_activity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/margin_double"
             android:text="@string/exercise"
             android:textAppearance="?android:attr/textAppearanceMedium"/>
 
@@ -33,27 +34,27 @@
 
     </LinearLayout>
 
-    <ListView
-        android:id="@id/android:list"
+    <include layout="@layout/divider_vertical"/>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/activity_history_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:clickable="true"
-        android:divider="#fff"
-        android:dividerHeight="@dimen/ts1sp"
-        android:footerDividersEnabled="true"
-        android:headerDividersEnabled="true"
-        android:isScrollContainer="true"
-        android:padding="@dimen/margin_double"
         android:scrollbarAlwaysDrawVerticalTrack="true"
-        android:scrollbars="vertical"/>
+        android:scrollbars="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     <TextView
-        android:id="@+id/empty_activity_list"
+        android:id="@+id/activity_history_empty"
+        android:paddingTop="@dimen/margin_standard"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center_horizontal"
         android:text="@string/no_activities_to_display"
         android:visibility="gone"/>
+
 
 
 </LinearLayout>

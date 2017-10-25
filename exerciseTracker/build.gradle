@@ -63,4 +63,5 @@ dependencies {
     // From https://developer.android.com/tools/testing-support-library/index.html#setup
     //androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
 
+    compile 'org.jetbrains:annotations-java5:15.0'
 }

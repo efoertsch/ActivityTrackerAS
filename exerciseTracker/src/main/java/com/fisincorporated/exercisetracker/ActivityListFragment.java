@@ -1,12 +1,5 @@
 package com.fisincorporated.exercisetracker;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import com.fisincorporated.exercisetracker.database.SQLiteCursorLoader;
-import com.fisincorporated.interfaces.IHandleSelectedAction;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +9,13 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.view.MenuItem;
 import android.widget.ListView;
+
+import com.fisincorporated.exercisetracker.database.SQLiteCursorLoader;
+import com.fisincorporated.interfaces.IHandleSelectedAction;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public abstract class ActivityListFragment extends AbstractListFragment implements
 		LoaderCallbacks<Cursor> {
@@ -59,9 +59,6 @@ public abstract class ActivityListFragment extends AbstractListFragment implemen
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	}
-	
-	
-	 
 
 	// save the sort order so if you change orientation you will keep sort order
 	public void onSaveInstanceState(Bundle savedInstanceState) {

@@ -38,7 +38,7 @@ public class ActivityHistoryListFragment extends ActivityListFragment {
 		View view = inflater.inflate(R.layout.prior_activity_list, container,
 				false);
 		activityListView = (ListView) view.findViewById(android.R.id.list);
-		//activityListView.setEmptyView(view.findViewById(R.id.empty_activity_list)); 
+		//activityListView.setEmptyView(view.findViewById(R.id.empty_activity_list));
 //		registerForContextMenu((View) view
 //				.findViewById(R.id.prior_activity_list_columns));
 		return view;
@@ -74,7 +74,7 @@ public class ActivityHistoryListFragment extends ActivityListFragment {
 
 		public void bindView(View view, Context context, Cursor cursor) {
 			ImageButton infoButton = (ImageButton) view
-					.findViewById(R.id.prior_activity_row_btnshowMap);
+					.findViewById(R.id.activity_history_row_btnShowMap);
 			long row_id = cursor.getLong(cursor.getColumnIndex(LocationExercise._ID));
 			infoButton.setTag((Long) row_id);
 			infoButton.setOnClickListener(new OnClickListener() {

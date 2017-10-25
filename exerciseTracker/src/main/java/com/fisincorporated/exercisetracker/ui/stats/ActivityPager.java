@@ -90,8 +90,6 @@ public class ActivityPager extends ExerciseMasterFragmentActivity implements
 	private static class ListCursorLoader extends SQLiteCursorLoader {
 		ActivityPager ap;
 
-		// public ListCursorLoader(Context context,DeletePriorActivitiesFragment
-		// palf) {
 		public ListCursorLoader(Context context, ActivityPager ap) {
 			super(context);
 			this.ap = ap;

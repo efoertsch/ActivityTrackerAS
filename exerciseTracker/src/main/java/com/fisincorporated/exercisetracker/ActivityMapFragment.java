@@ -343,17 +343,12 @@ public class ActivityMapFragment extends ExerciseMasterFragment implements
                     "Sorry - an error occurred in mapping the GPS route.",
                     Toast.LENGTH_SHORT).show();
             Log.e(GlobalValues.LOG_TAG, "ActivityMap.onResume()" + e.toString());
-
         }
-
     }
 
     private static class GPSPointsCursorLoader extends SQLiteCursorLoader {
-        // private DeletePriorActivitiesFragment palf;
         ActivityMapFragment am;
 
-        // public ListCursorLoader(Context context,DeletePriorActivitiesFragment
-        // palf) {
         public GPSPointsCursorLoader(Context context, ActivityMapFragment am) {
             super(context);
             this.am = am;

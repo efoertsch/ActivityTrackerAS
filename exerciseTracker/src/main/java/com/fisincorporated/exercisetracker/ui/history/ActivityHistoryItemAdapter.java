@@ -22,7 +22,7 @@ public class ActivityHistoryItemAdapter extends RecyclerViewCursorAdapter<Activi
     public ActivityHistoryItemAdapter(Context context, WeakReference<IHistoryListCallbacks> callbacks) {
         super(null);
         this.context = context;
-        this.callbacks =  callbacks;
+        this.callbacks = callbacks;
     }
 
     @Override
@@ -36,7 +36,7 @@ public class ActivityHistoryItemAdapter extends RecyclerViewCursorAdapter<Activi
         holder.bindItem(ActivityHistorySummary.getFromCursor(cursor));
     }
 
-    public  class ItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private WeakReference<IHistoryListCallbacks> viewCallbacks;
         private View view;
         private TextView tvActivity;
@@ -69,19 +69,14 @@ public class ActivityHistoryItemAdapter extends RecyclerViewCursorAdapter<Activi
 
         @Override
         public void onClick(View v) {
-            v.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    switch (v.getId()){
-                        case R.id.activity_row_summary_layout:
-                            viewCallbacks.get().displayStats((ActivityHistorySummary) v.getTag(), getAdapterPosition());
-                            break;
-                        case R.id.activity_history_row_btnShowMap:
-                            viewCallbacks.get().displayMap((ActivityHistorySummary)v.getTag());
-                            break;
-                    }
-                }
-            });
+            switch (v.getId()) {
+                case R.id.activity_row_summary_layout:
+                    viewCallbacks.get().displayStats((ActivityHistorySummary) v.getTag(), getAdapterPosition());
+                    break;
+                case R.id.activity_history_row_btnShowMap:
+                    viewCallbacks.get().displayMap((ActivityHistorySummary) v.getTag());
+                    break;
+            }
         }
     }
 }

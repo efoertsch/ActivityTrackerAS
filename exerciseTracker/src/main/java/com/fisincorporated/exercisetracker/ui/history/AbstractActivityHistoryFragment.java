@@ -151,11 +151,8 @@ public abstract class AbstractActivityHistoryFragment  extends ExerciseMasterFra
 
 
     public static class ListCursorLoader extends SQLiteCursorLoader {
-        // private DeletePriorActivitiesFragment palf;
         AbstractActivityHistoryFragment alf;
 
-        // public ListCursorLoader(Context context,DeletePriorActivitiesFragment
-        // palf) {
         public ListCursorLoader(Context context, AbstractActivityHistoryFragment alf) {
             super(context);
             this.alf = alf;

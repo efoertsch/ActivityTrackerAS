@@ -96,27 +96,6 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/ts10sp">
-
-                <TextView
-                    android:id="@+id/lblLog_GPS_points"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="@string/log_gps_points"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
-
-                <CheckBox
-                    android:id="@+id/start_exercise_chkbxLog_Detail"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/lblLog_GPS_points"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:paddingTop="@dimen/ts20sp">
 
                 <Button
@@ -128,14 +107,6 @@
                     android:paddingRight="@dimen/dp8"
                     android:text="@string/start" />
 
-                <Button
-                    android:id="@+id/start_exercise_btnCancel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:paddingLeft="@dimen/dp8"
-                    android:paddingRight="@dimen/dp8"
-                    android:text="@string/cancel" />
             </RelativeLayout>
         </LinearLayout>
     </ScrollView>

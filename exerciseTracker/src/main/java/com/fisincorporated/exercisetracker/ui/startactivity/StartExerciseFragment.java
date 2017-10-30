@@ -19,7 +19,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FilterQueryProvider;
 import android.widget.Spinner;
@@ -27,7 +26,6 @@ import android.widget.Toast;
 
 import com.fisincorporated.exercisetracker.ActivityDialogFragment;
 import com.fisincorporated.exercisetracker.ActivityLogger;
-import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.ExerciseDAO;
@@ -36,6 +34,7 @@ import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.ExrcsLocation;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
 
 import java.util.Locale;
 
@@ -49,13 +48,11 @@ public class StartExerciseFragment extends ExerciseMasterFragment {
     private EditText etAdditionalInfo;
     private AutoCompleteTextView actvLocation;
     private Button btnStart;
-    private Button btnCancel;
-    private CheckBox chkbxLogDetail;
+
     private int selectedExercisePosition = -1;
     private static final int DIALOG_SAVE_LOCATION = 20;
     private static final int DIALOG_CONTINUE_ACTIVITY = 10;
 
-    private int logDetail = 0; // 0 is false, 1 is true
     private float minDistanceToLog = 10;
     private int elevationInDistcalcs = 0;
     private LocationExerciseDAO leDAO = null;
@@ -106,9 +103,6 @@ public class StartExerciseFragment extends ExerciseMasterFragment {
         // autocompletetextview so set colors to the textview colors
         actvLocation.setTextColor(etAdditionalInfo.getTextColors());
 
-        chkbxLogDetail = (CheckBox) view
-                .findViewById(R.id.start_exercise_chkbxLog_Detail);
-
         // set spinner listener to display the selected item id
         // The id value is the Exercise._ID value
         spnrExercise.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -117,7 +111,6 @@ public class StartExerciseFragment extends ExerciseMasterFragment {
                 exerciseRowId = id;
                 getExerciseDetail(exerciseRowId);
                 selectedExercisePosition = position;
-                chkbxLogDetail.setChecked((logDetail == 0) ? false : true);
             }
 
             public void onNothingSelected(AdapterView<?> parent) {
@@ -160,17 +153,6 @@ public class StartExerciseFragment extends ExerciseMasterFragment {
             }
         };
 
-
-        // Handle Cancel Button
-        btnCancel = (Button) view.findViewById(R.id.start_exercise_btnCancel);
-        btnCancel.setEnabled(true);
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("DefaultLocale")
-            public void onClick(View v) {
-                cancelExercise();
-            }
-
-        });
     }
 
     public void showAddLocationDialog() {
@@ -181,21 +163,12 @@ public class StartExerciseFragment extends ExerciseMasterFragment {
                 R.string.ok, R.string.no, -1);
         activityDialog.setTargetFragment(StartExerciseFragment.this, DIALOG_SAVE_LOCATION);
         activityDialog.show(getActivity().getSupportFragmentManager(), "confirmDialog");
-
     }
-
 
     public void setUpAutoCompletes() {
         leDAO = new LocationExerciseDAO(databaseHelper);
         fillExerciseAutoComplete();
         fillLocationAutoComplete();
-    }
-
-    private void setGPSLogDetail() {
-        Cursor csr = (Cursor) spnrExercise.getSelectedItem();
-        long rowId = csr.getLong(csr.getColumnIndex(Exercise._ID));
-        getExerciseDetail(rowId);
-        chkbxLogDetail.setChecked(logDetail == 1 ? true : false);
     }
 
     private void setBtnStartEnabled() {
@@ -218,33 +191,18 @@ public class StartExerciseFragment extends ExerciseMasterFragment {
                 new String[]{Exercise.EXERCISE},
                 new int[]{android.R.id.text1}, 0);
 
-        adapter
-                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         adapter.setCursorToStringConverter(new ExerciseCursorToStringConverter());
         spnrExercise.setAdapter(adapter);
     }
 
     // This controls what column to place in the edittext when selected. The
     // default textview.tostring, not helpful
-    class ExerciseCursorToStringConverter implements
-            SimpleCursorAdapter.CursorToStringConverter {
-
+    class ExerciseCursorToStringConverter implements SimpleCursorAdapter.CursorToStringConverter {
         public CharSequence convertToString(Cursor cursor) {
             return cursor.getString(cursor.getColumnIndex(Exercise.EXERCISE));
         }
     }
-
-    // private int getExerciseLogInterval(long _id){
-    // int logInterval = 30;
-    // Cursor csr = com.fisincorporated.exercisetracker.database.query(Exercise.EXERCISE_TABLE, new
-    // String[]{Exercise.LOG_INTERVAL}
-    // ,"_ID = ? ", new String [] {String.valueOf(_id)},null,null,null );
-    // if (csr.moveToFirst()){
-    // logInterval = csr.getInt(0);
-    // }
-    // csr.close();
-    // return logInterval;
-    // }
 
     private void fillLocationAutoComplete() {
         csrLocationAutoComplete = database.query(ExrcsLocation.LOCATION_TABLE,
@@ -360,13 +318,11 @@ public class StartExerciseFragment extends ExerciseMasterFragment {
                     + " = ? ", new String[]{rowId + ""});
 
             if (csr.getCount() == 0) {
-                logDetail = 0;
                 minDistanceToLog = 10;
                 elevationInDistcalcs = 0;
                 logInterval = 60;
             } else {
                 csr.moveToFirst();
-                logDetail = csr.getInt(csr.getColumnIndex(Exercise.LOG_DETAIL));
                 minDistanceToLog = csr.getFloat(csr
                         .getColumnIndex(Exercise.MIN_DISTANCE_TO_LOG));
                 ;
@@ -388,12 +344,6 @@ public class StartExerciseFragment extends ExerciseMasterFragment {
             }
         }
 
-    }
-
-    private void cancelExercise() {
-        // to prevent listener from firing and causing abend
-        actvLocation.setOnFocusChangeListener(null);
-        getActivity().finish();
     }
 
     @Override
@@ -444,12 +394,6 @@ public class StartExerciseFragment extends ExerciseMasterFragment {
 
     }
 
-    public void cancelAddLocation() {
-        Toast.makeText(getActivity(),
-                getResources().getString(R.string.reenter_location_for_activity),
-                Toast.LENGTH_LONG).show();
-    }
-
     private void createLer() {
         // if location/exercise record already exists for today then see if you
         // should continue using it
@@ -458,8 +402,7 @@ public class StartExerciseFragment extends ExerciseMasterFragment {
             Cursor csr = (Cursor) spnrExercise.getSelectedItem();
 
             ActivityDialogFragment dialog;
-            dialog = ActivityDialogFragment.newInstance(
-                    -1,
+            dialog = ActivityDialogFragment.newInstance(-1,
                     "Do you want to continue with prior "
                             + csr.getString(csr.getColumnIndex(Exercise.EXERCISE))
                             + "@" + actvLocation.getText().toString().trim() + "  " + ler.getDescription()
@@ -522,7 +465,7 @@ public class StartExerciseFragment extends ExerciseMasterFragment {
         ler.setLocationId(locationRowId);
         ler.setDescription(etAdditionalInfo.getText().toString());
         ler.setLogInterval(logInterval);
-        ler.setLogDetail(chkbxLogDetail.isChecked() ? 1 : 0);
+        ler.setLogDetail(1);
         database.beginTransaction();
         try {
             leDAO.createLocationExercise(ler);

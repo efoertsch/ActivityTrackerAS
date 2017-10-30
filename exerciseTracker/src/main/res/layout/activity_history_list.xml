@@ -36,7 +36,6 @@
 
     <include layout="@layout/divider_vertical"/>
 
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/activity_history_recycler_view"
         android:layout_width="match_parent"
@@ -54,7 +53,5 @@
         android:gravity="center_horizontal"
         android:text="@string/no_activities_to_display"
         android:visibility="gone"/>
-
-
 
 </LinearLayout>

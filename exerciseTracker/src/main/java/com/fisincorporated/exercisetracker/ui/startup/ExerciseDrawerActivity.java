@@ -17,7 +17,7 @@ import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.ui.about.AboutActivityTracker;
 import com.fisincorporated.exercisetracker.ui.backuprestore.BackupRestoreActivity;
 import com.fisincorporated.exercisetracker.ui.history.ActivityHistory;
-import com.fisincorporated.exercisetracker.ui.maintenance.ExerciseListActivity;
+import com.fisincorporated.exercisetracker.ui.maintenance.ExerciseMaintenanceListActivity;
 import com.fisincorporated.exercisetracker.ui.preferences.SettingsActivity;
 import com.fisincorporated.exercisetracker.ui.startactivity.StartExercise;
 
@@ -151,7 +151,7 @@ public class ExerciseDrawerActivity  extends AppCompatActivity  {
     }
 
     private void displayExerciseSetup() {
-        Intent intent = new Intent(this, ExerciseListActivity.class);
+        Intent intent = new Intent(this, ExerciseMaintenanceListActivity.class);
         startActivity(intent);
     }
 

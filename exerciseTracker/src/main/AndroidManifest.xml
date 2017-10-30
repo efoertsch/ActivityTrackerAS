@@ -133,7 +133,7 @@
                 android:value="splitActionBarWhenNarrow"/>
         </activity>
 
-        <activity android:name=".ui.maintenance.ExerciseListActivity"
+        <activity android:name=".ui.maintenance.ExerciseMaintenanceListActivity"
             android:parentActivityName=".ui.startup.ExerciseDrawerActivity"
             android:uiOptions="splitActionBarWhenNarrow">
 
@@ -146,7 +146,7 @@
                 android:value="splitActionBarWhenNarrow"/>
         </activity>
 
-        <activity android:name=".ui.maintenance.ExercisePagerActivity"
+        <activity android:name=".ui.maintenance.ExerciseMaintenancePagerActivity"
             android:parentActivityName=".ui.startup.ExerciseDrawerActivity"
             android:uiOptions="splitActionBarWhenNarrow">
 
@@ -159,7 +159,7 @@
                 android:value="splitActionBarWhenNarrow"/>
         </activity>
 
-        <activity android:name=".ui.maintenance.ExerciseMaintenance"
+        <activity android:name=".ui.maintenance.ExerciseMaintenanceDetailActivity"
             android:parentActivityName=".ui.startup.ExerciseDrawerActivity"
             android:uiOptions="splitActionBarWhenNarrow">
 

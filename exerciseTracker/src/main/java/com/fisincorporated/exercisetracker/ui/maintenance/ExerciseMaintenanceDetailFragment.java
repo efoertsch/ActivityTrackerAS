@@ -37,7 +37,7 @@ import com.fisincorporated.utility.Utility;
 import java.text.DecimalFormat;
 import java.util.Locale;
 
-public class ExerciseMaintenanceFragment extends ExerciseMasterFragment {
+public class ExerciseMaintenanceDetailFragment extends ExerciseMasterFragment {
 
 	private long exerciseRowId = -1;
 	private long exerciseLocationRowId = -1;
@@ -52,16 +52,15 @@ public class ExerciseMaintenanceFragment extends ExerciseMasterFragment {
 
 	static final int DELETE_REQUESTCODE = 1;
 	private Button btnSave;
-	private Button btnCancel;
 	private Button btnDelete;
 	private long origExerciseId;
 	private ExerciseRecord exerciseRecord = null;
 
-	public ExerciseMaintenanceFragment() {
+	public ExerciseMaintenanceDetailFragment() {
 	}
 
-	public static ExerciseMaintenanceFragment newInstance(Bundle bundle) {
-		ExerciseMaintenanceFragment fragment = new ExerciseMaintenanceFragment();
+	public static ExerciseMaintenanceDetailFragment newInstance(Bundle bundle) {
+		ExerciseMaintenanceDetailFragment fragment = new ExerciseMaintenanceDetailFragment();
 		fragment.setArguments(bundle);
 		return fragment;
 	}
@@ -152,7 +151,7 @@ public class ExerciseMaintenanceFragment extends ExerciseMasterFragment {
 				dialog = ActivityDialogFragment.newInstance(-1,
 						R.string.confirm_delete_exercise, R.string.delete,
 						R.string.cancel, -1);
-				dialog.setTargetFragment(ExerciseMaintenanceFragment.this,
+				dialog.setTargetFragment(ExerciseMaintenanceDetailFragment.this,
 						DELETE_REQUESTCODE);
 				dialog.show(getActivity().getSupportFragmentManager(),
 						"confirmDialog");
@@ -234,7 +233,7 @@ public class ExerciseMaintenanceFragment extends ExerciseMasterFragment {
 			}
 		} catch (SQLiteException sqle) {
 			Log.e(GlobalValues.LOG_TAG,
-					"ExerciseMaintenanceFragment.onClick for update/insert of exercise. SQLiteException: "
+					"ExerciseMaintenanceDetailFragment.onClick for update/insert of exercise. SQLiteException: "
 							+ sqle.toString());
 		} finally {
 			if (database.inTransaction())
@@ -271,9 +270,7 @@ public class ExerciseMaintenanceFragment extends ExerciseMasterFragment {
 		} catch (NumberFormatException nfe) {
 			exerciseRecord.setMinDistanceToLog(ExerciseRecord.MIN_DISTANCE_TO_LOG);
 		}
-		exerciseRecord
-				.setElevationInDistCalcs(chkbxElevationInCalcs.isChecked() == true ? 1
-						: 0);
+		exerciseRecord.setElevationInDistCalcs(chkbxElevationInCalcs.isChecked() == true ? 1 : 0);
 	}
 
 	private void updateExistingExerciseRecord(ExerciseRecord exerciser) {
@@ -351,7 +348,7 @@ public class ExerciseMaintenanceFragment extends ExerciseMasterFragment {
 
 	private void goToExeciseList() {
 		// This may not be best way to do this.
-		// if fragment displayed via ExerciseListActivity on table, prior state will be on
+		// if fragment displayed via ExerciseMaintenanceListActivity on table, prior state will be on
 		// backstack
 		getActivity().onBackPressed();
 		// getFragmentManager().popBackStack();

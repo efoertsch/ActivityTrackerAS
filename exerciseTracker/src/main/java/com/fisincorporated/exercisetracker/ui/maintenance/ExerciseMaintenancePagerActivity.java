@@ -10,7 +10,6 @@ import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.widget.FrameLayout;
 
-import com.fisincorporated.exercisetracker.ExerciseListFragment;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.SQLiteCursorLoader;
@@ -18,8 +17,7 @@ import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
 import com.fisincorporated.exercisetracker.ui.utils.DepthPageTransformer;
 
-public class ExercisePagerActivity extends ExerciseMasterFragmentActivity implements
-		LoaderCallbacks<Cursor>, ExerciseListFragment.Callbacks {
+public class ExerciseMaintenancePagerActivity extends ExerciseMasterFragmentActivity implements LoaderCallbacks<Cursor> {
 
 	private int cursorPosition = 0;
 	private ViewPager viewPager;
@@ -51,13 +49,10 @@ public class ExercisePagerActivity extends ExerciseMasterFragmentActivity implem
         return null;
     }
 
-    @Override
-    public void onExerciseSelected(Bundle args) {}
-
     private static class ListCursorLoader extends SQLiteCursorLoader {
-		ExercisePagerActivity ap;
+		ExerciseMaintenancePagerActivity ap;
 
-		public ListCursorLoader(Context context, ExercisePagerActivity ap) {
+		public ListCursorLoader(Context context, ExerciseMaintenancePagerActivity ap) {
 			super(context);
 			this.ap = ap;
 		}
@@ -89,9 +84,9 @@ public class ExercisePagerActivity extends ExerciseMasterFragmentActivity implem
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 		viewPager
-				.setAdapter(new ExercisePagerAdapter<ExerciseMaintenanceFragment>(
+				.setAdapter(new ExercisePagerAdapter<ExerciseMaintenanceDetailFragment>(
 						getSupportFragmentManager(),
-						ExerciseMaintenanceFragment.class, cursor));
+						ExerciseMaintenanceDetailFragment.class, cursor));
 		viewPager.setCurrentItem(cursorPosition);
 	}
 

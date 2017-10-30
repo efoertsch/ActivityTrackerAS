@@ -20,9 +20,6 @@ public class ActivityHistoryFragment extends AbstractActivityHistoryFragment imp
 
     private ActivityHistoryItemAdapter activityHistoryItemAdapter;
 
-
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

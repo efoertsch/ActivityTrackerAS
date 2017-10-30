@@ -8,12 +8,12 @@ import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
 
-public class ExerciseMaintenance extends ExerciseMasterFragmentActivity {
+public class ExerciseMaintenanceDetailActivity extends ExerciseMasterFragmentActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setActivityTitle(R.string.activity_history);
+		setActivityTitle(R.string.add_new_exercise);
 	}
 
 	
@@ -22,7 +22,7 @@ public class ExerciseMaintenance extends ExerciseMasterFragmentActivity {
 		Intent intent = getIntent();
 		Bundle bundle = new Bundle();
 		bundle.putParcelable(Exercise.EXERCISE_TABLE, intent.getParcelableExtra(Exercise.EXERCISE_TABLE ));
-		return   ExerciseMaintenanceFragment.newInstance(bundle);
+		return ExerciseMaintenanceDetailFragment.newInstance(bundle);
 
 	}
 

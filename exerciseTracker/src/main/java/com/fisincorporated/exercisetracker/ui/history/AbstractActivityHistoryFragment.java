@@ -51,7 +51,6 @@ public abstract class AbstractActivityHistoryFragment  extends ExerciseMasterFra
     private ActivityHistoryItemAdapter activityHistoryItemAdapter;
 
     // TODO - create super class
-    // This from ActivityListFragment and modified for recyclerview
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);

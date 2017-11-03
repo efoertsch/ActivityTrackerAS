@@ -12,12 +12,12 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import com.fisincorporated.exercisetracker.ActivityChart;
+import com.fisincorporated.exercisetracker.ui.charts.ActivityChart;
 import com.fisincorporated.exercisetracker.ui.stats.ActivityDetailFragment;
 import com.fisincorporated.exercisetracker.ActivityMap;
 import com.fisincorporated.exercisetracker.ActivityMapFragment;
 import com.fisincorporated.exercisetracker.ui.stats.ActivityPager;
-import com.fisincorporated.exercisetracker.ElevationVsDistanceFragment;
+import com.fisincorporated.exercisetracker.ui.charts.ElevationVsDistanceFragment;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;

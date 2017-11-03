@@ -1,11 +1,12 @@
-package com.fisincorporated.exercisetracker;
-
-import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
-import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
+package com.fisincorporated.exercisetracker.ui.charts;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+
+import com.fisincorporated.exercisetracker.GlobalValues;
+import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
 
 public class ActivityChart extends ExerciseMasterFragmentActivity {
 	 

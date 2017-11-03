@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker;
+package com.fisincorporated.exercisetracker.ui.stats;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import com.fisincorporated.exercisetracker.R;
 
 
 // see http://www.vogella.com/tutorials/AndroidListView/article.html

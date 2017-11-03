@@ -8,9 +8,6 @@ import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * Created by ericfoertsch on 12/13/15.
- */
 public class UtilityTest {
 
     private Utility mUtility;

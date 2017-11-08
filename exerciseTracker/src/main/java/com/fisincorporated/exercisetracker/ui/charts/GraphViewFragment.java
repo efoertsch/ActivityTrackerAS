@@ -19,7 +19,6 @@ import com.fisincorporated.utility.Utility;
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GridLabelRenderer;
-import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
 
@@ -522,30 +521,13 @@ public class GraphViewFragment extends ExerciseMasterFragment {
             BarGraphSeries<DataPoint> series = new BarGraphSeries<>(datapoints);
             series.setColor(colorList[i]);
             series.setTitle(exercises.get(i));
+            series.setDrawValuesOnTop(true);
+            series.setValuesOnTopColor(colorList[i]);
             graphView.addSeries(series);
         }
 
-        // set date label formatter
-        graphView.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(getActivity()));
-        graphView.getGridLabelRenderer().setNumHorizontalLabels(activityDates.length);
-
-        // set manual x bounds to have nice steps
-        graphView.getViewport().setMinX(activityDates[0].getTime());
-        graphView.getViewport().setMaxX(activityDates[activityDates.length - 1].getTime());
-        graphView.getViewport().setXAxisBoundsManual(true);
-
-        // as we use dates as labels, the human rounding to nice readable numbers
-        // is not necessary
-        graphView.getGridLabelRenderer().setHumanRounding(false);
-
-        // activate horizontal zooming and scrolling
-        graphView.getViewport().setScalable(true);
-        // activate horizontal scrolling
-        graphView.getViewport().setScrollable(true);
         // activate horizontal and vertical zooming and scrolling
         graphView.getViewport().setScalableY(true);
-        // activate vertical scrolling
-        graphView.getViewport().setScrollableY(true);
 
         // graph and axis titles
         graphView.setTitle(chartTitle);
@@ -561,24 +543,16 @@ public class GraphViewFragment extends ExerciseMasterFragment {
         graphView.getGridLabelRenderer().setPadding(50);
 
         // Set Y axis labeling
-        graphView.getGridLabelRenderer().setNumVerticalLabels(10);
-        graphView.getGridLabelRenderer().setHumanRounding(false);
         graphView.getViewport().setMinY(0d);
         graphView.getViewport().setMaxY(Utility.calcMaxYGraphValue(dataMaxY));
         graphView.getViewport().setYAxisBoundsManual(true);
-        graphView.getViewport().setYAxisBoundsManual(true);
+        graphView.getGridLabelRenderer().setNumVerticalLabels(10);
 
-        // Set X axis labeling
-        graphView.getViewport().setMinX(activityDates[0].getTime());
-        graphView.getViewport().setMaxX(activityDates[activityDates.length - 1].getTime());
-        graphView.getGridLabelRenderer().setNumHorizontalLabels(activityDates.length);
-        graphView.getViewport().setXAxisBoundsManual(true);
+        // X Axis
         graphView.getGridLabelRenderer().setNumHorizontalLabels(activityDates.length);
         graphView.getViewport().setXAxisBoundsManual(true);
 
-
-        // Custom formatter
-        // For Y (date) values, format per graph type
+        // Custom formatter - For Y (date) values, format per graph type
         graphView.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
             @Override
             public String formatLabel(double value, boolean isValueX) {

@@ -19,7 +19,9 @@ import com.fisincorporated.utility.Utility;
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GridLabelRenderer;
+import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.BarGraphSeries;
+import com.jjoe64.graphview.series.BaseSeries;
 import com.jjoe64.graphview.series.DataPoint;
 
 import org.achartengine.GraphicalView;
@@ -523,6 +525,7 @@ public class GraphViewFragment extends ExerciseMasterFragment {
             series.setTitle(exercises.get(i));
             series.setDrawValuesOnTop(true);
             series.setValuesOnTopColor(colorList[i]);
+            //adjustXAxisForIfBarChart(series);
             graphView.addSeries(series);
         }
 
@@ -553,6 +556,10 @@ public class GraphViewFragment extends ExerciseMasterFragment {
         graphView.getViewport().setXAxisBoundsManual(true);
 
         // Custom formatter - For Y (date) values, format per graph type
+        StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graphView);
+
+//        staticLabelsFormatter.setHorizontalLabels(new String[] {"2014","2015", "2016", "2017"});
+//        graphView.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
         graphView.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
             @Override
             public String formatLabel(double value, boolean isValueX) {
@@ -577,6 +584,22 @@ public class GraphViewFragment extends ExerciseMasterFragment {
                 }
             }
         });
+    }
+
+    private void adjustXAxisForIfBarChart(BaseSeries dataSeries) {
+        // Fix as Graphview truncates bars on right
+        double xInterval=1.0;
+        graphView.getViewport().setXAxisBoundsManual(true);
+        if (dataSeries instanceof BarGraphSeries) {
+            // Hide xLabels for now as no longer centered in the grid, but left aligned per the other types
+            graphView.getGridLabelRenderer().setHorizontalLabelsVisible(false);
+            // Shunt the viewport, per v3.1.3 to show the full width of the first and last bars.
+            graphView.getViewport().setMinX(dataSeries.getLowestValueX() - (xInterval/2.0));
+            graphView.getViewport().setMaxX(dataSeries.getHighestValueX() + (xInterval/2.0));
+        } else {
+            graphView.getViewport().setMinX(dataSeries.getLowestValueX() );
+            graphView.getViewport().setMaxX(dataSeries.getHighestValueX());
+        }
     }
 
 }

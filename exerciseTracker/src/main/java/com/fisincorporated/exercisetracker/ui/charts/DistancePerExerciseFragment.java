@@ -1,12 +1,15 @@
 package com.fisincorporated.exercisetracker.ui.charts;
 
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
@@ -14,30 +17,26 @@ import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
-import com.fisincorporated.utility.Chart;
 import com.fisincorporated.utility.Utility;
-import com.jjoe64.graphview.DefaultLabelFormatter;
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.GridLabelRenderer;
-import com.jjoe64.graphview.helper.StaticLabelsFormatter;
-import com.jjoe64.graphview.series.BarGraphSeries;
-import com.jjoe64.graphview.series.BaseSeries;
-import com.jjoe64.graphview.series.DataPoint;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.formatter.LargeValueFormatter;
 
-import org.achartengine.GraphicalView;
-import org.achartengine.chart.BarChart;
-
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
-import static com.fisincorporated.exercisetracker.R.string.date;
-
-public class GraphViewFragment extends ExerciseMasterFragment {
+public class DistancePerExerciseFragment extends ExerciseMasterFragment {
     private ArrayList<String> exerciseSelections = new ArrayList<>();
     private ArrayList<String> locationSelections = new ArrayList<>();
     private int chartType = GlobalValues.BAR_CHART_LAST_MONTH;
@@ -47,61 +46,63 @@ public class GraphViewFragment extends ExerciseMasterFragment {
     private int numberOfTimeUnits = 0;
     private ArrayList<String> exercises = new ArrayList<>();
     private Date[] activityDates;
+    //labels for xAxis;
     private String[] xLabels;
     private double[] totalDistanceValues;
     private double maxDistanceInDay = 0;
     private ArrayList<double[]> values = new ArrayList<>();
-    private int[] colorList = new int[]{Color.RED, Color.BLUE, Color.GREEN,
+    // Color.Green bad contrast on white background
+    private int[] colorList = new int[]{Color.RED, Color.BLUE, Color.parseColor("#ff4CAF50"),
             Color.MAGENTA, Color.YELLOW, Color.CYAN};
-    private int[] colors;
-    private Chart chart = new Chart();
+    private int[] exerciseGraphColors;
 
     Calendar calendar = Calendar.getInstance();
 
-    // eventually replace by string resources
     private String chartTitle;
-    private String xAxisTitle;
-    private String yAxisTitle;
 
-    private GraphView graphView;
     private float dataMaxY;
 
-    private Date formattingDate = new Date();
-    private DateFormat yearFormatter = new SimpleDateFormat("yyyy");
-    private DateFormat monthFormatter = new SimpleDateFormat("MMM");
-    private DateFormat dailyFormatter = new SimpleDateFormat("dd");
-    private DateFormat weeklyFormatter = new SimpleDateFormat("mm/dd");
+    private LineChart graphView;
+    private TextView graphTitle;
+    private Resources resources;
+    private View graphLayoutView;
+    private View progressBar;
 
-
-    public GraphViewFragment() {
-    }
-
-    public static GraphViewFragment newInstance(Bundle bundle) {
+    public static DistancePerExerciseFragment newInstance(Bundle bundle) {
         Bundle args = new Bundle();
         // is this easier/better than copying values?
         args = (Bundle) bundle.clone();
-        GraphViewFragment fragment = new GraphViewFragment();
+        DistancePerExerciseFragment fragment = new DistancePerExerciseFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.graph, container, false);
+        View view = inflater.inflate(R.layout.chart_with_title, container, false);
         getReferencedViews(view);
+        resources = getResources();
         return view;
     }
 
     private void getReferencedViews(View view) {
-        graphView = (GraphView) view.findViewById(R.id.graph);
-
+        graphLayoutView = view.findViewById(R.id.chart_graph_layout);
+        progressBar = view.findViewById(R.id.chart_progress_bar);
+        graphView = (LineChart) view.findViewById(R.id.chart_graph);
+        graphTitle = (TextView) view.findViewById(R.id.chart_title);
     }
 
     public void onResume() {
         super.onResume();
+        showGraph(false);
         findDisplayUnits();
         getChartAndFilterArgs();
-        createChart();
+        createGraph();
+    }
+
+    private void showGraph(boolean showGraph) {
+        progressBar.setVisibility(showGraph ? View.GONE : View.VISIBLE);
+        graphLayoutView.setVisibility((showGraph ? View.VISIBLE : View.GONE));
     }
 
     private void getChartAndFilterArgs() {
@@ -118,31 +119,9 @@ public class GraphViewFragment extends ExerciseMasterFragment {
         }
     }
 
-
-
-    private void createChart() {
-        switch (chartType) {
-            case GlobalValues.BAR_CHART_LAST_MONTH:
-                displayPleaseWait();
-                getDistanceInLastMonthChartTitles();
-                new CreateChartAsync().execute(chartType);
-                break;
-            case GlobalValues.BAR_CHART_DISTANCE_WEEKLY:
-                displayPleaseWait();
-                getWeeklyDistanceChartTitles();
-                new CreateChartAsync().execute(chartType);
-                break;
-            case GlobalValues.BAR_CHART_DISTANCE_MONTHLY:
-                displayPleaseWait();
-                getMonthlyDistanceChartTitles();
-                new CreateChartAsync().execute(chartType);
-                break;
-            case GlobalValues.BAR_CHART_DISTANCE_YEARLY:
-                displayPleaseWait();
-                getYearlyDistanceChartTitles();
-                new CreateChartAsync().execute(chartType);
-                break;
-        }
+    private void createGraph() {
+        displayPleaseWait();
+        new CreateChartAsync().execute(chartType);
     }
 
     private void displayPleaseWait() {
@@ -150,67 +129,62 @@ public class GraphViewFragment extends ExerciseMasterFragment {
     }
 
     private class CreateChartAsync extends AsyncTask<Integer, Void, Boolean> {
+        // there should be only one parm.
         protected Boolean doInBackground(Integer... params) {
+            boolean isSuccessful = false;
             for (Integer chartType : params) {
                 switch (chartType) {
                     case GlobalValues.BAR_CHART_LAST_MONTH:
-                        return getLastMonthBarData();
-                    //	break;
+                        isSuccessful = getLastMonthBarData();
+                     	break;
                     case GlobalValues.BAR_CHART_DISTANCE_WEEKLY:
-                        return getWeeklyBarData();
-                    //	break;
+                        isSuccessful = getWeeklyBarData();
+                     	break;
                     case GlobalValues.BAR_CHART_DISTANCE_MONTHLY:
-                        return getMonthlyBarData();
-                    //	break;
+                        isSuccessful = getMonthlyBarData();
+                     	break;
                     case GlobalValues.BAR_CHART_DISTANCE_YEARLY:
-                        return getYearlyBarData();
-                    //	break;
+                        isSuccessful = getYearlyBarData();
+                     	break;
                 }
-
             }
-            return false;
+
+            if (isSuccessful) {
+                loadColors();
+                determineChartTitle();
+            }
+            return isSuccessful;
         }
-
-
 
         // remember to include (in this case) Void parm to match the AsyncTask definition
         protected void onPostExecute(Boolean result) {
             if (!result) return;
-            loadColors();
-//            mChartView = createBarChart();
-//            chartLayout.addView(mChartView, new ViewGroup.LayoutParams(
-//                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            createBarCharts();
+            showGraph(true);
+            composeGraph();
         }
     }
 
-    private void getDistanceInLastMonthChartTitles() {
-        chartTitle = getResources().getString(R.string.distance_in_last_month);
-        xAxisTitle = getResources().getString(date);
-        yAxisTitle = getResources().getString(R.string.distance_in) + " "
-                + milesKm;
+    private void determineChartTitle() {
+        switch (chartType) {
+            case GlobalValues.BAR_CHART_LAST_MONTH:
+                getChartTitle(R.string.chart_distance_in_last_month);
+                break;
+            case GlobalValues.BAR_CHART_DISTANCE_WEEKLY:
+                getChartTitle(R.string.chart_distance_per_week);
+                break;
+            case GlobalValues.BAR_CHART_DISTANCE_MONTHLY:
+                getChartTitle(R.string.chart_distance_per_month);
+                break;
+            case GlobalValues.BAR_CHART_DISTANCE_YEARLY:
+                getChartTitle(R.string.chart_distance_per_year);
+                break;
+        }
     }
 
-    private void getWeeklyDistanceChartTitles() {
-        chartTitle = getResources().getString(R.string.distance_per_week);
-        xAxisTitle = getResources().getString(R.string.week_ending);
-        yAxisTitle = getResources().getString(R.string.distance_in) + " "
-                + milesKm;
+    private void getChartTitle(@StringRes int stringRes) {
+        chartTitle = resources.getString(stringRes, imperialMetric.equals(imperial) ? resources.getString(R.string.chart_miles) : resources.getString(R.string.chart_kilometers));
     }
 
-    private void getMonthlyDistanceChartTitles() {
-        chartTitle = getResources().getString(R.string.distance_per_month);
-        xAxisTitle = getResources().getString(R.string.year_month);
-        yAxisTitle = getResources().getString(R.string.distance_in) + " "
-                + milesKm;
-    }
-
-    private void getYearlyDistanceChartTitles() {
-        chartTitle = getResources().getString(R.string.distance_per_year);
-        xAxisTitle = getResources().getString(R.string.year);
-        yAxisTitle = getResources().getString(R.string.distance_in) + " "
-                + milesKm;
-    }
 
     // show distances daily for last month
     private boolean getLastMonthBarData() {
@@ -317,9 +291,6 @@ public class GraphViewFragment extends ExerciseMasterFragment {
         csrUtility = database.rawQuery(query.toString(), null);
         if (csrUtility.getCount() == 0) {
             displayToastOnUIThread(R.string.no_activities_to_chart);
-//			Toast.makeText(getActivity(),
-//					getResources().getString(R.string.no_activities_to_chart),
-//					Toast.LENGTH_LONG).show();
             getFragmentManager().popBackStack();
             return 0;
         }
@@ -328,9 +299,6 @@ public class GraphViewFragment extends ExerciseMasterFragment {
         // if not activities within timeframe selected return 0.
         if (startTimeStamp == null) {
             displayToastOnUIThread(R.string.no_activities_found_for_time_period_selected);
-//			Toast.makeText(getActivity(),
-//					getResources().getString(R.string.no_activities_found_for_time_period_selected),
-//					Toast.LENGTH_LONG).show();
             return 0;
         }
         try {
@@ -338,9 +306,6 @@ public class GraphViewFragment extends ExerciseMasterFragment {
                     .parse(csrUtility.getString(0));
         } catch (ParseException e) {
             displayToastOnUIThread(R.string.error_getting_activity_date);
-//				Toast.makeText(getActivity(),
-//					getResources().getString(R.string.error_getting_activity_date),
-//					Toast.LENGTH_LONG).show();
             getFragmentManager().popBackStack();
             return 0;
         }
@@ -385,9 +350,6 @@ public class GraphViewFragment extends ExerciseMasterFragment {
         csrUtility = database.rawQuery(query.toString(), null);
         if (csrUtility.getCount() == 0) {
             displayToastOnUIThread(R.string.no_activities_to_chart);
-//			Toast.makeText(getActivity(),
-//					getResources().getString(R.string.no_activities_to_chart),
-//					Toast.LENGTH_LONG).show();
             getFragmentManager().popBackStack();
         }
         csrUtility.moveToFirst();
@@ -452,9 +414,9 @@ public class GraphViewFragment extends ExerciseMasterFragment {
     }
 
     private void loadColors() {
-        colors = new int[values.size()];
+        exerciseGraphColors = new int[values.size()];
         for (int i = 0; i < values.size() && i < colorList.length; ++i) {
-            colors[i] = colorList[i];
+            exerciseGraphColors[i] = colorList[i];
         }
     }
 
@@ -503,103 +465,54 @@ public class GraphViewFragment extends ExerciseMasterFragment {
         }
     }
 
-    private GraphicalView createBarChart() {
-        return chart.createBarChart(getActivity(), chartTitle, xAxisTitle,
-                yAxisTitle, exercises.toArray(new String[]{""}), 0d,
-                (double) numberOfTimeUnits - 1, 0d, maxDistanceInDay, values,
-                colors, xLabels, BarChart.Type.DEFAULT);
 
-    }
-
-    private void createBarCharts() {
-        graphView.getGridLabelRenderer().resetStyles();
-        graphView.removeAllSeries();
+    private void composeGraph() {
+        graphView.clear();
+        // Create graphing datasets
+        LineData lineData = new LineData();
         for (int i = 0; i < exercises.size(); ++i) {
-            DataPoint[] datapoints = new DataPoint[activityDates.length];
-            for (int j = 0; j < datapoints.length; ++j) {
-                datapoints[j] = new DataPoint(activityDates[j], values.get(i)[j]);
+            List<Entry> entries = new ArrayList<>();
+            for (int j = 0; j < activityDates.length; ++j) {
+                entries.add(new Entry((float) j, (float) values.get(i)[j]));
             }
 
-            BarGraphSeries<DataPoint> series = new BarGraphSeries<>(datapoints);
-            series.setColor(colorList[i]);
-            series.setTitle(exercises.get(i));
-            series.setDrawValuesOnTop(true);
-            series.setValuesOnTopColor(colorList[i]);
-            //adjustXAxisForIfBarChart(series);
-            graphView.addSeries(series);
+            LineDataSet dataSet = new LineDataSet(entries, exercises.get(i));
+            dataSet.setValueTextSize(12f);
+            dataSet.setLabel(exercises.get(i));
+            dataSet.setColor(exerciseGraphColors[i]);
+            dataSet.setValueTextColor(exerciseGraphColors[i]);
+            lineData.addDataSet(dataSet);
         }
 
-        // activate horizontal and vertical zooming and scrolling
-        graphView.getViewport().setScalableY(true);
+        lineData.setDrawValues(true);
+        graphView.setData(lineData);
 
-        // graph and axis titles
-        graphView.setTitle(chartTitle);
-        graphView.getLegendRenderer().setVisible(true);
-        graphView.getGridLabelRenderer().setHorizontalAxisTitle(xAxisTitle);
-        graphView.getGridLabelRenderer().setVerticalAxisTitle(yAxisTitle);
-
-        // horizontal grid lines
-        graphView.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.HORIZONTAL);
-
-        // padding
-        // TODO adjust for screen resolution?
-        graphView.getGridLabelRenderer().setPadding(50);
-
-        // Set Y axis labeling
-        graphView.getViewport().setMinY(0d);
-        graphView.getViewport().setMaxY(Utility.calcMaxYGraphValue(dataMaxY));
-        graphView.getViewport().setYAxisBoundsManual(true);
-        graphView.getGridLabelRenderer().setNumVerticalLabels(10);
-
-        // X Axis
-        graphView.getGridLabelRenderer().setNumHorizontalLabels(activityDates.length);
-        graphView.getViewport().setXAxisBoundsManual(true);
-
-        // Custom formatter - For Y (date) values, format per graph type
-        StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graphView);
-
-//        staticLabelsFormatter.setHorizontalLabels(new String[] {"2014","2015", "2016", "2017"});
-//        graphView.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
-        graphView.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
+        // Set X axis (time) formatting info
+        XAxis xAxis = graphView.getXAxis();
+        xAxis.setGranularity(1f);
+        //xAxis.setCenterAxisLabels(true);
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override
-            public String formatLabel(double value, boolean isValueX) {
-                if (isValueX) {
-                    // show years, months or days
-                    formattingDate.setTime((long) value);
-                    switch (chartType) {
-                        case GlobalValues.BAR_CHART_LAST_MONTH:
-                            return dailyFormatter.format(formattingDate);
-                        case GlobalValues.BAR_CHART_DISTANCE_WEEKLY:
-                            return weeklyFormatter.format(formattingDate);
-                        case GlobalValues.BAR_CHART_DISTANCE_MONTHLY:
-                            return monthFormatter.format(formattingDate);
-                        case GlobalValues.BAR_CHART_DISTANCE_YEARLY:
-                            return yearFormatter.format(formattingDate);
-                        default:
-                            return yearFormatter.format(formattingDate);
-                    }
-                } else {
-                    // show normal y values
-                    return super.formatLabel(value, isValueX);
-                }
+            public String getFormattedValue(float value, AxisBase axis) {
+                // show years, months or days
+                return xLabels[(int)value];
             }
         });
-    }
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
-    private void adjustXAxisForIfBarChart(BaseSeries dataSeries) {
-        // Fix as Graphview truncates bars on right
-        double xInterval=1.0;
-        graphView.getViewport().setXAxisBoundsManual(true);
-        if (dataSeries instanceof BarGraphSeries) {
-            // Hide xLabels for now as no longer centered in the grid, but left aligned per the other types
-            graphView.getGridLabelRenderer().setHorizontalLabelsVisible(false);
-            // Shunt the viewport, per v3.1.3 to show the full width of the first and last bars.
-            graphView.getViewport().setMinX(dataSeries.getLowestValueX() - (xInterval/2.0));
-            graphView.getViewport().setMaxX(dataSeries.getHighestValueX() + (xInterval/2.0));
-        } else {
-            graphView.getViewport().setMinX(dataSeries.getLowestValueX() );
-            graphView.getViewport().setMaxX(dataSeries.getHighestValueX());
-        }
-    }
+        // Set Y axis (mileage) formatting
+        YAxis leftAxis = graphView.getAxisLeft();
+        leftAxis.setValueFormatter(new LargeValueFormatter());
+        leftAxis.setDrawGridLines(true);
+        leftAxis.setSpaceTop(35f);
+        leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+        leftAxis.setAxisMaximum(Utility.calcMaxYGraphValue(dataMaxY));
+        graphView.getAxisRight().setEnabled(false);  // TODO revisit later
 
+        // Set graph title - note separate TextView that is not part of graph
+        graphTitle.setText(chartTitle);
+        graphView.getDescription().setText("");
+
+        graphView.invalidate();
+    }
 }

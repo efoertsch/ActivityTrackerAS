@@ -12,16 +12,16 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import com.fisincorporated.exercisetracker.ui.charts.ActivityChart;
-import com.fisincorporated.exercisetracker.ui.stats.ActivityDetailFragment;
 import com.fisincorporated.exercisetracker.ActivityMap;
 import com.fisincorporated.exercisetracker.ActivityMapFragment;
-import com.fisincorporated.exercisetracker.ui.stats.ActivityPager;
-import com.fisincorporated.exercisetracker.ui.charts.ElevationVsDistanceFragment;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
+import com.fisincorporated.exercisetracker.ui.charts.AltitudeVsDistanceGraphFragment;
+import com.fisincorporated.exercisetracker.ui.charts.GraphActivity;
+import com.fisincorporated.exercisetracker.ui.stats.ActivityDetailFragment;
+import com.fisincorporated.exercisetracker.ui.stats.ActivityPager;
 import com.fisincorporated.facebook.FacebookPostStatsActivity;
 import com.fisincorporated.facebook.FacebookPostStatsFragment;
 import com.fisincorporated.interfaces.IHandleSelectedAction;
@@ -120,7 +120,7 @@ abstract public class ExerciseMasterActivity extends AppCompatActivity implement
 				newDetail = ActivityMapFragment.newInstance(bundle);
 				break;
 			case  GlobalValues.DISPLAY_CHART:
-				newDetail = ElevationVsDistanceFragment.newInstance(bundle);
+				newDetail = AltitudeVsDistanceGraphFragment.newInstance(bundle);
 				break;
 			case  GlobalValues.DISPLAY_FACEBOOK_TO_POST:
 				newDetail = FacebookPostStatsFragment.newInstance(bundle);
@@ -137,7 +137,7 @@ abstract public class ExerciseMasterActivity extends AppCompatActivity implement
 	}
 
 	private void startCharts(Bundle args) {
-		Intent intent = new Intent(this, ActivityChart.class);
+		Intent intent = new Intent(this, GraphActivity.class);
 		xferBundleToIntent(intent, args);
 		startActivity(intent);
 	

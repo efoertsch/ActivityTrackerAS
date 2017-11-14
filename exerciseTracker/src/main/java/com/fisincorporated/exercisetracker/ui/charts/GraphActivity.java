@@ -8,10 +8,7 @@ import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 
-public class GraphViewActivity extends ExerciseMasterFragmentActivity {
-
-    public GraphViewActivity() {
-    }
+public class GraphActivity extends ExerciseMasterFragmentActivity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,16 +25,14 @@ public class GraphViewActivity extends ExerciseMasterFragmentActivity {
                 bundle.putLong(LocationExercise._ID, intent.getLongExtra(LocationExercise._ID, -1));
                 bundle.putString(GlobalValues.TITLE, intent.getStringExtra(GlobalValues.TITLE));
                 bundle.putString(LocationExercise.DESCRIPTION, intent.getStringExtra(LocationExercise.DESCRIPTION));
-                // only have one chart for now
-                //TODO convert to GraphView
-                return   ElevationVsDistanceFragment.newInstance(bundle);
+                return   AltitudeVsDistanceGraphFragment.newInstance(bundle);
             default:
                 bundle.putStringArrayList(GlobalValues.EXERCISE_FILTER_PHRASE,
                         intent.getStringArrayListExtra(GlobalValues.EXERCISE_FILTER_PHRASE));
                 bundle.putStringArrayList(GlobalValues.LOCATION_FILTER_PHRASE,
                         intent.getStringArrayListExtra(GlobalValues.LOCATION_FILTER_PHRASE));
                 bundle.putInt(GlobalValues.BAR_CHART_TYPE, intent.getIntExtra(GlobalValues.BAR_CHART_TYPE, GlobalValues.BAR_CHART_LAST_MONTH));
-                return GraphViewFragment.newInstance(bundle);
+                return DistancePerExerciseFragment.newInstance(bundle);
         }
 
     }

@@ -58,6 +58,7 @@ public class ExerciseMasterFragment extends Fragment {
 	 * Find out if to display distances in ft/miles vs m/km
 	 */
 	protected void findDisplayUnits() {
+		imperial = getResources().getString(R.string.imperial);
 		Resources res = getResources();
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
 		imperialMetric = sharedPref.getString(res.getString(R.string.display_units), res.getString(R.string.imperial));

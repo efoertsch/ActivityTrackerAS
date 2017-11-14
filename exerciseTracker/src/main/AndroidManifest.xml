@@ -120,7 +120,7 @@
                 android:value="splitActionBarWhenNarrow"/>
         </activity>
 
-        <activity android:name=".ActivityChart"
+        <activity android:name=".ui.charts.GraphActivity"
             android:parentActivityName=".ui.startup.ExerciseDrawerActivity"
             android:uiOptions="splitActionBarWhenNarrow">
 

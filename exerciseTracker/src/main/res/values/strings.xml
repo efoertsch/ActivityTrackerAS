@@ -237,5 +237,14 @@
     <string name="kilometers_abbrev" translatable="false">km</string>
     <string name="kilometers_per_hours_abbrev" translatable="false">kph</string>
 
+    <!-- Charting -->
+    <string name="chart_distance_in_last_month">%1$s in last month</string>
+    <string name="chart_distance_per_week">%1$s per week</string>
+    <string name="chart_distance_per_month">%1$s per month</string>
+    <string name="chart_distance_per_year">%1$s per year</string>
+    <string name="chart_miles">Miles</string>
+    <string name="chart_kilometers">Kilometers</string>
+    <string name="chart_title_elevation_vs_distance">Elevation(%1$s) vs Distance(%2$s)\n %3$s %4$s</string>
+
 
 </resources>

@@ -1,7 +1,5 @@
 package com.fisincorporated.exercisetracker.database;
 
-import java.util.ArrayList;
-
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
@@ -14,7 +12,12 @@ import android.util.Log;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
-import com.fisincorporated.exercisetracker.database.TrackerDatabase.*;
+import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
+import com.fisincorporated.exercisetracker.database.TrackerDatabase.ExrcsLocation;
+import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
+import com.fisincorporated.exercisetracker.database.TrackerDatabase.ProgramSetting;
+
+import java.util.ArrayList;
 
 public class TrackerDatabaseHelper extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = GlobalValues.DATABASE_NAME;
@@ -367,8 +370,7 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
 			ArrayList<String> selectedExercises,
 			ArrayList<String> selectedLocations, String startTimeStamp) {
 		StringBuffer where = new StringBuffer();
-		where.append("where " + LocationExercise.START_TIMESTAMP + " notnull "
-				+ " and  date(" + LocationExercise.START_TIMESTAMP + ") >= '"
+		where.append("where date(" + LocationExercise.START_TIMESTAMP + ") >= '"
 				+ startTimeStamp + "' ");
 		if (selectedExercises.size() != 0 || selectedLocations.size() != 0) {
 			createActivityWherePhrase(where, selectedExercises, Exercise.EXERCISE);
@@ -427,8 +429,7 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
 			ArrayList<String> selectedExercises,
 			ArrayList<String> selectedLocations, String startTimeStamp) {
 		StringBuffer where = new StringBuffer();
-		where.append("where " + LocationExercise.START_TIMESTAMP + " notnull "
-				+ " and  date(" + LocationExercise.START_TIMESTAMP + ") >= '"
+		where.append("where date(" + LocationExercise.START_TIMESTAMP + ") >= '"
 				+ startTimeStamp + "' ");
 		if (selectedExercises.size() != 0 || selectedLocations.size() != 0) {
 			createActivityWherePhrase(where, selectedExercises, Exercise.EXERCISE);
@@ -521,8 +522,7 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
 			ArrayList<String> selectedExercises,
 			ArrayList<String> selectedLocations, String startTimeStamp) {
 		StringBuffer where = new StringBuffer();
-		where.append("where " + LocationExercise.START_TIMESTAMP + " notnull "
-				+ " and  date(" + LocationExercise.START_TIMESTAMP + ") >= '"
+		where.append("where date(" + LocationExercise.START_TIMESTAMP + ") >= '"
 				+ startTimeStamp + "' ");
 		if (selectedExercises.size() != 0 || selectedLocations.size() != 0) {
 			createActivityWherePhrase(where, selectedExercises, Exercise.EXERCISE);
@@ -617,8 +617,7 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
 			ArrayList<String> selectedExercises,
 			ArrayList<String> selectedLocations, String startTimeStamp) {
 		StringBuffer where = new StringBuffer();
-		where.append("where " + LocationExercise.START_TIMESTAMP + " notnull "
-				+ " and  date(" + LocationExercise.START_TIMESTAMP + ") >= '"
+		where.append("where date(" + LocationExercise.START_TIMESTAMP + ") >= '"
 				+ startTimeStamp + "' ");
 		if (selectedExercises.size() != 0 || selectedLocations.size() != 0) {
 			createActivityWherePhrase(where, selectedExercises, Exercise.EXERCISE);

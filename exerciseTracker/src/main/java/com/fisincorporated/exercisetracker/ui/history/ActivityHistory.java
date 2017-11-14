@@ -9,10 +9,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.fisincorporated.exercisetracker.ActivityChart;
-import com.fisincorporated.exercisetracker.ActivityDistanceChartFragment;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
+import com.fisincorporated.exercisetracker.ui.charts.GraphActivity;
+import com.fisincorporated.exercisetracker.ui.charts.DistancePerExerciseFragment;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
 
 public class ActivityHistory extends ExerciseMasterFragmentActivity {
@@ -137,7 +137,7 @@ public class ActivityHistory extends ExerciseMasterFragmentActivity {
         bundle.putInt(GlobalValues.BAR_CHART_TYPE, chartType);
         Fragment newDetail = null;
         if (findViewById(R.id.detailFragmentContainer) == null) {
-            Intent intent = new Intent(this, ActivityChart.class);
+            Intent intent = new Intent(this, GraphActivity.class);
             xferBundleToIntent(intent, bundle);
             startActivity(intent);
         } else {
@@ -145,7 +145,7 @@ public class ActivityHistory extends ExerciseMasterFragmentActivity {
             FragmentManager fm = getSupportFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
             Fragment oldDetail = fm.findFragmentById(R.id.detailFragmentContainer);
-            newDetail = ActivityDistanceChartFragment.newInstance(bundle);
+            newDetail = DistancePerExerciseFragment.newInstance(bundle);
 
             if (oldDetail != null) {
                 ft.remove(oldDetail);

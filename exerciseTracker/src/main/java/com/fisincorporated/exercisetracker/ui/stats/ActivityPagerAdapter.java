@@ -12,7 +12,7 @@ import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.ExrcsLocation;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
-import com.fisincorporated.utility.Utility;
+import com.fisincorporated.exercisetracker.utility.Utility;
 
 // From http://tumble.mlcastle.net/post/25875136857/bridging-cursorloaders-and-viewpagers-on-android
 // note the original example used a more generic method of getting the args values from the cursor and

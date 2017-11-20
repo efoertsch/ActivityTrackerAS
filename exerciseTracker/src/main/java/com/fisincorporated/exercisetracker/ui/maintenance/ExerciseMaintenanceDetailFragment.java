@@ -17,503 +17,548 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.fisincorporated.exercisetracker.ActivityDialogFragment;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.ExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
-import com.fisincorporated.utility.InputFilterMinMax;
-import com.fisincorporated.utility.Utility;
+import com.fisincorporated.exercisetracker.ui.utils.ActivityDialogFragment;
+import com.fisincorporated.exercisetracker.utility.Utility;
 
 import java.text.DecimalFormat;
 import java.util.Locale;
 
 public class ExerciseMaintenanceDetailFragment extends ExerciseMasterFragment {
 
-	private long exerciseRowId = -1;
-	private long exerciseLocationRowId = -1;
-	private AutoCompleteTextView actvExercise;
-	// Always log detail
-	//private CheckBox chkbxLogDetail;
-	private EditText etLogInterval;
-	private EditText etDefaultLogInterval;
-	private EditText etMinDistToTravel;
-	private CheckBox chkbxElevationInCalcs;
-	private TextView tvUnits;
+    private long exerciseRowId = -1;
+    private long exerciseLocationRowId = -1;
+    private AutoCompleteTextView actvExercise;
+    // Always log detail
+    //private CheckBox chkbxLogDetail;
+    private EditText etLogInterval;
+    private EditText etDefaultLogInterval;
+    private TextView tvMinDistToTravel;
+    private EditText etMinDistToTravel;
+    private CheckBox chkbxElevationInCalcs;
+    private Spinner mapPinDistanceSpinner;
+    private Button btnSave;
+    private Button btnDelete;
+    private TextView spinnerLabel;
 
-	static final int DELETE_REQUESTCODE = 1;
-	private Button btnSave;
-	private Button btnDelete;
-	private long origExerciseId;
-	private ExerciseRecord exerciseRecord = null;
+    static final int DELETE_REQUESTCODE = 1;
 
-	public ExerciseMaintenanceDetailFragment() {
-	}
+    private long origExerciseId;
+    private ExerciseRecord exerciseRecord = null;
+    private int mapPinMileage = 0;
+    private int[] mapPinDistances;
 
-	public static ExerciseMaintenanceDetailFragment newInstance(Bundle bundle) {
-		ExerciseMaintenanceDetailFragment fragment = new ExerciseMaintenanceDetailFragment();
-		fragment.setArguments(bundle);
-		return fragment;
-	}
 
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		View view;
-		view = inflater.inflate(R.layout.exercise_maintanence, container, false);
-		lookForArguments(savedInstanceState);
-		findDisplayUnits();
-		getReferencedViews(view);
-		return view;
-	}
+    public ExerciseMaintenanceDetailFragment() {
+    }
 
-	private void lookForArguments(Bundle savedInstanceState) {
-		Bundle bundle;
-		if (getArguments() != null) {
-			bundle = getArguments();
-			exerciseRecord = (ExerciseRecord) bundle
-					.getParcelable(Exercise.EXERCISE_TABLE);
-			origExerciseId = exerciseRecord.get_id();
-		}
-		if (savedInstanceState != null) {
-			exerciseRecord = savedInstanceState
-					.getParcelable(Exercise.EXERCISE_TABLE);
-			origExerciseId = exerciseRecord.get_id();
-		}
-	}
+    public static ExerciseMaintenanceDetailFragment newInstance(Bundle bundle) {
+        ExerciseMaintenanceDetailFragment fragment = new ExerciseMaintenanceDetailFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
-	// save the current record so if orientation change you can display same one
-	public void onSaveInstanceState(Bundle savedInstanceState) {
-		updateExerciseRecordFromScreen();
-		savedInstanceState.putParcelable(Exercise.EXERCISE_TABLE, exerciseRecord);
-		super.onSaveInstanceState(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view;
+        view = inflater.inflate(R.layout.exercise_maintanence, container, false);
+        lookForArguments(savedInstanceState);
+        findDisplayUnits();
+        getMapPinDistanceArray();
+        getReferencedViews(view);
+        return view;
+    }
 
-	}
+    private void lookForArguments(Bundle savedInstanceState) {
+        Bundle bundle;
+        if (getArguments() != null) {
+            bundle = getArguments();
+            exerciseRecord = (ExerciseRecord) bundle
+                    .getParcelable(Exercise.EXERCISE_TABLE);
+            origExerciseId = exerciseRecord.get_id();
+        }
+        if (savedInstanceState != null) {
+            exerciseRecord = savedInstanceState
+                    .getParcelable(Exercise.EXERCISE_TABLE);
+            origExerciseId = exerciseRecord.get_id();
+        }
+    }
 
-	// if rowid passed then you can either update the log interval
-	// or delete the exercise
-	// if no rowid passed then you are entering new exercise
-	// make sure appropriate field access set
-	@Override
-	public void onResume() {
-		super.onResume();
-		showExercise();
-		setFieldAccess();
-	}
-		
+    // save the current record so if orientation change you can display same one
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        updateExerciseRecordFromScreen();
+        savedInstanceState.putParcelable(Exercise.EXERCISE_TABLE, exerciseRecord);
+        super.onSaveInstanceState(savedInstanceState);
 
-	private void getReferencedViews(View view) {
-		actvExercise = (AutoCompleteTextView) view
-				.findViewById(R.id.exercise_maintenance_actvExercise);
+    }
+
+    // if rowid passed then you can either update the log interval
+    // or delete the exercise
+    // if no rowid passed then you are entering new exercise
+    // make sure appropriate field access set
+    @Override
+    public void onResume() {
+        super.onResume();
+        showExercise();
+        setFieldAccess();
+    }
+
+
+    private void getReferencedViews(View view) {
+        actvExercise = (AutoCompleteTextView) view
+                .findViewById(R.id.exercise_maintenance_actvExercise);
 //		chkbxLogDetail = (CheckBox) view
 //				.findViewById(R.id.exercise_maintenance_chkbxLog_Detail);
-		etLogInterval = (EditText) view
-				.findViewById(R.id.exercise_maintenance_etLogInterval);
-		etDefaultLogInterval = (EditText) view
-				.findViewById(R.id.exercise_maintenance_DefaultLogInterval);
-		etMinDistToTravel = (EditText) view
-				.findViewById(R.id.exercise_maintenance_etMinDistToTravel);
-		chkbxElevationInCalcs = (CheckBox) view
-				.findViewById(R.id.exercise_maintenance_chkbxElevationInCalcs);
-		tvUnits = (TextView) view.findViewById(R.id.exercise_maintenance_tvUnits);
-		tvUnits.setText(feetMeters);
-		etLogInterval.setFilters(new InputFilter[] { new InputFilterMinMax("1",
-				"600") });
-		etDefaultLogInterval
-				.setFilters(new InputFilter[] { new InputFilterMinMax("1", "600") });
-		etMinDistToTravel.setFilters(new InputFilter[] { new InputFilterMinMax(
-				"1", "600") });
+        etLogInterval = (EditText) view
+                .findViewById(R.id.exercise_maintenance_etLogInterval);
+        etDefaultLogInterval = (EditText) view
+                .findViewById(R.id.exercise_maintenance_DefaultLogInterval);
+        tvMinDistToTravel = (TextView) view.findViewById(R.id.exercise_maintenance_lblMinDistToTravel);
+        etMinDistToTravel = (EditText) view
+                .findViewById(R.id.exercise_maintenance_etMinDistToTravel);
+        etMinDistToTravel.setText(getString(R.string.minimum_distance_to_travel_to_log_gps_points, feetMeters));
+        chkbxElevationInCalcs = (CheckBox) view
+                .findViewById(R.id.exercise_maintenance_chkbxElevationInCalcs);
+        etLogInterval.setFilters(new InputFilter[]{new InputFilterMinMax("1",
+                "600")});
+        etDefaultLogInterval
+                .setFilters(new InputFilter[]{new InputFilterMinMax("1", "600")});
+        etMinDistToTravel.setFilters(new InputFilter[]{new InputFilterMinMax(
+                "1", "600")});
 
-		// Handle Save Button
-		btnSave = (Button) view.findViewById(R.id.btnSave);
-		btnSave.setOnClickListener(new View.OnClickListener() {
-			@SuppressLint("DefaultLocale")
-			public void onClick(View v) {
-				updateExercise();
-				goToExeciseList();
-			}
-		});
+        // Handle Save Button
+        btnSave = (Button) view.findViewById(R.id.btnSave);
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("DefaultLocale")
+            public void onClick(View v) {
+                updateExercise();
+                goToExeciseList();
+            }
+        });
 
-		// Handle Delete Button
-		// See if any logging done using this exercise. If so you can't delete it
-		btnDelete = (Button) view.findViewById(R.id.btnDelete);
-		btnDelete.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				ActivityDialogFragment dialog;
-				dialog = ActivityDialogFragment.newInstance(-1,
-						R.string.confirm_delete_exercise, R.string.delete,
-						R.string.cancel, -1);
-				dialog.setTargetFragment(ExerciseMaintenanceDetailFragment.this,
-						DELETE_REQUESTCODE);
-				dialog.show(getActivity().getSupportFragmentManager(),
-						"confirmDialog");
-			}
-		});
-	}
+        mapPinDistanceSpinner = (Spinner) view.findViewById(R.id.exercise_maintenance_spinner_map_pin_distance);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
+                R.array.map_pin_mileage_display, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mapPinDistanceSpinner.setAdapter(adapter);
+        mapPinDistanceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-	private void setFieldAccess() {
-		if (origExerciseId != -1) {
-			// since exercise rowid passed in then you can update or delete record
-			exerciseRowId = origExerciseId;
-			actvExercise.setEnabled(false);
-			etDefaultLogInterval.setEnabled(false);
-			etLogInterval.requestFocus();
-			if (isDefaultExercise(exerciseRecord.getExercise())) {
-				// Toast.makeText(getActivity(),
-				// getString(R.string.default_exercise_can_not_be_deleted),
-				// Toast.LENGTH_LONG).show();
-				btnDelete.setVisibility(View.INVISIBLE);
-			} else {
-				btnDelete.setVisibility(View.VISIBLE);
-			}
-		} else {
-			// exercise rowid not passed in so can add
-			actvExercise.setEnabled(true);
-			etDefaultLogInterval.setEnabled(true);
-			//chkbxLogDetail.setEnabled(true);
-			actvExercise.requestFocus();
-			btnDelete.setVisibility(View.INVISIBLE);
-		}
-	}
-	
-	private void updateExercise() {
-		boolean exerciseExists;
-		if (actvExercise.getText().toString().trim().isEmpty()) {
-			Toast.makeText(
-					getActivity(),
-					getResources().getString(
-							R.string.exercise_not_defined_nothing_to_save),
-					Toast.LENGTH_LONG).show();
-			return;
-		}
-		// if update inside a transaction get (5) com.fisincorporated.exercisetracker.database is locked error.
-		// Why is that?
-		database.beginTransaction();
-		try {
-			// if new Exercise save it, else update existing Exercise
-			if (!(exerciseExists = doesExerciseExist())) {
-				// save new Exercise
-				updateExerciseRecordFromScreen();
-				// new
-				// ExerciseDAO(getTrackerDataseHelper()).createExerciseRecord(exerciseRecord);
-				insertNewExcersiseRecord(exerciseRecord);
-				Toast.makeText(
-						getActivity(),
-						actvExercise.getText().toString().trim() + " "
-								+ getResources().getString(R.string.saved),
-						Toast.LENGTH_LONG).show();
-				database.setTransactionSuccessful();
-			} else if (exerciseExists && origExerciseId == -1) {
-				Toast.makeText(
-						getActivity(),
-						getResources()
-								.getString(
-										R.string.an_exercise_already_exists_with_this_name_exercise_not_added),
-						Toast.LENGTH_LONG).show();
-			} else {
-				// update existing Exercise
-				updateExerciseRecordFromScreen();
-				// new
-				// ExerciseDAO(getTrackerDataseHelper()).updateExercise(exerciseRecord);
-				updateExistingExerciseRecord(exerciseRecord);
-				Toast.makeText(
-						getActivity(),
-						actvExercise.getText().toString().trim() + " "
-								+ getResources().getString(R.string.updated),
-						Toast.LENGTH_LONG).show();
-				database.setTransactionSuccessful();
-			}
-		} catch (SQLiteException sqle) {
-			Log.e(GlobalValues.LOG_TAG,
-					"ExerciseMaintenanceDetailFragment.onClick for update/insert of exercise. SQLiteException: "
-							+ sqle.toString());
-		} finally {
-			if (database.inTransaction())
-				database.endTransaction();
-		}
-	}
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mapPinMileage = getResources().getIntArray(R.array.map_pin_mileage_value)[position];
+            }
 
-	private void updateExerciseRecordFromScreen() {
-		exerciseRecord.setExercise(actvExercise.getText() + "");
-		//exerciseRecord.setLogDetail(chkbxLogDetail.isChecked() == true ? 1 : 0);
-		exerciseRecord.setLogDetail(1);
-		try {
-			exerciseRecord.setDefaultLogInterval(Integer
-					.parseInt(etDefaultLogInterval.getText().toString()));
-		} catch (NumberFormatException nfe) {
-			exerciseRecord.setLogInterval(ExerciseRecord.DEFAULT_LOG_INTERVAL);
-		}
-		try {
-			exerciseRecord.setLogInterval(Integer.parseInt(etLogInterval.getText()
-					.toString()));
-		} catch (NumberFormatException nfe) {
-			exerciseRecord.setLogInterval(ExerciseRecord.LOG_INTERVAL);
-		}
-		try {
-			if (feetMeters.equalsIgnoreCase("m")) {
-				exerciseRecord.setMinDistanceToLog(Float
-						.parseFloat(etMinDistToTravel.getText().toString()));
-			} else {
-				exerciseRecord.setMinDistanceToLog(Utility.feetToMeters(Float
-						.parseFloat(etMinDistToTravel.getText().toString())));
-				etMinDistToTravel.setText(new DecimalFormat("#####").format(Utility
-						.metersToFeet(exerciseRecord.getMinDistanceToLog())));
-			}
-		} catch (NumberFormatException nfe) {
-			exerciseRecord.setMinDistanceToLog(ExerciseRecord.MIN_DISTANCE_TO_LOG);
-		}
-		exerciseRecord.setElevationInDistCalcs(chkbxElevationInCalcs.isChecked() == true ? 1 : 0);
-	}
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+        spinnerLabel = (TextView) view.findViewById(R.id.exercise_maintenance_spinner_label);
 
-	private void updateExistingExerciseRecord(ExerciseRecord exerciser) {
-		Long rowId = exerciser.get_id();
-		ContentValues values = new ContentValues();
-		values.put(Exercise._ID, exerciser.get_id());
-		values.put(Exercise.EXERCISE, exerciser.getExercise());
-		values.put(Exercise.LOG_INTERVAL,
-				Integer.toString(exerciser.getLogInterval()));
-		values.put(Exercise.DEFAULT_LOG_INTERVAL,
-				Integer.toString(exerciser.getDefaultLogInterval()));
-		values.put(Exercise.LOG_DETAIL,
-				Integer.toString(exerciser.getLogDetail()));
-		values.put(Exercise.TIMES_USED,
-				Integer.toString(exerciser.getTimesUsed()));
-		values.put(Exercise.ELEVATION_IN_DIST_CALCS,
-				Integer.toString(exerciser.getElevationInDistCalcs()));
-		values.put(Exercise.MIN_DISTANCE_TO_LOG,
-				Float.toString(exerciser.getMinDistanceToLog()));
+        // Handle Delete Button
+        // See if any logging done using this exercise. If so you can't delete it
+        btnDelete = (Button) view.findViewById(R.id.btnDelete);
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                ActivityDialogFragment dialog;
+                dialog = ActivityDialogFragment.newInstance(-1,
+                        R.string.confirm_delete_exercise, R.string.delete,
+                        R.string.cancel, -1);
+                dialog.setTargetFragment(ExerciseMaintenanceDetailFragment.this,
+                        DELETE_REQUESTCODE);
+                dialog.show(getActivity().getSupportFragmentManager(),
+                        "confirmDialog");
+            }
+        });
+    }
 
-		database.update(Exercise.EXERCISE_TABLE, values, " _id = ?",
-				new String[] { rowId.toString() });
-	}
+    private void getMapPinDistanceArray(){
+        Resources res = getResources();
+        mapPinDistances = res.getIntArray(R.array.map_pin_mileage_value);
+    }
+    private void setMapPinSpinnerValue(){
+        for (int i = 0; i < mapPinDistances.length; ++i){
+            if (exerciseRecord.getPinEveryXMiles() == mapPinDistances[i]){
+                mapPinDistanceSpinner.setSelection(i);
+                return;
+            }
+            mapPinDistanceSpinner.setSelection(0);
+        }
+    }
 
-	private void insertNewExcersiseRecord(ExerciseRecord exerciser) {
-		Long rowId = -1l;
-		ContentValues values = new ContentValues();
-		// all fields mandatory fields except for _ID
-		values.put(Exercise.EXERCISE, exerciser.getExercise());
-		values.put(Exercise.LOG_INTERVAL,
-				Integer.toString(exerciser.getLogInterval()));
-		values.put(Exercise.DEFAULT_LOG_INTERVAL,
-				Integer.toString(exerciser.getDefaultLogInterval()));
-		values.put(Exercise.LOG_DETAIL,
-				Integer.toString(exerciser.getLogDetail()));
-		values.put(Exercise.ELEVATION_IN_DIST_CALCS,
-				Integer.toString(exerciser.getElevationInDistCalcs()));
-		values.put(Exercise.MIN_DISTANCE_TO_LOG,
-				Float.toString(exerciser.getMinDistanceToLog()));
+    private void setFieldAccess() {
+        if (origExerciseId != -1) {
+            // since exercise rowid passed in then you can update or delete record
+            exerciseRowId = origExerciseId;
+            actvExercise.setEnabled(false);
+            etDefaultLogInterval.setEnabled(false);
+            etLogInterval.requestFocus();
+            if (isDefaultExercise(exerciseRecord.getExercise())) {
+                // Toast.makeText(getActivity(),
+                // getString(R.string.default_exercise_can_not_be_deleted),
+                // Toast.LENGTH_LONG).show();
+                btnDelete.setVisibility(View.INVISIBLE);
+            } else {
+                btnDelete.setVisibility(View.VISIBLE);
+            }
+        } else {
+            // exercise rowid not passed in so can add
+            actvExercise.setEnabled(true);
+            etDefaultLogInterval.setEnabled(true);
+            //chkbxLogDetail.setEnabled(true);
+            actvExercise.requestFocus();
+            btnDelete.setVisibility(View.INVISIBLE);
+        }
+    }
 
-		rowId = database.insert(Exercise.EXERCISE_TABLE, null, values);
-		exerciser.set_id(rowId);
-	}
+    private void updateExercise() {
+        boolean exerciseExists;
+        if (actvExercise.getText().toString().trim().isEmpty()) {
+            Toast.makeText(
+                    getActivity(),
+                    getResources().getString(
+                            R.string.exercise_not_defined_nothing_to_save),
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+        // if update inside a transaction get (5) com.fisincorporated.exercisetracker.database is locked error.
+        // Why is that?
+        database.beginTransaction();
+        try {
+            // if new Exercise save it, else update existing Exercise
+            if (!(exerciseExists = doesExerciseExist())) {
+                // save new Exercise
+                updateExerciseRecordFromScreen();
+                // new
+                // ExerciseDAO(getTrackerDataseHelper()).createExerciseRecord(exerciseRecord);
+                insertNewExcersiseRecord(exerciseRecord);
+                Toast.makeText(
+                        getActivity(),
+                        actvExercise.getText().toString().trim() + " "
+                                + getResources().getString(R.string.saved),
+                        Toast.LENGTH_LONG).show();
+                database.setTransactionSuccessful();
+            } else if (exerciseExists && origExerciseId == -1) {
+                Toast.makeText(
+                        getActivity(),
+                        getResources()
+                                .getString(
+                                        R.string.an_exercise_already_exists_with_this_name_exercise_not_added),
+                        Toast.LENGTH_LONG).show();
+            } else {
+                // update existing Exercise
+                updateExerciseRecordFromScreen();
+                // new
+                // ExerciseDAO(getTrackerDataseHelper()).updateExercise(exerciseRecord);
+                updateExistingExerciseRecord(exerciseRecord);
+                Toast.makeText(
+                        getActivity(),
+                        actvExercise.getText().toString().trim() + " "
+                                + getResources().getString(R.string.updated),
+                        Toast.LENGTH_LONG).show();
+                database.setTransactionSuccessful();
+            }
+        } catch (SQLiteException sqle) {
+            Log.e(GlobalValues.LOG_TAG,
+                    "ExerciseMaintenanceDetailFragment.onClick for update/insert of exercise. SQLiteException: "
+                            + sqle.toString());
+        } finally {
+            if (database.inTransaction())
+                database.endTransaction();
+        }
+    }
 
-	private boolean doesExerciseLocationExist() {
-		Cursor csr;
-		// SQL Query
-		try {
-			SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-			queryBuilder.setTables(LocationExercise.LOCATION_EXERCISE_TABLE);
-			queryBuilder.appendWhere(LocationExercise.EXERCISE_ID + "='"
-					+ exerciseRowId + "'");
+    private void updateExerciseRecordFromScreen() {
+        exerciseRecord.setExercise(actvExercise.getText() + "");
+        //exerciseRecord.setLogDetail(chkbxLogDetail.isChecked() == true ? 1 : 0);
+        exerciseRecord.setLogDetail(1);
+        try {
+            exerciseRecord.setDefaultLogInterval(Integer
+                    .parseInt(etDefaultLogInterval.getText().toString()));
+        } catch (NumberFormatException nfe) {
+            exerciseRecord.setLogInterval(ExerciseRecord.DEFAULT_LOG_INTERVAL);
+        }
+        try {
+            exerciseRecord.setLogInterval(Integer.parseInt(etLogInterval.getText()
+                    .toString()));
+        } catch (NumberFormatException nfe) {
+            exerciseRecord.setLogInterval(ExerciseRecord.LOG_INTERVAL);
+        }
+        try {
+            if (feetMeters.equalsIgnoreCase("m")) {
+                exerciseRecord.setMinDistanceToLog(Float
+                        .parseFloat(etMinDistToTravel.getText().toString()));
+            } else {
+                exerciseRecord.setMinDistanceToLog(Utility.feetToMeters(Float
+                        .parseFloat(etMinDistToTravel.getText().toString())));
+                etMinDistToTravel.setText(new DecimalFormat("#####").format(Utility
+                        .metersToFeet(exerciseRecord.getMinDistanceToLog())));
+            }
+        } catch (NumberFormatException nfe) {
+            exerciseRecord.setMinDistanceToLog(ExerciseRecord.MIN_DISTANCE_TO_LOG);
+        }
+        exerciseRecord.setElevationInDistCalcs(chkbxElevationInCalcs.isChecked() == true ? 1 : 0);
+        exerciseRecord.setPinEveryXMiles(mapPinDistances[mapPinDistanceSpinner.getSelectedItemPosition()]);
+    }
 
-			// run the query since it's all ready to go
-			csr = queryBuilder.query(database, null, null, null, null, null, null);
+    private void updateExistingExerciseRecord(ExerciseRecord exerciser) {
+        Long rowId = exerciser.get_id();
+        ContentValues values = new ContentValues();
+        values.put(Exercise._ID, exerciser.get_id());
+        values.put(Exercise.EXERCISE, exerciser.getExercise());
+        values.put(Exercise.LOG_INTERVAL,
+                Integer.toString(exerciser.getLogInterval()));
+        values.put(Exercise.DEFAULT_LOG_INTERVAL,
+                Integer.toString(exerciser.getDefaultLogInterval()));
+        values.put(Exercise.LOG_DETAIL,
+                Integer.toString(exerciser.getLogDetail()));
+        values.put(Exercise.TIMES_USED,
+                Integer.toString(exerciser.getTimesUsed()));
+        values.put(Exercise.ELEVATION_IN_DIST_CALCS,
+                Integer.toString(exerciser.getElevationInDistCalcs()));
+        values.put(Exercise.MIN_DISTANCE_TO_LOG,
+                Float.toString(exerciser.getMinDistanceToLog()));
+        values.put(Exercise.PIN_EVERY_X_MILES, Integer.toString(exerciser.getPinEveryXMiles()));
 
-			if (csr.getCount() == 0) {
-				exerciseLocationRowId = -1;
-			} else {
-				csr.moveToFirst();
-				exerciseLocationRowId = csr.getLong(csr
-						.getColumnIndex(LocationExercise._ID));
-			}
-			csr.close();
-			//database.setTransactionSuccessful();
-		} finally {
-			//database.endTransaction();
-		}
-		if (exerciseLocationRowId > 0)
-			return true;
-		else
-			return false;
+        database.update(Exercise.EXERCISE_TABLE, values, " _id = ?",
+                new String[]{rowId.toString()});
+    }
 
-	}
+    private void insertNewExcersiseRecord(ExerciseRecord exerciser) {
+        Long rowId = -1l;
+        ContentValues values = new ContentValues();
+        // all fields mandatory fields except for _ID
+        values.put(Exercise.EXERCISE, exerciser.getExercise());
+        values.put(Exercise.LOG_INTERVAL,
+                Integer.toString(exerciser.getLogInterval()));
+        values.put(Exercise.DEFAULT_LOG_INTERVAL,
+                Integer.toString(exerciser.getDefaultLogInterval()));
+        values.put(Exercise.LOG_DETAIL,
+                Integer.toString(exerciser.getLogDetail()));
+        values.put(Exercise.ELEVATION_IN_DIST_CALCS,
+                Integer.toString(exerciser.getElevationInDistCalcs()));
+        values.put(Exercise.MIN_DISTANCE_TO_LOG,
+                Float.toString(exerciser.getMinDistanceToLog()));
 
-	private void goToExeciseList() {
-		// This may not be best way to do this.
-		// if fragment displayed via ExerciseMaintenanceListActivity on table, prior state will be on
-		// backstack
-		getActivity().onBackPressed();
-		// getFragmentManager().popBackStack();
-	}
+        rowId = database.insert(Exercise.EXERCISE_TABLE, null, values);
+        exerciser.set_id(rowId);
+    }
 
-	private boolean doesExerciseExist() {
-		// check if Exercise exists already
-		Cursor csr = null;
-		try {
-			String strExercise = actvExercise.getText().toString()
-					.toLowerCase(Locale.getDefault()).trim();
-			// SQL Query
-			SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-			queryBuilder.setTables(Exercise.EXERCISE_TABLE);
-			queryBuilder.appendWhere("lower(" + Exercise.EXERCISE + ")" + "='"
-					+ strExercise + "'");
+    private boolean doesExerciseLocationExist() {
+        Cursor csr;
+        // SQL Query
+        try {
+            SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+            queryBuilder.setTables(LocationExercise.LOCATION_EXERCISE_TABLE);
+            queryBuilder.appendWhere(LocationExercise.EXERCISE_ID + "='"
+                    + exerciseRowId + "'");
 
-			// run the query since it's all ready to go
-			csr = queryBuilder.query(database, null, null, null, null, null, null);
+            // run the query since it's all ready to go
+            csr = queryBuilder.query(database, null, null, null, null, null, null);
 
-			if (csr.getCount() == 0) {
-				exerciseRowId = -1;
-			} else {
-				csr.moveToFirst();
-				exerciseRowId = csr.getLong(csr.getColumnIndex(Exercise._ID));
-			}
+            if (csr.getCount() == 0) {
+                exerciseLocationRowId = -1;
+            } else {
+                csr.moveToFirst();
+                exerciseLocationRowId = csr.getLong(csr
+                        .getColumnIndex(LocationExercise._ID));
+            }
+            csr.close();
+            //database.setTransactionSuccessful();
+        } finally {
+            //database.endTransaction();
+        }
+        if (exerciseLocationRowId > 0)
+            return true;
+        else
+            return false;
 
-		} catch (SQLException sqle) {
+    }
 
-		} finally {
-			if (csr != null) {
-				try {
-					csr.close();
-				} catch (SQLException sqle) {
-					;
-				}
-				;
-			}
-		}
-		if (exerciseRowId > 0)
-			return true;
-		else
-			return false;
-	}
+    private void goToExeciseList() {
+        // This may not be best way to do this.
+        // if fragment displayed via ExerciseMaintenanceListActivity on table, prior state will be on
+        // backstack
+        getActivity().onBackPressed();
+        // getFragmentManager().popBackStack();
+    }
 
-	// Show exercise - most likely for update action
+    private boolean doesExerciseExist() {
+        // check if Exercise exists already
+        Cursor csr = null;
+        try {
+            String strExercise = actvExercise.getText().toString()
+                    .toLowerCase(Locale.getDefault()).trim();
+            // SQL Query
+            SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+            queryBuilder.setTables(Exercise.EXERCISE_TABLE);
+            queryBuilder.appendWhere("lower(" + Exercise.EXERCISE + ")" + "='"
+                    + strExercise + "'");
 
-	private void showExercise() {
-		exerciseRowId = exerciseRecord.get_id();
-		actvExercise.setText(exerciseRecord.getExercise());
-		//chkbxLogDetail.setChecked(exerciseRecord.getLogDetail() == 1 ? true : false);
-		etLogInterval.setText("" + exerciseRecord.getLogInterval());
-		etDefaultLogInterval.setText("" + exerciseRecord.getDefaultLogInterval());
-		if (feetMeters.equalsIgnoreCase("m")) {
-			etMinDistToTravel.setText(new DecimalFormat("#####")
-					.format(exerciseRecord.getMinDistanceToLog()));
-		} else
-			etMinDistToTravel.setText(new DecimalFormat("#####").format(Utility
-					.metersToFeet(exerciseRecord.getMinDistanceToLog())));
-		chkbxElevationInCalcs
-				.setChecked(exerciseRecord.getElevationInDistCalcs() == 1 ? true
-						: false);
-		tvUnits.setText(feetMeters);
-		etLogInterval.requestFocus();
-		etLogInterval.setCursorVisible(true);
-	}
+            // run the query since it's all ready to go
+            csr = queryBuilder.query(database, null, null, null, null, null, null);
 
-	public void onPause() {
-		super.onPause();
+            if (csr.getCount() == 0) {
+                exerciseRowId = -1;
+            } else {
+                csr.moveToFirst();
+                exerciseRowId = csr.getLong(csr.getColumnIndex(Exercise._ID));
+            }
 
-	}
+        } catch (SQLException sqle) {
 
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-		if (resultCode != Activity.RESULT_OK)
-			return;
-		if (requestCode == DELETE_REQUESTCODE) {
-			int buttonPressed = intent.getIntExtra(
-					ActivityDialogFragment.DIALOG_RESPONSE, -1);
-			if (buttonPressed == DialogInterface.BUTTON_POSITIVE) {
-				deleteExercise();
-				goToExeciseList();
-			} else if (buttonPressed == DialogInterface.BUTTON_NEGATIVE) {
-				Toast.makeText(getActivity(),
-						getResources().getString(R.string.continuex),
-						Toast.LENGTH_LONG).show();
-			}
-		}
-	}
+        } finally {
+            if (csr != null) {
+                try {
+                    csr.close();
+                } catch (SQLException sqle) {
+                    ;
+                }
+                ;
+            }
+        }
+        if (exerciseRowId > 0)
+            return true;
+        else
+            return false;
+    }
 
-	private int deleteExercise(Long id) {
-		int numberRowsDeleted = 0;
-		numberRowsDeleted = database.delete(Exercise.EXERCISE, Exercise._ID
-				+ "=?", new String[] { id.toString() });
-		if (numberRowsDeleted == 1) {
-			// com.fisincorporated.exercisetracker.database.setTransactionSuccessful();
-			Toast.makeText(getActivity(),
-					getResources().getString(R.string.the_exercise_was_deleted),
-					Toast.LENGTH_SHORT).show();
-		}
-		return numberRowsDeleted;
-	}
+    // Show exercise - most likely for update action
 
-	// delete the exercise
-	private void deleteExercise() {
-		database.beginTransaction();
-		try {
-			if (doesExerciseExist()) {
-				// OK it exists, now see if any exercises done using it
-				if (doesExerciseLocationExist()) {
-					// can't delete as some log records exist
-					// so dialog you can't delete record
-					Toast.makeText(
-							getActivity(),
-							getResources()
-									.getString(
-											R.string.can_not_delete_as_log_records_exist_for_this_exercise),
-							Toast.LENGTH_LONG).show();
-				} else {
-					// no records so can delete it
-					deleteExercise(exerciseRowId);
-					database.setTransactionSuccessful();
-				}
+    private void showExercise() {
+        exerciseRowId = exerciseRecord.get_id();
+        actvExercise.setText(exerciseRecord.getExercise());
+        //chkbxLogDetail.setChecked(exerciseRecord.getLogDetail() == 1 ? true : false);
+        etLogInterval.setText("" + exerciseRecord.getLogInterval());
+        etDefaultLogInterval.setText("" + exerciseRecord.getDefaultLogInterval());
+        tvMinDistToTravel.setText(getString(R.string.minimum_distance_to_travel_to_log_gps_points,feetMeters));
+        if (feetMeters.equalsIgnoreCase("m")) {
+            etMinDistToTravel.setText(new DecimalFormat("#####")
+                    .format(exerciseRecord.getMinDistanceToLog()));
+        } else
+            etMinDistToTravel.setText(new DecimalFormat("#####").format(Utility
+                    .metersToFeet(exerciseRecord.getMinDistanceToLog())));
+        chkbxElevationInCalcs
+                .setChecked(exerciseRecord.getElevationInDistCalcs() == 1 ? true
+                        : false);
+        etLogInterval.requestFocus();
+        etLogInterval.setCursorVisible(true);
+        spinnerLabel.setText(getString(R.string.map_pin_display_mileage_at, milesKm));
+        setMapPinSpinnerValue();
+    }
 
-			} else {
-				// exercise doesn't exist in exercise com.fisincorporated.exercisetracker.database
-				// so nothing to do
-				Toast.makeText(
-						getActivity(),
-						getResources().getString(
-								R.string.can_not_delete_as_exercise_does_not_exist),
-						Toast.LENGTH_LONG).show();
-			}
+    public void onPause() {
+        super.onPause();
 
-		} catch (IllegalStateException ise) {
-			Toast.makeText(
-					getActivity(),
-					getResources()
-							.getString(R.string.illegal_state_exception_caught),
-					Toast.LENGTH_LONG).show();
-		} finally {
-			if (database.inTransaction())
-				database.endTransaction();
-		}
-	}
+    }
 
-	private boolean isDefaultExercise(String exerciseToDelete) {
-		boolean exerciseInList = false;
-		Resources resources = getResources();
-		TypedArray taExerciseArray = getResources().obtainTypedArray(
-				R.array.exerciseList);
-		int n = taExerciseArray.length();
-		String[][] array = new String[n][];
-		for (int i = 0; i < n; ++i) {
-			int id = taExerciseArray.getResourceId(i, 0);
-			if (id > 0) {
-				array[i] = resources.getStringArray(id);
-				if (exerciseToDelete.equalsIgnoreCase(array[i][0])) {
-					exerciseInList = true;
-					break;
-				}
-			}
-		}
-		taExerciseArray.recycle(); // Important!
-		return exerciseInList;
-	}
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (resultCode != Activity.RESULT_OK)
+            return;
+        if (requestCode == DELETE_REQUESTCODE) {
+            int buttonPressed = intent.getIntExtra(
+                    ActivityDialogFragment.DIALOG_RESPONSE, -1);
+            if (buttonPressed == DialogInterface.BUTTON_POSITIVE) {
+                deleteExercise();
+                goToExeciseList();
+            } else if (buttonPressed == DialogInterface.BUTTON_NEGATIVE) {
+                Toast.makeText(getActivity(),
+                        getResources().getString(R.string.continuex),
+                        Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private int deleteExercise(Long id) {
+        int numberRowsDeleted = 0;
+        numberRowsDeleted = database.delete(Exercise.EXERCISE, Exercise._ID
+                + "=?", new String[]{id.toString()});
+        if (numberRowsDeleted == 1) {
+            // com.fisincorporated.exercisetracker.database.setTransactionSuccessful();
+            Toast.makeText(getActivity(),
+                    getResources().getString(R.string.the_exercise_was_deleted),
+                    Toast.LENGTH_SHORT).show();
+        }
+        return numberRowsDeleted;
+    }
+
+    // delete the exercise
+    private void deleteExercise() {
+        database.beginTransaction();
+        try {
+            if (doesExerciseExist()) {
+                // OK it exists, now see if any exercises done using it
+                if (doesExerciseLocationExist()) {
+                    // can't delete as some log records exist
+                    // so dialog you can't delete record
+                    Toast.makeText(
+                            getActivity(),
+                            getResources()
+                                    .getString(
+                                            R.string.can_not_delete_as_log_records_exist_for_this_exercise),
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    // no records so can delete it
+                    deleteExercise(exerciseRowId);
+                    database.setTransactionSuccessful();
+                }
+
+            } else {
+                // exercise doesn't exist in exercise com.fisincorporated.exercisetracker.database
+                // so nothing to do
+                Toast.makeText(
+                        getActivity(),
+                        getResources().getString(
+                                R.string.can_not_delete_as_exercise_does_not_exist),
+                        Toast.LENGTH_LONG).show();
+            }
+
+        } catch (IllegalStateException ise) {
+            Toast.makeText(
+                    getActivity(),
+                    getResources()
+                            .getString(R.string.illegal_state_exception_caught),
+                    Toast.LENGTH_LONG).show();
+        } finally {
+            if (database.inTransaction())
+                database.endTransaction();
+        }
+    }
+
+    private boolean isDefaultExercise(String exerciseToDelete) {
+        boolean exerciseInList = false;
+        Resources resources = getResources();
+        TypedArray taExerciseArray = getResources().obtainTypedArray(
+                R.array.exerciseList);
+        int n = taExerciseArray.length();
+        String[][] array = new String[n][];
+        for (int i = 0; i < n; ++i) {
+            int id = taExerciseArray.getResourceId(i, 0);
+            if (id > 0) {
+                array[i] = resources.getStringArray(id);
+                if (exerciseToDelete.equalsIgnoreCase(array[i][0])) {
+                    exerciseInList = true;
+                    break;
+                }
+            }
+        }
+        taExerciseArray.recycle(); // Important!
+        return exerciseInList;
+    }
 
 }

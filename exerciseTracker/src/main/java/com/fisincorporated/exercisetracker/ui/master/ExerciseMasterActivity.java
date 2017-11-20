@@ -12,8 +12,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import com.fisincorporated.exercisetracker.ActivityMap;
-import com.fisincorporated.exercisetracker.ActivityMapFragment;
+import com.fisincorporated.exercisetracker.ui.maps.ActivityMap;
+import com.fisincorporated.exercisetracker.ui.maps.ActivityMapFragment;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
@@ -24,7 +24,6 @@ import com.fisincorporated.exercisetracker.ui.stats.ActivityDetailFragment;
 import com.fisincorporated.exercisetracker.ui.stats.ActivityPager;
 import com.fisincorporated.facebook.FacebookPostStatsActivity;
 import com.fisincorporated.facebook.FacebookPostStatsFragment;
-import com.fisincorporated.interfaces.IHandleSelectedAction;
 
 abstract public class ExerciseMasterActivity extends AppCompatActivity implements IHandleSelectedAction {
 	protected TrackerDatabaseHelper databaseHelper = null;

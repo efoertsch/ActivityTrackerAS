@@ -13,7 +13,6 @@ import android.support.v4.app.Fragment;
 
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
-import com.fisincorporated.interfaces.IHandleSelectedAction;
 
 public class ExerciseMasterFragment extends Fragment {
 	protected TrackerDatabaseHelper databaseHelper = null;

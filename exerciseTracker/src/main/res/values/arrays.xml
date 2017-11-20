@@ -7,6 +7,7 @@
         <item name="logDetail">"0"</item>
         <item name="minDistanceToLog">"10"</item>
         <item name="elevationInDistCalcs">"0"</item>
+        <item name="pinEveryXMiles">"-1"</item>
     </array>
     <array name="biking">
         <item name="exercise">Biking</item>
@@ -14,6 +15,7 @@
         <item name="logDetail">"0"</item>
         <item name="minDistanceToLog">"10"</item>
         <item name="elevationInDistCalcs">"0"</item>
+        <item name="pinEveryXMiles">"5"</item>
     </array>
     <array name="crossCountrySkiing">
         <item name="exercise">Cross Country Skiing</item>
@@ -21,6 +23,7 @@
         <item name="logDetail">"0"</item>
         <item name="minDistanceToLog">"10"</item>
         <item name="elevationInDistCalcs">"0"</item>
+        <item name="pinEveryXMiles">"2"</item>
     </array>
     <array name="hiking">
         <item name="exercise">Hiking</item>
@@ -28,6 +31,7 @@
         <item name="logDetail">"1"</item>
         <item name="minDistanceToLog">"10"</item>
         <item name="elevationInDistCalcs">"0"</item>
+        <item name="pinEveryXMiles">"2"</item>
     </array>
     <array name="running">
         <item name="exercise">Running</item>
@@ -35,6 +39,7 @@
         <item name="logDetail">"1"</item>
         <item name="minDistanceToLog">"15"</item>
         <item name="elevationInDistCalcs">"0"</item>
+        <item name="pinEveryXMiles">"2"</item>
     </array>
     <array name="walking">
         <item name="exercise">Walking</item>
@@ -42,6 +47,7 @@
         <item name="logDetail">"1"</item>
         <item name="minDistanceToLog">"10"</item>
         <item name="elevationInDistCalcs">"0"</item>
+        <item name="pinEveryXMiles">"1"</item>
     </array>
     <array name="exerciseList">
         <item>@array/alpineSkiing</item>
@@ -62,5 +68,24 @@
     <array name="defaultSettings">
         <item>@array/default_display</item>
     </array>
+
+
+    <!-- Number of rows must match rows in map_pin_mileage_value -->
+    <string-array name="map_pin_mileage_display">
+        <item>Do not display</item>
+        <item>1</item>
+        <item>2</item>
+        <item>5</item>
+        <item>10</item>
+    </string-array>
+
+    <!-- Number of rows must match rows in map_pin_mileage_display -->
+    <integer-array name="map_pin_mileage_value">
+        <item>-1</item>
+        <item>1</item>
+        <item>2</item>
+        <item>5</item>
+        <item>10</item>
+    </integer-array>
 
 </resources>

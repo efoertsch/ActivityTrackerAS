@@ -17,7 +17,7 @@ import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
-import com.fisincorporated.utility.Utility;
+import com.fisincorporated.exercisetracker.utility.Utility;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;

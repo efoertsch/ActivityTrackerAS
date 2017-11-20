@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker;
+package com.fisincorporated.exercisetracker.ui.maps;
 
 import android.app.Activity;
 import android.content.Context;
@@ -22,6 +22,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fisincorporated.exercisetracker.ui.utils.ActivityDialogFragment;
+import com.fisincorporated.exercisetracker.GlobalValues;
+import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.ExerciseDAO;
 import com.fisincorporated.exercisetracker.database.ExerciseRecord;
 import com.fisincorporated.exercisetracker.database.ExrcsLocationDAO;
@@ -33,7 +36,7 @@ import com.fisincorporated.exercisetracker.database.SQLiteCursorLoader;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.GPSLog;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
-import com.fisincorporated.utility.Utility;
+import com.fisincorporated.exercisetracker.utility.Utility;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;

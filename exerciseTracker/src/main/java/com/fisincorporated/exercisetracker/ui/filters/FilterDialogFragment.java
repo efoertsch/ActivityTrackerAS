@@ -1,7 +1,9 @@
-package com.fisincorporated.exercisetracker;
+package com.fisincorporated.exercisetracker.ui.filters;
 
 import java.util.ArrayList;
 
+import com.fisincorporated.exercisetracker.GlobalValues;
+import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 
 import android.app.Activity;

@@ -1,5 +1,7 @@
 package com.fisincorporated.utility;
 
+import com.fisincorporated.exercisetracker.utility.Utility;
+
 import org.junit.Before;
 import org.junit.Test;
 

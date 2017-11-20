@@ -1,5 +1,6 @@
-package com.fisincorporated.exercisetracker;
+package com.fisincorporated.exercisetracker.ui.maps;
 
+import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
 

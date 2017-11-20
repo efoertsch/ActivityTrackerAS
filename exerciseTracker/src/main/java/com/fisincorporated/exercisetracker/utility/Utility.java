@@ -1,4 +1,4 @@
-package com.fisincorporated.utility;
+package com.fisincorporated.exercisetracker.utility;
 
 import android.content.Context;
 import android.support.v4.app.FragmentActivity;

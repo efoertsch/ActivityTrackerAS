@@ -1,4 +1,4 @@
-package com.fisincorporated.utility;
+package com.fisincorporated.exercisetracker.ui.maintenance;
 
 import android.text.InputFilter;
 import android.text.Spanned;

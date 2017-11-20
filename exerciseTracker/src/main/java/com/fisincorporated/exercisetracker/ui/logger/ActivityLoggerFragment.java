@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker;
+package com.fisincorporated.exercisetracker.ui.logger;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -17,6 +17,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fisincorporated.exercisetracker.ui.utils.ActivityDialogFragment;
+import com.fisincorporated.exercisetracker.GlobalValues;
+import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.broadcastreceiver.UpdateLerReceiver;
 import com.fisincorporated.exercisetracker.database.ExerciseDAO;
 import com.fisincorporated.exercisetracker.database.GPSLogDAO;
@@ -27,7 +30,7 @@ import com.fisincorporated.exercisetracker.database.TrackerDatabase.ExrcsLocatio
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
 import com.fisincorporated.exercisetracker.ui.stats.StatsArrayAdapter;
-import com.fisincorporated.utility.Utility;
+import com.fisincorporated.exercisetracker.utility.Utility;
 
 import java.util.ArrayList;
 

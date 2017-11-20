@@ -52,7 +52,7 @@
     <string name="date_desc">Date descending</string>
     <string name="define_exercise">Define Exercise</string>
     <string name="default_exercise_can_not_be_deleted">A default exercise can not be deleted</string>
-    <string name="default_log_interval">Default Log Interval</string>
+    <string name="default_log_interval">Default Log Interval (seconds)</string>
     <string name="delete">Delete</string>
     <string name="delete_complete_activity">Activities?</string>
     <string name="delete_only_gps_detail">GPS detail?</string>
@@ -115,7 +115,7 @@
     <string name="location_asc">Location ascending</string>
     <string name="location_desc">Location descending</string>
     <string name="log_gps_points">Log GPS points</string>
-    <string name="log_interval">Log Interval</string>
+    <string name="log_interval">Log Interval (seconds)</string>
     <string name="longitude">Longitude</string>
     <string name="main_menu">Main Menu</string>
     <string name="main_menu_start_activity">Start Activity</string>
@@ -129,7 +129,7 @@
     <string name="maps_not_available">Maps not available. Please check to see if Google Maps available on your device.</string>
     <string name="max_speed">Max Speed</string>
     <string name="metric">Metric</string>
-    <string name="minimum_distance_to_travel_to_log_gps_points">Minimum Distance To Travel To Log GPS Points</string>
+    <string name="minimum_distance_to_travel_to_log_gps_points">Minimum Distance To Travel ( %1$s ) To Log GPS Points</string>
     <string name="my_activity_statistics">My activity statistics for %1$s.</string>
     <string name="no">No</string>
     <string name="no_activities_to_display">No activities to display</string>
@@ -245,6 +245,9 @@
     <string name="chart_miles">Miles</string>
     <string name="chart_kilometers">Kilometers</string>
     <string name="chart_title_elevation_vs_distance">Elevation(%1$s) vs Distance(%2$s)\n %3$s %4$s</string>
+
+    <!-- map related -->
+    <string name="map_pin_display_mileage_at">Display map mileage pins every X %1$s</string>
 
 
 </resources>

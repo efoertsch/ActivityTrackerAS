@@ -1,4 +1,4 @@
-package com.fisincorporated.interfaces;
+package com.fisincorporated.exercisetracker.ui.master;
 
 import android.os.Bundle;
 

@@ -1,13 +1,14 @@
-package com.fisincorporated.exercisetracker;
-
-import java.util.ArrayList;
-
-import com.fisincorporated.exercisetracker.database.TrackerDatabase.ExrcsLocation;
+package com.fisincorporated.exercisetracker.ui.filters;
 
 import android.database.Cursor;
 import android.database.SQLException;
 import android.os.Bundle;
 import android.util.Log;
+
+import com.fisincorporated.exercisetracker.GlobalValues;
+import com.fisincorporated.exercisetracker.database.TrackerDatabase.ExrcsLocation;
+
+import java.util.ArrayList;
 
 public class LocationFilterDialog extends FilterDialogFragment {
 

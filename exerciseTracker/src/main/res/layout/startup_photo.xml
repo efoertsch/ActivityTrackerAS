@@ -9,27 +9,14 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.fisincorporated.exercisetracker.ui.startup.ExerciseDrawerActivity">
 
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/ScrollView02"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-        <HorizontalScrollView
-            android:id="@+id/HorizontalScrollView01"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/startup_photo_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
-            tools:background="@drawable/zion_canyon"/>
-
-        </HorizontalScrollView>
-
-    </ScrollView>
+    <com.fisincorporated.exercisetracker.ui.custom.ProportionalImageView
+        android:id="@+id/startup_photo_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:adjustViewBounds="true"
+        android:background="@drawable/zion_canyon"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/startup_photo_fab"
@@ -37,8 +24,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:layout_margin="@dimen/fab_margin"
-        app:backgroundTint="@color/fab_background_white"
-        android:src="@drawable/ic_action_directions_run"/>
+        android:src="@drawable/ic_action_directions_run"
+        app:backgroundTint="@color/fab_background_white"/>
 
 
 </android.support.design.widget.CoordinatorLayout>

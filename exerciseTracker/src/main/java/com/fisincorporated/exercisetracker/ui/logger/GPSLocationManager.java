@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker;
+package com.fisincorporated.exercisetracker.ui.logger;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -12,8 +12,11 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 
+import com.fisincorporated.exercisetracker.GlobalValues;
+import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.ExerciseDAO;
 import com.fisincorporated.exercisetracker.database.ExerciseRecord;
 import com.fisincorporated.exercisetracker.database.GPSLogDAO;
@@ -24,7 +27,7 @@ import com.fisincorporated.exercisetracker.database.TrackerDatabase;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
-import com.fisincorporated.utility.Utility;
+import com.fisincorporated.exercisetracker.utility.Utility;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -172,8 +175,7 @@ public class GPSLocationManager {
         }
         // start updates from the location manager
         PendingIntent pi = getLocationPendingIntent(true);
-        sLocationManager.requestLocationUpdates(provider, sUpdateRate,
-                sMinDistanceToLog, pi);
+        sLocationManager.requestLocationUpdates(provider, sUpdateRate, sMinDistanceToLog, pi);
         Log.d(TAG, "Starting GPS");
     }
 
@@ -428,8 +430,9 @@ public class GPSLocationManager {
     private void findDisplayUnits() {
         Resources res = sAppContext.getResources();
         imperial = res.getString(R.string.imperial);
-        imperialMetric = sDatabaseHelper.getProgramOption(sDatabaseHelper.getReadableDatabase(),
-                res.getString(R.string.display_units), imperial);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(sAppContext);
+
+        imperialMetric = prefs.getString(res.getString(R.string.display_units), imperial);
         if (imperialMetric.equalsIgnoreCase(res.getString(R.string.imperial))) {
             feetMeters = "ft";
             milesKm = "miles";

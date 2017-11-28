@@ -12,14 +12,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.fisincorporated.exercisetracker.ExerciseFilterDialog;
+import com.fisincorporated.exercisetracker.ui.filters.ExerciseFilterDialog;
 import com.fisincorporated.exercisetracker.GlobalValues;
-import com.fisincorporated.exercisetracker.LocationFilterDialog;
+import com.fisincorporated.exercisetracker.ui.filters.LocationFilterDialog;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.SQLiteCursorLoader;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
-import com.fisincorporated.interfaces.IHandleSelectedAction;
+import com.fisincorporated.exercisetracker.ui.master.IHandleSelectedAction;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

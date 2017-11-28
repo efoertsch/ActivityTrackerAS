@@ -49,8 +49,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         if (Build.VERSION.SDK_INT >= 23) {
             // Here, thisActivity is the current activity
             if (ContextCompat.checkSelfPermission(getActivity(),
-                    Manifest.permission.READ_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {
+                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
                 // Should we show an explanation?
                 if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
@@ -117,7 +116,5 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
         }
     }
-
-
 
 }

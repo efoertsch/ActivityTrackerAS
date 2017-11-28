@@ -1,15 +1,14 @@
-package com.fisincorporated.exercisetracker;
-
-import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
-import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
+package com.fisincorporated.exercisetracker.ui.maps;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-public class ActivityMap extends ExerciseMasterFragmentActivity {
-	
+import com.fisincorporated.exercisetracker.GlobalValues;
+import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
 
+public class ActivityMap extends ExerciseMasterFragmentActivity {
 	
 	public ActivityMap() {
 		// TODO Auto-generated constructor stub

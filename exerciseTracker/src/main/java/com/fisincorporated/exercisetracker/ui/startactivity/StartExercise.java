@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.fisincorporated.exercisetracker.ActivityLogger;
-import com.fisincorporated.exercisetracker.GPSLocationManager;
+import com.fisincorporated.exercisetracker.ui.logger.ActivityLogger;
+import com.fisincorporated.exercisetracker.ui.logger.GPSLocationManager;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.ExerciseDAO;
 import com.fisincorporated.exercisetracker.database.ExerciseRecord;

@@ -1,4 +1,4 @@
-package com.fisincorporated.utility;
+package com.fisincorporated.exercisetracker.utility;
 
 import android.content.Context;
 import android.support.v4.app.FragmentActivity;
@@ -254,4 +254,23 @@ public class Utility {
         return maxGraphYValue;
     }
 
+    public static boolean coveredDistanceForMarker(float metersTraveled, boolean imperialDisplay, int distancePerMarker ){
+        if (imperialDisplay) {
+            // convert meters to miles then compare to pin marker distance
+            return distancePerMarker <= calcDisplayDistance(metersTraveled,imperialDisplay);
+        } else {
+            // convert meters to kilometers then compare
+            return distancePerMarker <= calcDisplayDistance(metersTraveled,imperialDisplay);
+        }
+    }
+
+    public static int calcDisplayDistance(float distanceInMeters, boolean imperialDisplay) {
+        if (imperialDisplay) {
+            // convert meters to miles
+            return (int) (distanceInMeters * 3.28084) / 5280;
+        } else {
+            // convert meters to kilometers
+            return (int) distanceInMeters / 1000;
+        }
+    }
 }

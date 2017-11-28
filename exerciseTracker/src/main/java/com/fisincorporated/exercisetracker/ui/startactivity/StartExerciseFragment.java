@@ -24,8 +24,8 @@ import android.widget.FilterQueryProvider;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.fisincorporated.exercisetracker.ActivityDialogFragment;
-import com.fisincorporated.exercisetracker.ActivityLogger;
+import com.fisincorporated.exercisetracker.ui.utils.ActivityDialogFragment;
+import com.fisincorporated.exercisetracker.ui.logger.ActivityLogger;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.ExerciseDAO;

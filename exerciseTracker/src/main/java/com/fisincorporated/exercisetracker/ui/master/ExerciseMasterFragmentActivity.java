@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.Toolbar;
 
 import com.fisincorporated.exercisetracker.R;
-import com.fisincorporated.interfaces.IHandleSelectedAction;
 
 public abstract class ExerciseMasterFragmentActivity extends ExerciseMasterActivity implements IHandleSelectedAction {
 

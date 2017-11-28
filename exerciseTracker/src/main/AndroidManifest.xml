@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fisincorporated.exercisetracker"
     android:installLocation="auto"
-    android:versionCode="17"
-    android:versionName="1.6.2" >
+    android:versionCode="18"
+    android:versionName="1.7" >
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -94,7 +94,7 @@
                 android:value="splitActionBarWhenNarrow"/>
         </activity>
 
-        <activity android:name=".ActivityLogger"
+        <activity android:name=".ui.logger.ActivityLogger"
             android:parentActivityName=".ui.startup.ExerciseDrawerActivity"
             android:uiOptions="splitActionBarWhenNarrow">
 
@@ -107,7 +107,7 @@
                 android:value="splitActionBarWhenNarrow"/>
         </activity>
 
-        <activity android:name=".ActivityMap"
+        <activity android:name=".ui.maps.ActivityMap"
             android:parentActivityName=".ui.startup.ExerciseDrawerActivity"
             android:uiOptions="splitActionBarWhenNarrow">
 

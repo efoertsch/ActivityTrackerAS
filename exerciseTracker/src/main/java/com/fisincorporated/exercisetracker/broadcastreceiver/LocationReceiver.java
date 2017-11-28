@@ -1,6 +1,6 @@
 package com.fisincorporated.exercisetracker.broadcastreceiver;
 
-import com.fisincorporated.exercisetracker.GPSLocationManager;
+import com.fisincorporated.exercisetracker.ui.logger.GPSLocationManager;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

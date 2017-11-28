@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollView1"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    >
+    android:layout_alignBottom="@+id/exercise_maintenance_actvExercise_buttons"
+    android:layout_alignParentTop="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_margin="@dimen/margin_double">
+        android:layout_margin="@dimen/margin_double"
+        android:orientation="vertical">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/margin_double">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/exercise_maintenance_lblexercise"
@@ -23,168 +27,185 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:text="@string/exercise"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
 
             <AutoCompleteTextView
                 android:id="@+id/exercise_maintenance_actvExercise"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/dp8"
                 android:layout_toRightOf="@+id/exercise_maintenance_lblexercise"
                 android:ems="10"
                 android:hint="@string/add_new_exercise">
 
-                <requestFocus />
+                <requestFocus/>
             </AutoCompleteTextView>
-        </RelativeLayout>
 
-        <TableLayout
-            android:id="@+id/table"
+            <include layout="@layout/divider_vertical" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TableRow
-                android:id="@+id/tableRow3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/textView3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/log_interval"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
-
-                <EditText
-                    android:id="@+id/exercise_maintenance_etLogInterval"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:width="@dimen/ts80sp"
-                    android:ems="10"
-                    android:inputType="number"
-                    android:maxWidth="@dimen/ts20sp"
-                    android:text="@string/thirty" />
-
-                <TextView
-                    android:id="@+id/textView5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sec"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
-            </TableRow>
-
-            <TableRow
-                android:id="@+id/tableRow4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/textView4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/default_log_interval"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
-
-                <EditText
-                    android:id="@+id/exercise_maintenance_DefaultLogInterval"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:width="@dimen/ts80sp"
-                    android:ems="10"
-                    android:inputType="number"
-                    android:maxWidth="@dimen/ts20sp"
-                    android:text="@string/thirty">
-
-                    <requestFocus />
-                </EditText>
-
-                <TextView
-                    android:id="@+id/TextView01"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sec"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
-            </TableRow>
-        </TableLayout>
-
-        <TextView
-            android:id="@+id/exercise_maintenance_lblMinDistToTravel"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/table"
-            android:text="@string/minimum_distance_to_travel_to_log_gps_points"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:orientation="vertical">
 
-        <RelativeLayout
-            android:id="@+id/rlMinDistToTravel"
-            android:layout_width="wrap_content"
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/log_interval"
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+            <EditText
+                android:id="@+id/exercise_maintenance_etLogInterval"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:width="@dimen/ts80sp"
+                android:ems="10"
+                android:inputType="number"
+                android:maxWidth="@dimen/ts20sp"
+                android:text="@string/thirty"/>
+
+            <include layout="@layout/divider_vertical" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/exercise_maintenance_lblMinDistToTravel">
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/default_log_interval"
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+            <EditText
+                android:id="@+id/exercise_maintenance_DefaultLogInterval"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:width="@dimen/ts80sp"
+                android:ems="10"
+                android:inputType="number"
+                android:maxWidth="@dimen/ts20sp"
+                android:text="@string/thirty">
+
+                <requestFocus/>
+            </EditText>
+
+            <include layout="@layout/divider_vertical" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/exercise_maintenance_lblMinDistToTravel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_toLeftOf="@+id/exercise_maintenance_minDistFields"
+                android:text="@string/minimum_distance_to_travel_to_log_gps_points"
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
 
             <EditText
                 android:id="@+id/exercise_maintenance_etMinDistToTravel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:width="@dimen/ts50sp"
-                android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
+                android:width="@dimen/ts50sp"
                 android:ems="10"
                 android:inputType="number"
-                android:maxWidth="@dimen/ts20sp"
-                android:text="@string/ten" />
+                android:maxWidth="@dimen/ts50sp"
+                android:text="@string/ten"
+                tools:text="30"/>
 
-            <TextView
-                android:id="@+id/exercise_maintenance_tvUnits"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/exercise_maintenance_etMinDistToTravel"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-        </RelativeLayout>
+            <include layout="@layout/divider_vertical" />
 
-        <RelativeLayout
-            android:id="@+id/exercise_maintenance_rlElevationInCalcs"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/exercise_maintenance_lblElevationInCalcs"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_toLeftOf="@+id/exercise_maintenance_chkbxElevationInCalcs"
                 android:text="@string/use_elevation_in_distance_calculations"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
 
             <CheckBox
                 android:id="@+id/exercise_maintenance_chkbxElevationInCalcs"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/exercise_maintenance_lblElevationInCalcs" />
-        </RelativeLayout>
+                android:layout_alignParentEnd="true"/>
 
-        <RelativeLayout
+            <include layout="@layout/divider_vertical" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/exercise_maintenance_spinner"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <Button
-                android:id="@+id/btnSave"
+            <TextView
+                android:id="@+id/exercise_maintenance_spinner_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:paddingLeft="@dimen/dp8"
-                android:paddingRight="@dimen/dp8"
-                android:text="@string/save" />
+                android:text="@string/map_pin_display_mileage_at"
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+            <Spinner
+                android:id="@+id/exercise_maintenance_spinner_map_pin_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:entries="@array/map_pin_mileage_display"/>
+
+            <include layout="@layout/divider_vertical" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/exercise_maintenance_actvExercise_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btnDelete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:paddingLeft="@dimen/dp8"
-                android:paddingRight="@dimen/dp8"
-                android:text="@string/delete" />
-        </RelativeLayout>
+                android:layout_gravity="left"
+                android:layout_weight="1"
+                android:paddingEnd="@dimen/margin_double"
+                android:paddingStart="@dimen/margin_standard"
+                android:text="@string/delete"/>
+
+            <Button
+                android:id="@+id/btnSave"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_weight="1"
+                android:paddingEnd="@dimen/margin_standard"
+                android:paddingStart="@dimen/margin_double"
+                android:text="@string/save"/>
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </ScrollView>

@@ -31,7 +31,6 @@ public class ExerciseMasterFragment extends Fragment {
 		super.onCreate(savedInstanceState);
 		getDatabaseSetup();
 	}
-		
 
 	@Override
 	public void onAttach(Activity activity){
@@ -70,6 +69,13 @@ public class ExerciseMasterFragment extends Fragment {
 			milesKm = res.getString(R.string.kilometers_abbrev);
 			mphKph = res.getString(R.string.kilometers_per_hours_abbrev);
 		}
+	}
+
+	public boolean isImperialDisplay(){
+		if (imperialMetric == null) {
+			findDisplayUnits();
+		}
+		return (imperialMetric.equalsIgnoreCase(getResources().getString(R.string.imperial)));
 	}
 	
 	public void onDestroy() {

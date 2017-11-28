@@ -55,14 +55,11 @@ public class GlobalValues {
 	//Shared Preferences file
 	public static final String SHARED_PREFERENCES = "SHARED_PREFERENCES";
 
-
 	// User selected image for startup screen
 	public static final String IMAGE_DIR = "images";
 	public static final String IMAGE_FILE_NAME = "user_start_image.jpeg";
-	 
 
-	
-	
-	
+	// -1 means no distance pins are to be placed on map
+	public static final int DEFAULT_NO_PINS = -1;
 	
 }

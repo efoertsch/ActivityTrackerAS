@@ -248,6 +248,8 @@
 
     <!-- map related -->
     <string name="map_pin_display_mileage_at">Display map mileage pins every X %1$s</string>
+    <string name="map_pin_miles">m</string>
+    <string name="map_pin_kilometers">k</string>
 
 
 </resources>

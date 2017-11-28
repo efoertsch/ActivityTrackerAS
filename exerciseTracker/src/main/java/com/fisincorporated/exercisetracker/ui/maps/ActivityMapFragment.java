@@ -4,11 +4,19 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.DrawableRes;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
@@ -22,7 +30,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.fisincorporated.exercisetracker.ui.utils.ActivityDialogFragment;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.ExerciseDAO;
@@ -36,6 +43,7 @@ import com.fisincorporated.exercisetracker.database.SQLiteCursorLoader;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.GPSLog;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
+import com.fisincorporated.exercisetracker.ui.utils.ActivityDialogFragment;
 import com.fisincorporated.exercisetracker.utility.Utility;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -43,6 +51,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -95,6 +104,12 @@ public class ActivityMapFragment extends ExerciseMasterFragment implements
     private double neLat = 0;
     private double neLong = 0;
 
+    private float distance = 0;
+    private int pinEveryX ;
+    private float currentDistance = 0;
+    private float[] distanceBetweenPoints = {0f};
+    private String distanceUnits = "";
+
 
     private GoogleMap map;
     //private MapFragment mapFragment = null;
@@ -104,19 +119,14 @@ public class ActivityMapFragment extends ExerciseMasterFragment implements
 
 
     public static ActivityMapFragment newInstance(Bundle bundle) {
-//		Bundle args = new Bundle();
-//		args.putLong(LocationExercise._ID,
-//				bundle.getLong(LocationExercise._ID, -1));
-//		args.putString(GlobalValues.TITLE, bundle.getString(GlobalValues.TITLE));
-//		args.putString(LocationExercise.DESCRIPTION, bundle.getString(LocationExercise.DESCRIPTION));
         ActivityMapFragment fragment = new ActivityMapFragment();
-        //fragment.setArguments(args);
         fragment.setArguments(bundle);
         return fragment;
     }
 
     public void onCreate(Bundle savedInstanceState) {
         setRetainInstance(true);
+        findDisplayUnits();
         super.onCreate(savedInstanceState);
     }
 
@@ -124,7 +134,6 @@ public class ActivityMapFragment extends ExerciseMasterFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        // View view = inflater.inflate(R.layout.map_layout, container, false);
         View view = inflater.inflate(R.layout.map_layout_wo_map_fragment,
                 container, false);
         // Can only have one instance of SupportMapFragment so make sure
@@ -158,9 +167,15 @@ public class ActivityMapFragment extends ExerciseMasterFragment implements
         checkForGooglePlayServices();
         getArgumentBundle();
         tvInfo.setText(activityTitle);
+        setupMapPinInfo();
         loadExerciseInfo();
         supportMapFragment.getMapAsync(this);
 
+    }
+
+    private void setupMapPinInfo() {
+        currentDistance = 0;
+        distanceUnits = (isImperialDisplay() ? getString(R.string.map_pin_miles) : getString(R.string.map_pin_kilometers));
     }
 
     @Override
@@ -208,14 +223,6 @@ public class ActivityMapFragment extends ExerciseMasterFragment implements
                 if (map != null)
                     map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
                 return true;
-//		case R.id.activity_map_show_stats:
-//			args.putInt(GlobalValues.DISPLAY_TARGET, GlobalValues.DISPLAY_STATS);
-//			loadArgsAndCallback(args);
-//			return true;
-//		case R.id.activity_map_show_chart:
-//			args.putInt(GlobalValues.DISPLAY_TARGET, GlobalValues.DISPLAY_CHART);
-//			loadArgsAndCallback(args);
-//			return true;
             case R.id.activity_map_email:
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.email_being_created),
@@ -223,26 +230,11 @@ public class ActivityMapFragment extends ExerciseMasterFragment implements
                 logicPath = FOR_KML_FILE;
                 getLoaderManager().restartLoader(GlobalValues.MAP_LOADER, null, this);
                 return true;
-//		case R.id.activity_map_delete:
-//			deleteDetailType = 2;
-//			ActivityDialogFragment dialog = ActivityDialogFragment.newInstance(-1,
-//					R.string.delete_detail_confirmation, R.string.yes, R.string.no,
-//					-1);
-//			dialog.setTargetFragment(ActivityMapFragment.this, DELETE_REQUESTCODE);
-//			dialog.show(getActivity().getSupportFragmentManager(), "confirmDialog");
-//			return true;
 
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
-
-//	private void loadArgsAndCallback(Bundle args) {
-//		args.putLong(LocationExercise._ID,   locationExerciseId);
-//		args.putString(GlobalValues.TITLE,title);
-//		args.putString(LocationExercise.DESCRIPTION, description) ;
-//		callBacks.onSelectedAction(args);
-//	}
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -328,15 +320,6 @@ public class ActivityMapFragment extends ExerciseMasterFragment implements
                     .position(
                             new LatLng((double) ler.getEndLatitude(), (double) ler
                                     .getEndLongitude())));
-
-//            LatLng southwest = new LatLng(Math.min(ler.getStartLatitude(),
-//                    ler.getEndLatitude()), Math.min(ler.getStartLongitude(),
-//                    ler.getEndLongitude()));
-//            LatLng northeast = new LatLng(Math.max(ler.getStartLatitude(),
-//                    ler.getEndLatitude()), Math.max(ler.getStartLongitude(),
-//                    ler.getEndLongitude()));
-//            map.moveCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds(
-//                    southwest, northeast), 500, 500, 0));
         }
 
         try {
@@ -399,9 +382,11 @@ public class ActivityMapFragment extends ExerciseMasterFragment implements
     private void plotRouteForMap(Cursor csr) {
         LatLng fromLatLng;
         LatLng toLatLng;
+
         if (csr.getCount() == 0 || csr.getCount() == 1) {
             return;
         } else {
+            assignDistancePerPin();
             csr.moveToFirst();
             fromLatLng = new LatLng(csr.getDouble(0), csr.getDouble(1));
             csr.moveToNext();
@@ -409,12 +394,14 @@ public class ActivityMapFragment extends ExerciseMasterFragment implements
                 toLatLng = new LatLng(csr.getDouble(0), csr.getDouble(1));
                 map.addPolyline(new PolylineOptions().add(fromLatLng, toLatLng)
                         .width(5).color(Color.RED));
+                // determine if you need to display mileage pin
+                calcDistanceToPlacePin(fromLatLng, toLatLng, map);
                 findGpsCorners(toLatLng);
                 fromLatLng = toLatLng;
                 csr.moveToNext();
             }
-            LatLng southwest = new  LatLng(swLat,swLong) ;
-            LatLng northeast = new  LatLng(neLat,neLong) ;
+            LatLng southwest = new LatLng(swLat, swLong);
+            LatLng northeast = new LatLng(neLat, neLong);
 
             map.moveCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds(
                     southwest, northeast), 500, 500, 0));
@@ -423,6 +410,73 @@ public class ActivityMapFragment extends ExerciseMasterFragment implements
             // csr.close();
         }
     }
+
+    private void assignDistancePerPin(){
+        pinEveryX = (er != null ? er.getPinEveryXMiles() : GlobalValues.DEFAULT_NO_PINS);
+    }
+
+    private void calcDistanceToPlacePin(LatLng fromLatLng, LatLng toLatLng, GoogleMap map) {
+        if (pinEveryX <= 0) {
+            return;
+        }
+        boolean isImperialDisplay = isImperialDisplay();
+        Location.distanceBetween(fromLatLng.latitude, fromLatLng.longitude, toLatLng.latitude, toLatLng.longitude, distanceBetweenPoints);
+        distance += distanceBetweenPoints[0];
+        if (Utility.coveredDistanceForMarker(distance, isImperialDisplay, pinEveryX)) {
+            currentDistance += distance;
+            int displayDistance = Utility.calcDisplayDistance(currentDistance, isImperialDisplay );
+            distance = 0;
+            map.addMarker(new MarkerOptions()
+                    .position(toLatLng)
+                    .icon(BitmapDescriptorFactory.fromBitmap(setMarkerDrawable( displayDistance  + distanceUnits)))
+                    // SET ANCHOR POINT TO MARKER CENTER
+                    .anchor(0.5f, 0.5f));
+        }
+    }
+
+    // cribbed code for custom marker from http://www.ugopiemontese.eu/2014/06/18/custom-markers-for-android-google-maps-api-v2/
+    public Bitmap setMarkerDrawable(String pinText) {
+        Bitmap icon = drawTextToBitmap(R.drawable.map_pin_circle, pinText);
+        return icon;
+    }
+
+    public Bitmap drawTextToBitmap(@DrawableRes int drawableRes, String gText) {
+        Drawable drawable = getResources().getDrawable(drawableRes);
+        Canvas canvas = new Canvas();
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        canvas.setBitmap(bitmap);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        drawable.draw(canvas);
+
+
+        Resources resources = getResources();
+        float scale = resources.getDisplayMetrics().density;
+        Bitmap.Config bitmapConfig = bitmap.getConfig();
+
+        if (bitmapConfig == null) {
+            bitmapConfig = android.graphics.Bitmap.Config.ARGB_8888;
+        }
+        bitmap = bitmap.copy(bitmapConfig, true);
+        canvas = new Canvas(bitmap);
+
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        /* SET FONT COLOR (e.g. WHITE -> rgb(255,255,255)) */
+        paint.setColor(Color.rgb(0, 0, 0));
+        /* SET FONT SIZE (e.g. 15) */
+        paint.setTextSize((int) (10 * scale));
+        /* SET SHADOW WIDTH, POSITION AND COLOR (e.g. BLACK) */
+        //paint.setShadowLayer(1f, 0f, 1f, Color.BLACK);
+
+        Rect bounds = new Rect();
+        paint.getTextBounds(gText, 0, gText.length(), bounds);
+        int x = (bitmap.getWidth() - bounds.width()) / 2;
+        int y = (bitmap.getHeight() + bounds.height()) / 2;
+        canvas.drawText(gText, x, y, paint);
+
+        return bitmap;
+    }
+
+
 
     /**
      * Find the most southwest and northeast GPS lat/long
@@ -454,6 +508,7 @@ public class ActivityMapFragment extends ExerciseMasterFragment implements
 
     }
 
+    // TODO move to separate class
     private boolean createKMLFile() {
         boolean success = true;
         String appName = getResources().getString(R.string.app_name);

@@ -43,6 +43,7 @@ public class PhotoFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.startup_photo, container, false);
         imageView = (ImageView) view.findViewById(R.id.startup_photo_view);
+
         photoPath = PhotoUtils.getStartupPhotoPath(getActivity());
         startFab = (FloatingActionButton) view.findViewById(R.id.startup_photo_fab);
         startFab.setOnClickListener(new View.OnClickListener() {

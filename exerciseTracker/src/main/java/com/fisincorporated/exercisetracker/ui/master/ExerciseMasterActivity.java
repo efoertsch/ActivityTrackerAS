@@ -22,8 +22,8 @@ import com.fisincorporated.exercisetracker.ui.charts.AltitudeVsDistanceGraphFrag
 import com.fisincorporated.exercisetracker.ui.charts.GraphActivity;
 import com.fisincorporated.exercisetracker.ui.stats.ActivityDetailFragment;
 import com.fisincorporated.exercisetracker.ui.stats.ActivityPager;
-import com.fisincorporated.facebook.FacebookPostStatsActivity;
-import com.fisincorporated.facebook.FacebookPostStatsFragment;
+import com.fisincorporated.exercisetracker.facebook.FacebookPostStatsActivity;
+import com.fisincorporated.exercisetracker.facebook.FacebookPostStatsFragment;
 
 abstract public class ExerciseMasterActivity extends AppCompatActivity implements IHandleSelectedAction {
 	protected TrackerDatabaseHelper databaseHelper = null;

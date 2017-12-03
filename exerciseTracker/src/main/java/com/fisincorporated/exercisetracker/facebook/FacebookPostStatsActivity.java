@@ -1,14 +1,14 @@
-package com.fisincorporated.facebook;
-
-import com.facebook.CallbackManager;
-import com.facebook.FacebookSdk;
-import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
-import com.fisincorporated.exercisetracker.GlobalValues;
-import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
+package com.fisincorporated.exercisetracker.facebook;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+
+import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
+import com.fisincorporated.exercisetracker.GlobalValues;
+import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
 
 //http://stackoverflow.com/questions/21634138/working-example-of-latest-android-facebook-sdk-login
 public class FacebookPostStatsActivity extends ExerciseMasterFragmentActivity {

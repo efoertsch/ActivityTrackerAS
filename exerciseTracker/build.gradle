@@ -10,6 +10,10 @@ android {
         minSdkVersion 19
         targetSdkVersion 25
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        // For vector drawable icons in button/imageviews
+        vectorDrawables.useSupportLibrary = true
+
     }
 
     buildTypes {
@@ -32,32 +36,44 @@ repositories {
 
 dependencies {
 
+    final SUPPORT_LIBRARY_VERSION = '25.4.0'
+    final GOOGLE_MAPS_VERSION = '11.6.2'
+    final GOOGLE_DRIVE_VERSION = '11.6.2'
+    final ESPRESSO_CORE = '3.0.1'
+
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile "com.google.android.gms:play-services-maps:$GOOGLE_MAPS_VERSION"
+    compile "com.android.support:appcompat-v7:$SUPPORT_LIBRARY_VERSION"
+    compile "com.android.support:design:$SUPPORT_LIBRARY_VERSION"
+    compile "com.android.support:support-v4:$SUPPORT_LIBRARY_VERSION"
+    compile "com.android.support:preference-v14:$SUPPORT_LIBRARY_VERSION"
+
+    // Google Drive
+    compile "com.google.android.gms:play-services-drive:$GOOGLE_DRIVE_VERSION"
+    compile "com.google.android.gms:play-services-auth:$GOOGLE_DRIVE_VERSION"
+
+    // Facebook - TODO - reincorporate
     compile 'com.facebook.android:facebook-android-sdk:4.7.0'
-    compile 'com.google.android.gms:play-services-maps:11.4.2'
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support:design:25.3.1'
-    compile 'com.android.support:support-v4:25.3.1'
-    compile 'com.android.support:preference-v14:25.3.1'
 
     // For charting
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
 
-
     // Unit testing dependencies
     testCompile 'junit:junit:4.12'
-    testCompile "org.mockito:mockito-core:1.9.5"
+    testCompile "org.mockito:mockito-core:2.7.6"
     // from
     // https://io2015codelabs.appspot.com/codelabs/android-studio-testing#6
     // https://developer.android.com/training/testing/unit-testing/instrumented-unit-tests.html
     // following added from
     //http://stackoverflow.com/questions/32600204/warningconflict-with-dependency-com-android-supportsupport-annotations
     // explanation and resolution
-    androidTestCompile 'com.android.support:support-annotations:26.0.2'
-    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
+    androidTestCompile "com.android.support:support-annotations:$SUPPORT_LIBRARY_VERSION"
+    androidTestCompile "com.android.support.test.espresso:espresso-core:$ESPRESSO_CORE"
+
+    compile 'org.jetbrains:annotations-java5:15.0'
 
     // Set this dependency to build and run UI Automator tests
     // From https://developer.android.com/tools/testing-support-library/index.html#setup
     //androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
 
-    compile 'org.jetbrains:annotations-java5:15.0'
 }

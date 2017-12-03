@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.fisincorporated.facebook;
+package com.fisincorporated.exercisetracker.facebook;
 
 import android.os.Bundle;
 import android.util.Log;

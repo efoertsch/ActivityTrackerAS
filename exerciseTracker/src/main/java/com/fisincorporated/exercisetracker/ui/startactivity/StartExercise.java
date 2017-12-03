@@ -4,8 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.fisincorporated.exercisetracker.ui.logger.ActivityLogger;
-import com.fisincorporated.exercisetracker.ui.logger.GPSLocationManager;
+import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.ExerciseDAO;
 import com.fisincorporated.exercisetracker.database.ExerciseRecord;
@@ -14,6 +13,8 @@ import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.ExrcsLocation;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
+import com.fisincorporated.exercisetracker.ui.logger.ActivityLogger;
+import com.fisincorporated.exercisetracker.ui.logger.GPSLocationManager;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
 
 public class StartExercise extends ExerciseMasterFragmentActivity {
@@ -29,9 +30,15 @@ public class StartExercise extends ExerciseMasterFragmentActivity {
 		super.onCreate(savedInstanceState);
         setActivityTitle(R.string.start_exercise);
 
+        assignGlobals();
         if ((id = GPSLocationManager.checkActivityId(this)) != -1) {
             directToActivityLogger(id);
         }
+	}
+
+	// Assign any values needed later
+	private void assignGlobals() {
+		GlobalValues.PACKAGE_NAME = getPackageName();
 	}
 
 	protected Fragment createFragment() {

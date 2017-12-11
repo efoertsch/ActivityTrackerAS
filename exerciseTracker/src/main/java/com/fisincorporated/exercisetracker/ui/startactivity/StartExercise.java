@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.ExerciseDAO;
 import com.fisincorporated.exercisetracker.database.ExerciseRecord;
@@ -29,16 +28,9 @@ public class StartExercise extends ExerciseMasterFragmentActivity {
 		long id = -1;
 		super.onCreate(savedInstanceState);
         setActivityTitle(R.string.start_exercise);
-
-        assignGlobals();
         if ((id = GPSLocationManager.checkActivityId(this)) != -1) {
             directToActivityLogger(id);
         }
-	}
-
-	// Assign any values needed later
-	private void assignGlobals() {
-		GlobalValues.PACKAGE_NAME = getPackageName();
 	}
 
 	protected Fragment createFragment() {

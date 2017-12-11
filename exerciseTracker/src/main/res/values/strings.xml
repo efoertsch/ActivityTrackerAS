@@ -146,16 +146,16 @@
     <string name="post_stats">Post stats</string>
     <string name="post_to_facebook">Post to Facebook</string>
     <string name="post_to_facebook_q">Post to Facebook?</string>
-    <string name="press_backup_to_make_backup">The backup will overwrite any existing backup. Press Backup to continue else cancel"</string>
-    <string name="press_restore_to_restore">The restore will overwrite your existing activity com.fisincorporated.database. Press Restore to continue else cancel"</string>
-    <string name="press_yes_to_delete_selected_activities_or_no_to_cancel">Press Yes to delete the selected activities or No to cancel</string>
-    <string name="press_yes_to_delete_GPS_delail_or_no_to_cancel">Press YES to delete GPS detail or No to cancel</string>
+    <string name="press_backup_to_make_backup">The backup will overwrite any existing backup. Press Backup to continue else cancel."</string>
+    <string name="press_restore_to_restore">If you continue, there is no going back! The restore will overwrite your existing database! Press Restore to continue else cancel."</string>
+    <string name="press_yes_to_delete_selected_activities_or_no_to_cancel">Press Yes to delete the selected activities or No to cancel.</string>
+    <string name="press_yes_to_delete_GPS_delail_or_no_to_cancel">Press YES to delete GPS detail or No to cancel.</string>
     <string name="rack_up_the_miles">Rack up the miles!</string>
     <string name="reenter_location_for_activity">Reenter the location for the Activity</string>
     <string name="review_exercise">Review Exercise</string>
     <string name="restart">Restart</string>
     <string name="restore">Restore</string>
-    <string name="restore_file_will_be_read_from_above_backup_location">Restore file will be read from above backup location</string>
+    <string name="restore_file_will_be_read_from_above_backup_location">Restore file will be read from above backup location.</string>
     <string name="restore_database">Restore Database</string>
     <string name="restore_cancelled">Restore cancelled</string>
     <string name="satellite">Satellite</string>
@@ -219,7 +219,7 @@
     <string name="action_history">History</string>
     <string name="action_exercise_setup">Exercise Setup</string>
     <string name="action_options">Options</string>
-    <string name="action_backup_restore">Backup/Restore</string>
+    <string name="action_restore_db">Restore</string>
     <string name="action_about">About</string>
     <string name="drawer_open">Drawer Open</string>
     <string name="drawer_close">Drawer Close</string>
@@ -252,9 +252,26 @@
     <string name="map_pin_kilometers">k</string>
     <string name="title_activity_drive">DriveActivity</string>
 
-    <!-- Backup of SQLite database to Google Drive -->
+    <!-- Backup/Restore -->
     <string name="drive_backup_success">ActivityTracker database successfully backed up to Drive</string>
-    <string name="drive_backup_error">Oops. An error occurred while backing up ActivityTracker database. Error info %1$s</string>
-
+    <string name="local_backup_success">ActivityTracker database successfully backed up to local %1$s directory</string>
+    <string name="backup_error">Oops. An error occurred while backing up ActivityTracker database. Error info %1$s</string>
+    <string name="error_creating_local_backup_directory">No Download directory found!</string>
+    <string name="backup_scheduled">Backup scheduled.</string>
+    <string name="local_backup_directory_not_writeable">Local backup directory (%1$s) not writeable</string>
+    <string name="local_backup_directory_not_readable">Local backup directory (%1$s) not readable</string>
+    <string name="restore_error">Oops. An error occurred while restoring up ActivityTracker database. Error info %1$s</string>
+    <string name="drive_restore_success">ActivityTracker database successfully restored from Drive</string>
+    <string name="local_restore_success">ActivityTracker database successfully restored from local %1$s directory</string>
+    <string name="restore_database_from_local">Restore from local backup</string>
+    <string name="restore_will_be_from_local">Restore will be from %1$s directory</string>
+    <string name="restore_database_from_drive">Restore database from Drive</string>
+    <string name="restore_scheduled">Restore scheduled</string>
+    <string name="restore_successful">Restore successful</string>
+    <string name="drive_root_folder_not_found">Drive root folder not found.</string>
+    <string name="unable_to_create_new_folder">Unable to create folder %1$s under %2$s.</string>
+    <string name="unable_to_create_drivecontents">Unable to create DriveContents for new Google Drive file.</string>
+    <string name="unable_to_write_to_drive_file">Unable to write local file %1$s to Google Drive.</string>
+    <string name="sign_in_to_drive_before_backup">Oops. Before I can back up ActivityTracker to your Google Drive, you need to sign into Drive first.</string>
 
 </resources>

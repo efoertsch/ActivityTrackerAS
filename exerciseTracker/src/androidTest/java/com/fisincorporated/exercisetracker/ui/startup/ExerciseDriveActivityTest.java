@@ -60,9 +60,9 @@ public class ExerciseDriveActivityTest {
         navigationMenuItemView2.perform(click());
 
         ViewInteraction appCompatButton = onView(
-                allOf(withId(R.id.backup_restore_db_btnRestore), withText("Restore"),
+                allOf(withId(R.id.restore_db_from_drive_btn), withText("Restore"),
                         childAtPosition(
-                                allOf(withId(R.id.backup_restore_db_rlrestore),
+                                allOf(withId(R.id.restore_db_from_drive_rl),
                                         childAtPosition(
                                                 withClassName(is("android.widget.RelativeLayout")),
                                                 0)),

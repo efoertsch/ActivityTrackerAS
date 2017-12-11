@@ -5,7 +5,7 @@ package com.fisincorporated.exercisetracker;
 public class GlobalValues {
 
 	// Assign at app startup
-	public static String PACKAGE_NAME = "com.fisincorporated.exercisetracker";
+	public static String DATABASE_PATH_AND_NAME = "";
 
 	public static final String LOG_TAG = "ActivityTracker";
 	public static final String BUNDLE = "Bundle";
@@ -66,6 +66,11 @@ public class GlobalValues {
 	// -1 means no distance pins are to be placed on map
 	public static final int DEFAULT_NO_PINS = -1;
 
-	// MimeType used to back up SQLite db to Google Drive
+	// Back up
+	// SQLite db to Google Drive
 	public static final String SQLITE_MIME_TYPE = "application/x-sqlite3";
+	public static final String BACKUP_TYPE = "BACKUP_TYPE";
+	public static final int BACKUP_TO_LOCAL = 0;
+	public static final int BACKUP_TO_DRIVE = 1;
+
 }

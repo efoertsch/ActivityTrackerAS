@@ -16,7 +16,7 @@ import android.view.MenuItem;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.ui.about.AboutActivityTracker;
 import com.fisincorporated.exercisetracker.ui.backuprestore.BackupRestoreActivity;
-import com.fisincorporated.exercisetracker.ui.drive.DriveActivity;
+import com.fisincorporated.exercisetracker.ui.drive.DriveSignOnActivity;
 import com.fisincorporated.exercisetracker.ui.history.ActivityHistory;
 import com.fisincorporated.exercisetracker.ui.maintenance.ExerciseMaintenanceListActivity;
 import com.fisincorporated.exercisetracker.ui.preferences.SettingsActivity;
@@ -109,7 +109,7 @@ public class ExerciseDrawerActivity  extends AppCompatActivity  {
                 displaySettings();
                 break;
             case R.id.nav_menu_backup_restore:
-                displayBackupRestore();
+                displayRestoreActivity();
                 break;
             case R.id.nav_menu_about:
                 displayAbout();
@@ -118,14 +118,14 @@ public class ExerciseDrawerActivity  extends AppCompatActivity  {
             case R.id.nav_menu_drive:
                 displayDrive();
                 break;
-
         }
 
         drawerLayout.closeDrawers();
     }
 
     private void displayDrive() {
-        Intent intent = new Intent(this, DriveActivity.class);
+       // Intent intent = new Intent(this, DriveActivity.class);
+        Intent intent = new Intent(this, DriveSignOnActivity.class);
         startActivity(intent);
     }
 
@@ -164,7 +164,7 @@ public class ExerciseDrawerActivity  extends AppCompatActivity  {
         startActivity(intent);
     }
 
-    private void displayBackupRestore() {
+    private void displayRestoreActivity() {
         Intent intent = new Intent(this, BackupRestoreActivity.class);
         startActivity(intent);
     }

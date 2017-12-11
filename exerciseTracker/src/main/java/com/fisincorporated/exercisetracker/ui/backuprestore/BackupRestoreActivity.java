@@ -16,7 +16,7 @@ public class BackupRestoreActivity extends ExerciseMasterFragmentActivity {
 	}
 
 	protected Fragment createFragment() {
-		return new BackupRestoreFragment();
+		return new RestoreFragment();
 	}
 
 	// added for tablet

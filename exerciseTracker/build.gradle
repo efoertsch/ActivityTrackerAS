@@ -5,7 +5,9 @@ android {
     compileSdkVersion 25
     buildToolsVersion '26.0.2'
 
+
     defaultConfig {
+        // don't change applicationID unless API keys changed on https://console.cloud.google.com/...
         applicationId "com.fisincorporated.ExerciseTracker"
         minSdkVersion 19
         targetSdkVersion 25
@@ -29,6 +31,11 @@ android {
         exclude 'LICENSE.txt'
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
 }
 repositories {
     mavenCentral()
@@ -40,6 +47,8 @@ dependencies {
     final GOOGLE_MAPS_VERSION = '11.6.2'
     final GOOGLE_DRIVE_VERSION = '11.6.2'
     final ESPRESSO_CORE = '3.0.1'
+    final RX_ANDROID ='2.0.1'
+    final RX_JAVA = '2.1.7'
 
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     compile "com.google.android.gms:play-services-maps:$GOOGLE_MAPS_VERSION"
@@ -48,9 +57,16 @@ dependencies {
     compile "com.android.support:support-v4:$SUPPORT_LIBRARY_VERSION"
     compile "com.android.support:preference-v14:$SUPPORT_LIBRARY_VERSION"
 
+    // RxAndroid and RxJava
+    compile "io.reactivex.rxjava2:rxandroid:$RX_ANDROID"
+    compile "io.reactivex.rxjava2:rxjava:$RX_JAVA"
+
     // Google Drive
     compile "com.google.android.gms:play-services-drive:$GOOGLE_DRIVE_VERSION"
     compile "com.google.android.gms:play-services-auth:$GOOGLE_DRIVE_VERSION"
+
+    // For background backups
+    compile 'com.firebase:firebase-jobdispatcher:0.8.5'
 
     // Facebook - TODO - reincorporate
     compile 'com.facebook.android:facebook-android-sdk:4.7.0'

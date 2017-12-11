@@ -12,18 +12,19 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import com.fisincorporated.exercisetracker.ui.maps.ActivityMap;
-import com.fisincorporated.exercisetracker.ui.maps.ActivityMapFragment;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
+import com.fisincorporated.exercisetracker.application.ActivityTrackerApplication;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
-import com.fisincorporated.exercisetracker.ui.charts.AltitudeVsDistanceGraphFragment;
-import com.fisincorporated.exercisetracker.ui.charts.GraphActivity;
-import com.fisincorporated.exercisetracker.ui.stats.ActivityDetailFragment;
-import com.fisincorporated.exercisetracker.ui.stats.ActivityPager;
 import com.fisincorporated.exercisetracker.facebook.FacebookPostStatsActivity;
 import com.fisincorporated.exercisetracker.facebook.FacebookPostStatsFragment;
+import com.fisincorporated.exercisetracker.ui.charts.AltitudeVsDistanceGraphFragment;
+import com.fisincorporated.exercisetracker.ui.charts.GraphActivity;
+import com.fisincorporated.exercisetracker.ui.maps.ActivityMap;
+import com.fisincorporated.exercisetracker.ui.maps.ActivityMapFragment;
+import com.fisincorporated.exercisetracker.ui.stats.ActivityDetailFragment;
+import com.fisincorporated.exercisetracker.ui.stats.ActivityPager;
 
 abstract public class ExerciseMasterActivity extends AppCompatActivity implements IHandleSelectedAction {
 	protected TrackerDatabaseHelper databaseHelper = null;
@@ -44,13 +45,18 @@ abstract public class ExerciseMasterActivity extends AppCompatActivity implement
 		super.onCreate(savedInstanceState);
 	}
 
+	//TODO user Dagger injection
 	public void getDatabaseSetup() {
-		if (databaseHelper == null)
-			databaseHelper = TrackerDatabaseHelper.getTrackerDatabaseHelper(this);
-		if (database == null)
+		if (databaseHelper == null) {
+			databaseHelper = ((ActivityTrackerApplication) getApplication()).getDatabaseHelper();
+		}
+		if (database == null) {
+			database = ((ActivityTrackerApplication) getApplication()).getDatabase();
+		}
+
+		if (!database.isOpen()) {
 			database = databaseHelper.getWritableDatabase();
-		if (!database.isOpen())
-			database = databaseHelper.getWritableDatabase();
+		}
 	}
 
 	public TrackerDatabaseHelper getTrackerDataseHelper() {

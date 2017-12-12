@@ -49,6 +49,7 @@ dependencies {
     final ESPRESSO_CORE = '3.0.1'
     final RX_ANDROID ='2.0.1'
     final RX_JAVA = '2.1.7'
+    final FIREBASE_VERSION = '0.8.5'
 
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     compile "com.google.android.gms:play-services-maps:$GOOGLE_MAPS_VERSION"
@@ -66,7 +67,7 @@ dependencies {
     compile "com.google.android.gms:play-services-auth:$GOOGLE_DRIVE_VERSION"
 
     // For background backups
-    compile 'com.firebase:firebase-jobdispatcher:0.8.5'
+    compile "com.firebase:firebase-jobdispatcher:$FIREBASE_VERSION"
 
     // Facebook - TODO - reincorporate
     compile 'com.facebook.android:facebook-android-sdk:4.7.0'

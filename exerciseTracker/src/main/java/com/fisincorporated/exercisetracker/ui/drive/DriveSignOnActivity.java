@@ -1,11 +1,12 @@
 package com.fisincorporated.exercisetracker.ui.drive;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
-import com.fisincorporated.exercisetracker.GlobalValues;
+import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -62,16 +63,21 @@ public class DriveSignOnActivity extends ExerciseMasterFragmentActivity {
                 // Called after user is signed in.
                 if (resultCode == RESULT_OK) {
                     Log.i(TAG, "Signed in successfully.");
-                    DriveBackupScheduler.scheduleBackupJob(getApplicationContext(), GlobalValues.BACKUP_TO_DRIVE);
-                    // Use the last signed in account here since it already have a Drive scope.
-                    //initializeDriveClient(GoogleSignIn.getLastSignedInAccount(this));
-                    //mDriveResourceClient = Drive.getDriveResourceClient(this, GoogleSignIn.getLastSignedInAccount(this));
-                    // Get drive resource client and use to save file
-                    // saveFileToDrive(mDriveResourceClient, getDatabaseFile(), GlobalValues.SQLITE_MIME_TYPE);
+                    returnToSender(true);
+                    //DriveBackupScheduler.scheduleBackupJob(getApplicationContext(), GlobalValues.BACKUP_TO_DRIVE);
+                } else {
+                    returnToSender(false);
                 }
                 break;
 
         }
+    }
+
+    private void returnToSender(boolean signinSuccess) {
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra(getString(R.string.drive_backup),signinSuccess);
+        setResult(Activity.RESULT_OK,returnIntent);
+        finish();
     }
 
     /**

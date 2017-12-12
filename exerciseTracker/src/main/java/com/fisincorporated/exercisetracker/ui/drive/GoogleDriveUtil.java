@@ -1,10 +1,11 @@
 package com.fisincorporated.exercisetracker.ui.drive;
 
 import com.fisincorporated.exercisetracker.R;
-import com.fisincorporated.exercisetracker.ui.utils.IoUtils;
+import com.fisincorporated.exercisetracker.utility.IoUtils;
 import com.google.android.gms.drive.DriveContents;
 import com.google.android.gms.drive.DriveFile;
 import com.google.android.gms.drive.DriveFolder;
+import com.google.android.gms.drive.DriveId;
 import com.google.android.gms.drive.DriveResourceClient;
 import com.google.android.gms.drive.Metadata;
 import com.google.android.gms.drive.MetadataBuffer;
@@ -18,18 +19,20 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.concurrent.ExecutionException;
 
 import io.reactivex.Completable;
+import io.reactivex.CompletableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-
+//TODO Make more generic
 public class GoogleDriveUtil {
 
     private static final String TAG = GoogleDriveUtil.class.getSimpleName();
-
 
     public static Completable uploadFileToDrive(GoogleDriveFile googleDriveFile) {
         return getRootFolderCompletable(googleDriveFile)
@@ -39,7 +42,6 @@ public class GoogleDriveUtil {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
-
 
     public static Completable getRootFolderCompletable(GoogleDriveFile googleDriveFile) {
         Completable completable = Completable.fromAction(() -> {
@@ -63,12 +65,11 @@ public class GoogleDriveUtil {
         Completable completable = Completable.fromAction(() -> {
             DriveFolder driveFolder;
             try {
-                Query query = getDoesFileOrFolderExistQuery(DriveFolder.MIME_TYPE, googleDriveFile.getFolderName(), false);
-                MetadataBuffer metadataBuffer = Tasks.await(googleDriveFile.getDriveResourceClient().queryChildren(googleDriveFile.getParentDriveFolder(), query));
-                if (metadataBuffer.getCount() > 0) {
-                    Metadata metaData = metadataBuffer.get(0);
-                    driveFolder = metaData.getDriveId().asDriveFolder();
-                    metadataBuffer.release();
+                DriveId driveId = getDriveIdForFileOrFolder(googleDriveFile.getDriveResourceClient()
+                        , googleDriveFile.getParentDriveFolder(),
+                        DriveFolder.MIME_TYPE, googleDriveFile.getFolderName(), false);
+                if (driveId != null) {
+                    driveFolder = driveId.asDriveFolder();
                 } else {
                     MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
                             .setTitle(googleDriveFile.getFolderName())
@@ -87,17 +88,16 @@ public class GoogleDriveUtil {
 
     public static Completable getDriveContentsCompletable(GoogleDriveFile googleDriveFile) {
         Completable completable = Completable.fromAction(() -> {
-            DriveFile driveFile;
             DriveContents driveContents;
             try {
-                Query query = getDoesFileOrFolderExistQuery(googleDriveFile.getMimeType(), googleDriveFile.getDriveFileName(), false);
-                MetadataBuffer metadataBuffer = Tasks.await(googleDriveFile.getDriveResourceClient().queryChildren(googleDriveFile.getDriveFileFolder(), query));
-                if (metadataBuffer.getCount() > 0 && !metadataBuffer.get(0).isTrashed()) {
-                    Metadata metaData = metadataBuffer.get(0);
-                    driveFile = metaData.getDriveId().asDriveFile();
+                DriveId driveId = getDriveIdForFileOrFolder(googleDriveFile.getDriveResourceClient()
+                        , googleDriveFile.getDriveFileFolder()
+                        , googleDriveFile.getMimeType(), googleDriveFile.getDriveFileName()
+                        , false);
+                if (driveId != null) {
+                    DriveFile driveFile = driveId.asDriveFile();
                     driveContents = Tasks.await(googleDriveFile.getDriveResourceClient().openFile(driveFile, DriveFile.MODE_WRITE_ONLY));
-                    googleDriveFile.setDriveFile(driveFile);
-                    metadataBuffer.release();
+                    googleDriveFile.setDriveContents(driveContents);
                 } else {
                     driveContents = Tasks.await(googleDriveFile.getDriveResourceClient().createContents());
                 }
@@ -114,7 +114,7 @@ public class GoogleDriveUtil {
             try {
                 OutputStream outputStream = googleDriveFile.getDriveContents().getOutputStream();
                 InputStream inputStream = new FileInputStream(googleDriveFile.getLocalFile());
-                IoUtils.copy(inputStream, outputStream);
+                IoUtils.copyWithNoClose(inputStream, outputStream);
                 if (googleDriveFile.getDriveFile() == null) {
                     // First time writing file to Drive
                     MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
@@ -124,15 +124,96 @@ public class GoogleDriveUtil {
                             .build();
                     googleDriveFile.setDriveFile(Tasks.await(googleDriveFile.getDriveResourceClient()
                             .createFile(googleDriveFile.getDriveFileFolder(), changeSet, googleDriveFile.getDriveContents())));
+                    // Seems a little wonky but closing the outputstream prior to commit causes the commitContents to throw and exception
+                    // So copy file but don't close before commit.
                     Tasks.await(googleDriveFile.getDriveResourceClient().commitContents(googleDriveFile.getDriveContents(), null));
-
                 }
-
+                IoUtils.closeStream(inputStream);
+                // And just in case
+                IoUtils.closeStream(outputStream);
             } catch (Exception e) {
                 throw new GoogleDriveException((googleDriveFile.getContext().getString(R.string.unable_to_write_to_drive_file, googleDriveFile.getLocalFile().getName())), e);
             }
         });
         return completable;
+    }
+
+    public static Completable downloadFileFromDrive(GoogleDriveFile googleDriveFile) {
+        return getRootFolderCompletable(googleDriveFile)
+                .andThen(checkForFolderCompletable(googleDriveFile))
+                .andThen(checkForFileCompletable(googleDriveFile))
+                .andThen(restoreDriveFileToLocalCompletable(googleDriveFile))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    private static Completable checkForFolderCompletable(GoogleDriveFile googleDriveFile) {
+        Completable completable = Completable.fromAction(() -> {
+            try {
+                DriveId driveId = getDriveIdForFileOrFolder(googleDriveFile.getDriveResourceClient()
+                        , googleDriveFile.getParentDriveFolder()
+                        , DriveFolder.MIME_TYPE, googleDriveFile.getFolderName()
+                        , false);
+                if (driveId != null) {
+                    googleDriveFile.setDriveFileFolder(driveId.asDriveFolder());
+                } else {
+                    throw new GoogleDriveException(googleDriveFile.getContext().getString(R.string.no_drive_backup_available));
+                }
+            } catch (Exception e) {
+                throw new GoogleDriveException(googleDriveFile.getContext().getString(R.string.no_drive_backup_available), e);
+            }
+        });
+        return completable;
+    }
+
+    private static CompletableSource checkForFileCompletable(GoogleDriveFile googleDriveFile) {
+        Completable completable = Completable.fromAction(() -> {
+            try {
+                DriveId driveId = getDriveIdForFileOrFolder(googleDriveFile.getDriveResourceClient()
+                        , googleDriveFile.getDriveFileFolder()
+                        , googleDriveFile.getMimeType(), googleDriveFile.getDriveFileName()
+                        , false);
+                if (driveId != null) {
+                    DriveFile driveFile = driveId.asDriveFile();
+                    DriveContents driveContents = Tasks.await(googleDriveFile.getDriveResourceClient().openFile(driveFile, DriveFile.MODE_READ_ONLY));
+                    googleDriveFile.setDriveContents(driveContents);
+                } else {
+                    throw new GoogleDriveException(googleDriveFile.getContext().getString(R.string.no_drive_backup_available));
+                }
+            } catch (Exception e) {
+                throw new GoogleDriveException(googleDriveFile.getContext().getString(R.string.no_drive_backup_available), e);
+            }
+        });
+        return completable;
+    }
+
+
+    private static CompletableSource restoreDriveFileToLocalCompletable(GoogleDriveFile googleDriveFile) {
+        Completable completable = Completable.fromAction(() -> {
+            try {
+                OutputStream outputStream = new FileOutputStream(googleDriveFile.getLocalFile());
+                InputStream inputStream = googleDriveFile.getDriveContents().getInputStream();
+                IoUtils.copyWithNoClose(inputStream, outputStream);
+                googleDriveFile.getDriveResourceClient().discardContents(googleDriveFile.getDriveContents());
+                IoUtils.closeStream(outputStream);
+            } catch (Exception e) {
+                throw new GoogleDriveException((googleDriveFile.getContext().getString(R.string.an_error_occurred_reading_file_from_drive, googleDriveFile.getLocalFile().getName())), e);
+            }
+        });
+        return completable;
+    }
+
+    private static DriveId getDriveIdForFileOrFolder(DriveResourceClient driveResourceClient, DriveFolder parentFolder
+            , String mimeType, String fileOrFolderName, boolean trashed) throws ExecutionException, InterruptedException {
+        DriveId driveId = null;
+        Query query = getDoesFileOrFolderExistQuery(mimeType, fileOrFolderName, trashed);
+        MetadataBuffer metadataBuffer = Tasks.await(driveResourceClient.queryChildren(parentFolder, query));
+        if (metadataBuffer.getCount() > 0) {
+            Metadata metaData = metadataBuffer.get(0);
+            driveId = metaData.getDriveId();
+            metadataBuffer.release();
+        }
+        return driveId;
     }
 
     public static Query getDoesFileOrFolderExistQuery(String mimeType, String title, boolean trashed) {

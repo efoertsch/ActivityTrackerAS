@@ -4,7 +4,7 @@ package com.fisincorporated.exercisetracker;
 
 public class GlobalValues {
 
-	// Assign at app startup
+    // Assign at app startup
 	public static String DATABASE_PATH_AND_NAME = "";
 
 	public static final String LOG_TAG = "ActivityTracker";
@@ -72,5 +72,7 @@ public class GlobalValues {
 	public static final String BACKUP_TYPE = "BACKUP_TYPE";
 	public static final int BACKUP_TO_LOCAL = 0;
 	public static final int BACKUP_TO_DRIVE = 1;
+	public static final boolean DRIVE_SIGNIN_SUCCESS = false;
+
 
 }

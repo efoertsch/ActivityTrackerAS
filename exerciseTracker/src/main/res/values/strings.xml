@@ -250,9 +250,10 @@
     <string name="map_pin_display_mileage_at">Display map mileage pins every X %1$s</string>
     <string name="map_pin_miles">m</string>
     <string name="map_pin_kilometers">k</string>
-    <string name="title_activity_drive">DriveActivity</string>
+
 
     <!-- Backup/Restore -->
+    <string name="title_activity_drive">DriveActivity</string>
     <string name="drive_backup_success">ActivityTracker database successfully backed up to Drive</string>
     <string name="local_backup_success">ActivityTracker database successfully backed up to local %1$s directory</string>
     <string name="backup_error">Oops. An error occurred while backing up ActivityTracker database. Error info %1$s</string>
@@ -273,5 +274,15 @@
     <string name="unable_to_create_drivecontents">Unable to create DriveContents for new Google Drive file.</string>
     <string name="unable_to_write_to_drive_file">Unable to write local file %1$s to Google Drive.</string>
     <string name="sign_in_to_drive_before_backup">Oops. Before I can back up ActivityTracker to your Google Drive, you need to sign into Drive first.</string>
+    <string name="no_drive_backup_available">No Drive backup available.</string>
+    <string name="can_not_determine_if_drive_folder_exists">Can not determine if Drive folder (%1$s) exists.</string>
+    <string name="an_error_occurred_reading_file_from_drive">An error occurred while attempting to read file (%1$s) from Drive.</string>
+    <string name="backup_to_drive">Backup To Drive</string>
+    <string name="backup_to_local_download_folder">Backup to Local Download folder</string>
+    <string name="drive_backup" translatable="false">drive_backup</string>
+    <string name="local_backup" translatable="false">local_backup</string>
+    <string name="would_you_like_to_schedule_backup_now">Would you like to schedule backup now?</string>
+    <string name="backup_now">Backup Now</string>
+    <string name="backup_later">Backup Later</string>
 
 </resources>

@@ -13,4 +13,18 @@
         android:entries="@array/displayUnits"
         android:entryValues="@array/displayUnits"
         android:defaultValue="@string/imperial" />
+
+    <PreferenceScreen
+        android:key="button_backup_key"
+        android:title="@string/backup"
+        android:persistent="false">
+        <SwitchPreference
+            android:key="@string/drive_backup"
+            android:title="@string/backup_to_drive"
+            android:defaultValue="false" />
+        <SwitchPreference
+            android:key="@string/local_backup"
+            android:title="@string/backup_to_local_download_folder"
+            android:defaultValue="true" />
+    </PreferenceScreen>
 </PreferenceScreen>

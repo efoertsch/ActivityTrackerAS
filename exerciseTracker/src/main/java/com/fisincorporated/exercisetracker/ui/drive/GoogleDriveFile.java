@@ -12,6 +12,9 @@ import com.google.android.gms.drive.MetadataChangeSet;
 
 import java.io.File;
 
+/**
+ * Hold all needed info to upload or download a file to Drive
+ */
 public class GoogleDriveFile {
 
     private DriveResourceClient driveResourceClient;

@@ -6,15 +6,13 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
+import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.drive.Drive;
-import com.google.android.gms.drive.DriveClient;
-import com.google.android.gms.drive.DriveResourceClient;
 
 
 public class DriveSignOnActivity extends ExerciseMasterFragmentActivity {
@@ -22,8 +20,6 @@ public class DriveSignOnActivity extends ExerciseMasterFragmentActivity {
     private static final String TAG = DriveSignOnActivity.class.getSimpleName();
     private static final int REQUEST_CODE_SIGN_IN = 0;
     private GoogleSignInClient mGoogleSignInClient;
-    private DriveClient mDriveClient;
-    private DriveResourceClient mDriveResourceClient;
 
     @Override
     protected Fragment createFragment() {
@@ -63,13 +59,11 @@ public class DriveSignOnActivity extends ExerciseMasterFragmentActivity {
                 // Called after user is signed in.
                 if (resultCode == RESULT_OK) {
                     Log.i(TAG, "Signed in successfully.");
-                    returnToSender(true);
-                    //DriveBackupScheduler.scheduleBackupJob(getApplicationContext(), GlobalValues.BACKUP_TO_DRIVE);
+                    returnToSender(GlobalValues.DRIVE_SIGNIN_SUCCESSFUL);
                 } else {
-                    returnToSender(false);
+                    returnToSender(GlobalValues.DRIVE_SIGNIN_UNSUCCESSFUL);
                 }
                 break;
-
         }
     }
 
@@ -79,15 +73,4 @@ public class DriveSignOnActivity extends ExerciseMasterFragmentActivity {
         setResult(Activity.RESULT_OK,returnIntent);
         finish();
     }
-
-    /**
-     * Continues the sign-in process, initializing the Drive clients with the current
-     * user's account.
-     */
-    private void initializeDriveClient(GoogleSignInAccount signInAccount) {
-        mDriveClient = Drive.getDriveClient(getApplicationContext(), signInAccount);
-        mDriveResourceClient = Drive.getDriveResourceClient(getApplicationContext(), signInAccount);
-        //onDriveClientReady();
-    }
-
 }

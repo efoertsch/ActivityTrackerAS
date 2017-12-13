@@ -1,19 +1,15 @@
 package com.fisincorporated.exercisetracker.ui.logger;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.ExrcsLocation;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-
-public class ActivityLogger extends ExerciseMasterFragmentActivity {
-
-	public ActivityLogger() {
-		// TODO Auto-generated constructor stub
-	}
+public class ActivityLoggerActivity extends ExerciseMasterFragmentActivity {
 
 	@Override
 	protected Fragment createFragment() {
@@ -27,7 +23,6 @@ public class ActivityLogger extends ExerciseMasterFragmentActivity {
 		bundle.putInt(Exercise.ELEVATION_IN_DIST_CALCS,intent.getIntExtra(Exercise.ELEVATION_IN_DIST_CALCS,0));
 		bundle.putString(LocationExercise.DESCRIPTION, intent.getStringExtra(LocationExercise.DESCRIPTION));
 		return  ActivityLoggerFragment.newInstance(bundle);
-
 	
 	}
 

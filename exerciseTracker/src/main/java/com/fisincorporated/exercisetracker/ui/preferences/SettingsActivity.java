@@ -17,7 +17,8 @@ public class SettingsActivity extends ExerciseMasterFragmentActivity {
 
     @Override
     protected Fragment createFragment() {
-        return new SettingsFragment();
+        SettingsFragment settingsFragment = SettingsFragment.newInstance(getIntent().getExtras());
+        return settingsFragment;
     }
 
 }

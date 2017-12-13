@@ -19,7 +19,7 @@
             android:id="@+id/nav_menu_settings"
             android:title="@string/settings"/>
         <item
-            android:id="@+id/nav_menu_backup_restore"
+            android:id="@+id/nav_menu_restore"
             android:title="@string/action_restore_db"/>
         <item
             android:id="@+id/nav_menu_about"

@@ -11,7 +11,7 @@
     <string name="activity_maintenance">Activity Maintenance</string>
     <string name="activity_history">History</string>
     <string name="activity_options">Options</string>
-    <string name="activity_backup_restore">Backup/Restore</string>"
+    <string name="activity_recovery">Restore Database</string>"
     <string name="activity_about">About</string>
     <string name="activitytracker_database_restored">ActivityTracker com.fisincorporated.database restored.</string>
     <string name="add_new_activity">Add New Activity</string>
@@ -255,8 +255,8 @@
     <!-- Backup/Restore -->
     <string name="title_activity_drive">DriveActivity</string>
     <string name="drive_backup_success">ActivityTracker database successfully backed up to Drive</string>
-    <string name="local_backup_success">ActivityTracker database successfully backed up to local %1$s directory</string>
-    <string name="backup_error">Oops. An error occurred while backing up ActivityTracker database. Error info %1$s</string>
+    <string name="local_backup_success">ActivityTracker database successfully backed up to local Download directory</string>
+    <string name="backup_error">Oops! ActivityTracker Backup Error!</string>
     <string name="error_creating_local_backup_directory">No Download directory found!</string>
     <string name="backup_scheduled">Backup scheduled.</string>
     <string name="local_backup_directory_not_writeable">Local backup directory (%1$s) not writeable</string>
@@ -278,11 +278,14 @@
     <string name="can_not_determine_if_drive_folder_exists">Can not determine if Drive folder (%1$s) exists.</string>
     <string name="an_error_occurred_reading_file_from_drive">An error occurred while attempting to read file (%1$s) from Drive.</string>
     <string name="backup_to_drive">Backup To Drive</string>
-    <string name="backup_to_local_download_folder">Backup to Local Download folder</string>
+    <string name="backup_to_local_download_folder">Backup to local Download folder</string>
     <string name="drive_backup" translatable="false">drive_backup</string>
     <string name="local_backup" translatable="false">local_backup</string>
     <string name="would_you_like_to_schedule_backup_now">Would you like to schedule backup now?</string>
     <string name="backup_now">Backup Now</string>
     <string name="backup_later">Backup Later</string>
+    <string name="backup_button_key" translatable="false">backup_key_button</string>
+    <string name="backup_to_local">Backup To Local</string>
+    <string name="backup_to_google_drive">Backup to Google Drive</string>
 
 </resources>

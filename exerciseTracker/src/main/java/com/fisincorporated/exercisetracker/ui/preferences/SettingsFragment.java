@@ -15,7 +15,7 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
-import com.fisincorporated.exercisetracker.ui.drive.DriveBackupScheduler;
+import com.fisincorporated.exercisetracker.backupandrestore.BackupScheduler;
 import com.fisincorporated.exercisetracker.ui.drive.DriveSignOnActivity;
 import com.fisincorporated.exercisetracker.utility.PhotoUtils;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -33,28 +33,69 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
     private boolean handleThisChange = true;
 
+    public static SettingsFragment newInstance(Bundle bundle) {
+        SettingsFragment settingsFragment = new SettingsFragment();
+        settingsFragment.setArguments(bundle);
+        return settingsFragment;
+    }
+
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         // Load the preferences from an XML resource
-        setPreferencesFromResource(R.xml.preferences, rootKey);
+        if (getArguments() == null) {
+            addPreferencesFromResource(R.xml.preferences);
+        } else {
+            addPreferencesFromResource(R.xml.preferences_backup);
+        }
+
         setupPreferences();
     }
 
     // cribbed some code from http://codetheory.in/android-pick-select-image-from-gallery-with-intents/
     private void setupPreferences() {
         Preference photoImagePreference = findPreference(getString(R.string.startup_image));
-        photoImagePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                Intent intent = new Intent();
-                // Show only images, no videos or anything else
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                // Always show the chooser (if there are multiple options available)
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_PHOTO);
-                return true;
-            }
-        });
+        if (photoImagePreference != null) {
+            photoImagePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent intent = new Intent();
+                    // Show only images, no videos or anything else
+                    intent.setType("image/*");
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    // Always show the chooser (if there are multiple options available)
+                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_PHOTO);
+                    return true;
+                }
+            });
+        }
 
+        Preference backupPreference = findPreference(getString(R.string.backup_button_key));
+        if (backupPreference != null) {
+            backupPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent intent = new Intent(getActivity(), SettingsActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(getString(R.string.backup_button_key), 0);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                    return true;
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getPreferenceScreen().getSharedPreferences()
+                .registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getPreferenceScreen().getSharedPreferences()
+                .unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -178,12 +219,11 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     private void setDriveBackupPreference(SharedPreferences sharedPreferences, boolean doDriveBackup) {
         handleThisChange = false;
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(getContext().getString(R.string.startup_image), doDriveBackup);
+        editor.putBoolean(getContext().getString(R.string.drive_backup), doDriveBackup);
         editor.commit();
     }
 
     /**
-     *
      * @param backupType - backup to local Download or to Drive
      */
     private void displayBackupNowDialog(int backupType) {
@@ -191,15 +231,11 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         builder.setTitle(R.string.backup_database)
                 .setMessage(R.string.would_you_like_to_schedule_backup_now);
         builder.setPositiveButton(R.string.backup_now, (dialog, which) -> {
-            DriveBackupScheduler.scheduleBackupJob(getContext(),backupType);
+            BackupScheduler.scheduleBackupJob(getContext(), backupType);
             dialog.dismiss();
-            getActivity().finish();
-
         });
         builder.setNegativeButton(R.string.backup_later, (dialog, which) -> {
             dialog.dismiss();
-            getActivity().finish();
-
         });
         AlertDialog dialog = builder.create();
         dialog.setCancelable(false);

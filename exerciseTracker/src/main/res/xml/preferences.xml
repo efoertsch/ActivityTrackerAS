@@ -1,30 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <Preference
         android:key="@string/startup_image"
         android:title="@string/select_startup_background"/>
 
     <ListPreference
-        android:key="@string/display_units"
-        android:title="@string/display_units"
-        android:summary="%s"
+        android:defaultValue="@string/imperial"
         android:dialogTitle="@string/display_units"
         android:entries="@array/displayUnits"
         android:entryValues="@array/displayUnits"
-        android:defaultValue="@string/imperial" />
+        android:key="@string/display_units"
+        android:summary="%s"
+        android:title="@string/display_units"/>
 
-    <PreferenceScreen
-        android:key="button_backup_key"
-        android:title="@string/backup"
-        android:persistent="false">
-        <SwitchPreference
-            android:key="@string/drive_backup"
-            android:title="@string/backup_to_drive"
-            android:defaultValue="false" />
-        <SwitchPreference
-            android:key="@string/local_backup"
-            android:title="@string/backup_to_local_download_folder"
-            android:defaultValue="true" />
-    </PreferenceScreen>
+    <Preference
+        android:key="@string/backup_button_key"
+        android:title="@string/backup">
+
+    </Preference>
+
 </PreferenceScreen>

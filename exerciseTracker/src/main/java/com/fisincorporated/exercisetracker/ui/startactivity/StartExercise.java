@@ -12,7 +12,7 @@ import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.ExrcsLocation;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
-import com.fisincorporated.exercisetracker.ui.logger.ActivityLogger;
+import com.fisincorporated.exercisetracker.ui.logger.ActivityLoggerActivity;
 import com.fisincorporated.exercisetracker.ui.logger.GPSLocationManager;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
 
@@ -39,7 +39,7 @@ public class StartExercise extends ExerciseMasterFragmentActivity {
 
 	private void directToActivityLogger(long id) {
 		getDatabaseSetup();
-		Intent intent = new Intent(this, ActivityLogger.class);
+		Intent intent = new Intent(this, ActivityLoggerActivity.class);
 		leDAO = new LocationExerciseDAO(databaseHelper);
 		eDAO = new ExerciseDAO(databaseHelper);
 		ler = leDAO.loadLocationExerciseRecordById(id);

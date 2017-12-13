@@ -1,7 +1,12 @@
-package com.fisincorporated.exercisetracker.ui.drive;
+package com.fisincorporated.exercisetracker.backupandrestore;
 
+import android.content.Context;
+
+import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.utility.IoUtils;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.drive.Drive;
 import com.google.android.gms.drive.DriveContents;
 import com.google.android.gms.drive.DriveFile;
 import com.google.android.gms.drive.DriveFolder;
@@ -15,9 +20,9 @@ import com.google.android.gms.drive.query.Query;
 import com.google.android.gms.drive.query.SearchableField;
 import com.google.android.gms.drive.query.SortOrder;
 import com.google.android.gms.drive.query.SortableField;
-import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -29,10 +34,41 @@ import io.reactivex.CompletableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-//TODO Make more generic
+//TODO Extract out completables to create generic drive completables (or Single<>)
 public class GoogleDriveUtil {
 
     private static final String TAG = GoogleDriveUtil.class.getSimpleName();
+
+    public static Completable getRestoreFromDriveCompletable(Context context, GoogleSignInAccount signInAccount) {
+        DriveResourceClient driveResourceClient = Drive.getDriveResourceClient(context, signInAccount);
+        GoogleDriveFile googleDriveFile = GoogleDriveFile.getInstance();
+        googleDriveFile.setDriveResourceClient(driveResourceClient)
+                .setContext(context)
+                .setFolderName(context.getString(R.string.app_name))
+                .setDriveFileName(GlobalValues.DATABASE_NAME)
+                .setMimeType(GlobalValues.SQLITE_MIME_TYPE)
+                .setLocalFile(getDatabaseFile(context));
+
+        return GoogleDriveUtil.downloadFileFromDrive(googleDriveFile);
+    }
+
+    public static Completable getBackupToDriveCompletable(Context context, GoogleSignInAccount signInAccount){
+        DriveResourceClient driveResourceClient = Drive.getDriveResourceClient(context, signInAccount);
+        GoogleDriveFile googleDriveFile = GoogleDriveFile.getInstance();
+        googleDriveFile.setDriveResourceClient(driveResourceClient)
+                .setContext(context)
+                .setFolderName(context.getString(R.string.app_name))
+                .setDriveFileName(GlobalValues.DATABASE_NAME)
+                .setMimeType(GlobalValues.SQLITE_MIME_TYPE)
+                .setLocalFile(getDatabaseFile(context));
+        return GoogleDriveUtil.uploadFileToDrive(googleDriveFile);
+    }
+
+    private static File getDatabaseFile(Context context) {
+        String currentDBPath = context.getDatabasePath(GlobalValues.DATABASE_NAME).getAbsolutePath();
+        File currentDB = new File(currentDBPath);
+        return currentDB;
+    }
 
     public static Completable uploadFileToDrive(GoogleDriveFile googleDriveFile) {
         return getRootFolderCompletable(googleDriveFile)
@@ -98,6 +134,7 @@ public class GoogleDriveUtil {
                     DriveFile driveFile = driveId.asDriveFile();
                     driveContents = Tasks.await(googleDriveFile.getDriveResourceClient().openFile(driveFile, DriveFile.MODE_WRITE_ONLY));
                     googleDriveFile.setDriveContents(driveContents);
+                    googleDriveFile.setDriveFile(driveFile);
                 } else {
                     driveContents = Tasks.await(googleDriveFile.getDriveResourceClient().createContents());
                 }
@@ -122,15 +159,15 @@ public class GoogleDriveUtil {
                             .setMimeType(googleDriveFile.getMimeType())
                             .setStarred(googleDriveFile.isStarred())
                             .build();
+                    // create file will close file once file written
                     googleDriveFile.setDriveFile(Tasks.await(googleDriveFile.getDriveResourceClient()
                             .createFile(googleDriveFile.getDriveFileFolder(), changeSet, googleDriveFile.getDriveContents())));
-                    // Seems a little wonky but closing the outputstream prior to commit causes the commitContents to throw and exception
-                    // So copy file but don't close before commit.
+                } else {
+                    // backup file previous existed so commit (which also closes file)
                     Tasks.await(googleDriveFile.getDriveResourceClient().commitContents(googleDriveFile.getDriveContents(), null));
                 }
                 IoUtils.closeStream(inputStream);
-                // And just in case
-                IoUtils.closeStream(outputStream);
+
             } catch (Exception e) {
                 throw new GoogleDriveException((googleDriveFile.getContext().getString(R.string.unable_to_write_to_drive_file, googleDriveFile.getLocalFile().getName())), e);
             }
@@ -224,175 +261,5 @@ public class GoogleDriveUtil {
                 .setSortOrder(new SortOrder.Builder().addSortDescending(SortableField.MODIFIED_DATE).build())
                 .build();
     }
-
-//    public GoogleDriveUtil getInstance(Context context, DriveClientReady driveClientReady) {
-//        GoogleDriveUtil driveOps = new GoogleDriveUtil();
-//        driveOps.context = context;
-//        driveOps.driveClientReady = driveClientReady;
-//        return driveOps;
-//    }
-//
-//
-//
-//    private void initializeDriveClient(GoogleSignInAccount signInAccount) {
-//        mDriveClient = Drive.getDriveClient(context, signInAccount);
-//        mDriveResourceClient = Drive.getDriveResourceClient(context, signInAccount);
-//        if (driveClientReady != null) {
-//            driveClientReady.onDriveClientReady();
-//        }
-//    }
-
-//    protected DriveClient getDriveClient() {
-//        return mDriveClient;
-//    }
-//
-//    protected DriveResourceClient getDriveResourceClient() {
-//        return mDriveResourceClient;
-//    }
-
-    public Task<DriveFolder> getRootFolderTask(DriveResourceClient driveResourceClient) {
-        return driveResourceClient.getRootFolder();
-    }
-
-//    public Task<DriveContents> getCreateContentsTask(DriveResourceClient driveResourceClient) {
-//        return getDriveResourceClient().createContents();
-//    }
-
-//    public void saveFileToDrive(final Task<DriveFolder> rootFolderTask, final Task<DriveContents> createContentsTask) {
-//        Tasks.whenAll(rootFolderTask, createContentsTask)
-//                .continueWithTask(new Continuation<Void, Task<DriveFile>>() {
-//                    @Override
-//                    public Task<DriveFile> then(@NonNull Task<Void> task) throws Exception {
-//                        DriveFolder parent = rootFolderTask.getResult();
-//                        DriveContents contents = createContentsTask.getResult();
-//                        OutputStream outputStream = contents.getOutputStream();
-//                        try (Writer writer = new OutputStreamWriter(outputStream)) {
-//                            writer.write("Hello World!");
-//                        }
-//
-//                        MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
-//                                .setTitle("HelloWorld.txt")
-//                                .setMimeType("text/plain")
-//                                .setStarred(true)
-//                                .build();
-//
-//                        return getDriveResourceClient().createFile(parent, changeSet, contents);
-//                    }
-//                })
-//                .addOnSuccessListener(
-//                        new OnSuccessListener<DriveFile>() {
-//                            @Override
-//                            public void onSuccess(DriveFile driveFile) {
-//                                Log.d(TAG, context.getString(R.string.drive_backup_success));
-//
-//                            }
-//                        })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Log.e(TAG, "Unable to create file", e);
-//                    }
-//                });
-//    }
-//
-//    private void retrieveMetadata(final DriveFile file) {
-//        // [START retrieve_metadata]
-//        Task<Metadata> getMetadataTask = getDriveResourceClient().getMetadata(file);
-//        getMetadataTask
-//                .addOnSuccessListener(
-//                        new OnSuccessListener<Metadata>() {
-//                            @Override
-//                            public void onSuccess(Metadata metadata) {
-//                                Log.d(TAG, "metadata retrieved:" + metadata.getTitle());
-//
-//                            }
-//                        })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Log.e(TAG, "Unable to retrieve metadata", e);
-//                    }
-//                });
-//        // [END retrieve_metadata]
-//    }
-//
-//    public MetadataChangeSet getMetadataChangeSet(String fileName, String mimeType) {
-//        // Create the initial metadata - MIME type and title.
-//        // Note that the user will be able to change the title later.
-//        return new MetadataChangeSet.Builder()
-//                .setMimeType(mimeType)
-//                .setTitle(fileName)
-//                .build();
-//    }
-//
-//    /**
-//     * Creates an {@link IntentSender} to start a dialog activity with configured {@link
-//     * CreateFileActivityOptions} for user to create a new file in Drive.
-//     * Saves file in root of users Drive
-//     */
-//    private Task<Void> createFileIntentSender(final Activity activity, DriveContents driveContents, File file, String mimeType) {
-//        Log.i(TAG, "New contents created.");
-//        OutputStream outputStream;
-//        InputStream inputStream;
-//        // Get an output stream for the contents.
-//        outputStream = driveContents.getOutputStream();
-//
-//        try {
-//            inputStream = new BufferedInputStream(new FileInputStream(file));
-//            IoUtils.copy(inputStream, outputStream);
-//        } catch (Exception e) {
-//            // TODO - set up snackbar?
-//            //Snackbar.make(findViewById(R.id.content_drive_view), "Unable to write file contents.", Snackbar.LENGTH_INDEFINITE);
-//            Toast.makeText(activity, "Unable to write file contents.", Toast.LENGTH_LONG);
-//        }
-//
-//        // Create the initial metadata - MIME type and title.
-//        // Note that the user will be able to change the title later.
-//        MetadataChangeSet metadataChangeSet = getMetadataChangeSet(file.getName(), mimeType);
-//
-//        // Set up options to configure and display the create file activity.
-//        CreateFileActivityOptions createFileActivityOptions =
-//                new CreateFileActivityOptions.Builder()
-//                        .setInitialMetadata(metadataChangeSet)
-//                        .setInitialDriveContents(driveContents)
-//                        .build();
-//
-//        return mDriveClient
-//                .newCreateFileActivityIntentSender(createFileActivityOptions)
-//                .continueWith(
-//                        new Continuation<IntentSender, Void>() {
-//                            @Override
-//                            public Void then(@NonNull Task<IntentSender> task) throws Exception {
-//                                activity.startIntentSenderForResult(task.getResult(), REQUEST_CODE_CREATOR, null, 0, 0, 0);
-//                                return null;
-//                            }
-//                        });
-//    }
-//
-//    public void postNotification(String notificationContent, Class activityClass) {
-//        NotificationCompat.Builder mBuilder =
-//                new NotificationCompat.Builder(context)
-//                        .setSmallIcon(R.drawable.ic_backup_status_bar)
-//                        .setContentTitle(context.getString(R.string.app_name))
-//                        .setContentText(notificationContent);
-//        // Creates an explicit intent for an Activity in your app
-//        Intent intent = new Intent(context, activityClass);
-//
-//        // The stack builder object can contain an artificial back stack for the started Activity.
-//        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-//        // Adds the Intent that starts the Activity to the top of the stack
-//        stackBuilder.addNextIntent(intent);
-//        PendingIntent resultPendingIntent =
-//                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT
-//                );
-//        mBuilder.setContentIntent(resultPendingIntent);
-//        NotificationManager mNotificationManager =
-//                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-//
-//        // mNotificationId is a unique integer your app uses to identify the
-//        // notification. For example, to cancel the notification, you can pass its ID
-//        // number to NotificationManager.cancel().
-//        mNotificationManager.notify(0, mBuilder.build());
-//    }
 
 }

@@ -6,6 +6,7 @@ public class GlobalValues {
 
     // Assign at app startup
 	public static String DATABASE_PATH_AND_NAME = "";
+	public static String PACKAGE_NAME;
 
 	public static final String LOG_TAG = "ActivityTracker";
 	public static final String BUNDLE = "Bundle";
@@ -67,12 +68,11 @@ public class GlobalValues {
 	public static final int DEFAULT_NO_PINS = -1;
 
 	// Back up
-	// SQLite db to Google Drive
 	public static final String SQLITE_MIME_TYPE = "application/x-sqlite3";
 	public static final String BACKUP_TYPE = "BACKUP_TYPE";
 	public static final int BACKUP_TO_LOCAL = 0;
 	public static final int BACKUP_TO_DRIVE = 1;
-	public static final boolean DRIVE_SIGNIN_SUCCESS = false;
-
+	public static final boolean DRIVE_SIGNIN_SUCCESSFUL = true;
+	public static final boolean DRIVE_SIGNIN_UNSUCCESSFUL = false;
 
 }

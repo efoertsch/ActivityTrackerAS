@@ -95,7 +95,7 @@
                 android:value="splitActionBarWhenNarrow"/>
         </activity>
         <activity
-            android:name=".ui.logger.ActivityLogger"
+            android:name=".ui.logger.ActivityLoggerActivity"
             android:parentActivityName=".ui.startup.ExerciseDrawerActivity"
             android:uiOptions="splitActionBarWhenNarrow">
 
@@ -187,7 +187,7 @@
         </activity>
 
         <activity
-            android:name=".ui.backuprestore.BackupRestoreActivity"
+            android:name=".ui.backuprestore.RestoreActivity"
             android:parentActivityName=".ui.startup.ExerciseDrawerActivity"
             android:uiOptions="splitActionBarWhenNarrow">
 
@@ -264,15 +264,7 @@
 
         <service
             android:exported="false"
-            android:name=".ui.backuprestore.BackupJobService">
-            <intent-filter>
-                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
-            </intent-filter>
-        </service>
-
-        <service
-            android:exported="false"
-            android:name=".ui.drive.DriveBackupJobService">
+            android:name=".backupandrestore.BackupJobService">
             <intent-filter>
                 <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
             </intent-filter>

@@ -53,7 +53,7 @@ public class ExerciseDriveActivityTest {
                 allOf(childAtPosition(
                         allOf(withId(R.id.design_navigation_view),
                                 childAtPosition(
-                                        withId(R.id.app_weather_drawer),
+                                        withId(R.id.app_navigation_drawer),
                                         0)),
                         5),
                         isDisplayed()));
@@ -106,7 +106,7 @@ public class ExerciseDriveActivityTest {
                 allOf(childAtPosition(
                         allOf(withId(R.id.design_navigation_view),
                                 childAtPosition(
-                                        withId(R.id.app_weather_drawer),
+                                        withId(R.id.app_navigation_drawer),
                                         0)),
                         7),
                         isDisplayed()));

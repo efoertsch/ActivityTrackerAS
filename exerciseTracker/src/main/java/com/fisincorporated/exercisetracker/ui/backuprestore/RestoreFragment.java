@@ -15,18 +15,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fisincorporated.exercisetracker.R;
-import com.fisincorporated.exercisetracker.rxdrive.RxDrive;
+import com.fisincorporated.exercisetracker.backupandrestore.GoogleDriveUtil;
+import com.fisincorporated.exercisetracker.backupandrestore.LocalBackupUtils;
+import com.fisincorporated.exercisetracker.ui.drive.DriveSignOnActivity;
 import com.fisincorporated.exercisetracker.ui.history.ActivityHistory;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
 import com.fisincorporated.exercisetracker.ui.utils.ActivityDialogFragment;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.drive.Drive;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 import io.reactivex.Completable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 
 // code from http://stackoverflow.com/questions/6540906/android-simple-export-and-import-of-sqlite-com.fisincorporated.database
@@ -40,10 +39,10 @@ public class RestoreFragment extends ExerciseMasterFragment {
     private TextView restoreLocalLocation;
     private static final int RESTORE_FROM_LOCAL = 0;
     private static final int RESTORE_FROM_DRIVE = 1;
+    private static final int GOOGLE_SIGNON = 2;
 
-    private RxDrive rxDrive;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
-
+    private GoogleSignInAccount signInAccount;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,10 +66,6 @@ public class RestoreFragment extends ExerciseMasterFragment {
     @Override
     public void onStop() {
         super.onStop();
-        if (rxDrive != null) {
-            rxDrive.disconnect();
-            compositeDisposable.clear();
-        }
     }
 
     private void showRestoreDialog(int restoreLocation) {
@@ -95,25 +90,35 @@ public class RestoreFragment extends ExerciseMasterFragment {
                 Toast.makeText(getActivity(), getResources().getText(R.string.restore_cancelled), Toast.LENGTH_SHORT).show();
             }
         }
+        if (requestCode == GOOGLE_SIGNON) {
+            boolean signinSuccess = intent.getBooleanExtra(getString(R.string.drive_backup), false);
+            if (signinSuccess) {
+                runRestore(RESTORE_FROM_DRIVE);
+            }
+        }
     }
-
 
     private void runRestore(final int requestCode) {
         Completable completable;
         if (requestCode == RESTORE_FROM_LOCAL) {
-            completable = BackupUtils.getRestoreLocalCompletable(getActivity().getApplicationContext());
+            completable = LocalBackupUtils.getRestoreLocalCompletable(getActivity());
             subscribeToCompletable(completable);
         } else {
-            signInToDrive();
+            if (haveDriveAccess()) {
+                completable = GoogleDriveUtil.getRestoreFromDriveCompletable(getActivity(), signInAccount);
+                subscribeToCompletable(completable);
+            }
         }
-
     }
 
-    private void signInToDrive() {
-        rxDrive = new RxDrive(new GoogleApiClient.Builder(getActivity())
-                .addScope(Drive.SCOPE_FILE));
-        setupGoogleApiClientObservable();
-        rxDrive.connect();
+    private boolean haveDriveAccess() {
+        signInAccount = GoogleSignIn.getLastSignedInAccount(getActivity());
+        if (signInAccount == null) {
+            Intent intent = new Intent(getActivity(), DriveSignOnActivity.class);
+            startActivityForResult(intent, GOOGLE_SIGNON);
+            return false;
+        }
+        return true;
     }
 
     private void subscribeToCompletable(Completable completable) {
@@ -155,36 +160,6 @@ public class RestoreFragment extends ExerciseMasterFragment {
     private void goToHistoryActivity() {
         Intent intent = new Intent(getActivity(), ActivityHistory.class);
         startActivity(intent);
-    }
-
-    /**
-     * Start sign in activity.
-     */
-    private void setupGoogleApiClientObservable() {
-        Disposable disposable = rxDrive.connectionObservable()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(connectionState -> {
-                    switch (connectionState.getState()) {
-                        case CONNECTED:
-                            log("Connected");
-                            subscribeToCompletable(BackupUtils.getRestoreDriveCompletable(getActivity().getApplicationContext(),rxDrive));
-                            break;
-                        case SUSPENDED:
-                            log("SUSPENDED");
-                            break;
-                        case FAILED:
-                            log(connectionState.getConnectionResult().getErrorMessage());
-                            rxDrive.resolveConnection(getActivity(), connectionState.getConnectionResult());
-                            break;
-                        case UNABLE_TO_RESOLVE:
-                            log("Unable to resolve. " + connectionState.getConnectionResult());
-                            getActivity().finish();
-                            break;
-                    }
-                }, this::log);
-        compositeDisposable.add(disposable);
-
     }
 
     private void log(Object object) {

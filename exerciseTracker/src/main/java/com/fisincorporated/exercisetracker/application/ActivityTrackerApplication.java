@@ -9,9 +9,11 @@ import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 
 public class ActivityTrackerApplication extends Application {
 
-    static private  ActivityTrackerApplication activityTrackerApplication;
+    private static final String GPS_LOGGING = "GPS_LOGGING";
+    static private ActivityTrackerApplication activityTrackerApplication;
     private TrackerDatabaseHelper databaseHelper = null;
     private SQLiteDatabase database = null;
+
 
     @Override
     public void onCreate() {
@@ -29,7 +31,7 @@ public class ActivityTrackerApplication extends Application {
     }
 
     @Override
-    public void onTerminate(){
+    public void onTerminate() {
         if (database != null) {
             database.close();
         }
@@ -47,7 +49,5 @@ public class ActivityTrackerApplication extends Application {
     public SQLiteDatabase getDatabase() {
         return database;
     }
-
-
 
 }

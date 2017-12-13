@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker.ui.drive;
+package com.fisincorporated.exercisetracker.backupandrestore;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -13,9 +13,9 @@ import com.fisincorporated.exercisetracker.GlobalValues;
 
 
 
-public class DriveBackupScheduler {
+public class BackupScheduler {
 
-    private static final String TAG = DriveBackupScheduler.class.getSimpleName();
+    private static final String TAG = BackupScheduler.class.getSimpleName();
 
     // schedule the job.
     public static void scheduleBackupJob(Context context, int backupLocation) {
@@ -28,13 +28,16 @@ public class DriveBackupScheduler {
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(context));
         Job backupJob = dispatcher.newJobBuilder()
                 .setExtras(bundle)
-                .setService(DriveBackupJobService.class) // the JobService that will be called
+                .setService(BackupJobService.class) // the JobService that will be called
                 .setTag("ActivityTracker backup" + backupLocation)        // uniquely identifies the job
                 .setTrigger(Trigger.executionWindow(0, 0)) // trigger immediately
                 .setRecurring(false)         // one-off job
-                .setReplaceCurrent(false) // don't overwrite an existing job with the same tag
+                .setReplaceCurrent(true) // overwrite an existing job with the same tag
                 .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
-                .setConstraints(Constraint.ON_ANY_NETWORK)
+                // drive backup require wifi access
+                .setConstraints(((backupLocation == GlobalValues.BACKUP_TO_DRIVE) ? Constraint.ON_UNMETERED_NETWORK : Constraint.ON_ANY_NETWORK)
+                        // only run when the device is charging
+                        , Constraint.DEVICE_CHARGING)
                 .build();
         dispatcher.mustSchedule(backupJob);
     }

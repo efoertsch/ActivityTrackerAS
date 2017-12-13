@@ -1,7 +1,15 @@
-package com.fisincorporated.facebook;
+package com.fisincorporated.exercisetracker.facebook;
 
-import java.util.Arrays;
-import java.util.List;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -14,16 +22,8 @@ import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
+import java.util.Arrays;
+import java.util.List;
 
 //	https://developers.facebook.com/docs/android/open-graph
 //http://stackoverflow.com/questions/21634138/working-example-of-latest-android-facebook-sdk-login
@@ -54,7 +54,7 @@ public class FacebookPostStatsFragment extends Fragment {
 	}
 
 	private PendingAction pendingAction = PendingAction.NONE;
-	private final String PENDING_ACTION_BUNDLE_KEY = "com.fisincorporated.facebook:PendingAction";
+	private final String PENDING_ACTION_BUNDLE_KEY = "com.fisincorporated.exercisetracker.facebook:PendingAction";
 
 	public static FacebookPostStatsFragment newInstance(Bundle bundle) {
 		FacebookPostStatsFragment fragment = new FacebookPostStatsFragment();

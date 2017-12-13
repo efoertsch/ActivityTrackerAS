@@ -12,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 
 import com.fisincorporated.exercisetracker.R;
+import com.fisincorporated.exercisetracker.application.ActivityTrackerApplication;
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 
 public class ExerciseMasterFragment extends Fragment {
@@ -42,15 +43,21 @@ public class ExerciseMasterFragment extends Fragment {
 		callBacks = null;
 	}
 
+	//TODO user Dagger injection
 	public void getDatabaseSetup() {
-		if (databaseHelper == null)
-			databaseHelper = TrackerDatabaseHelper
-					.getTrackerDatabaseHelper(getActivity().getApplicationContext());
-		if (database == null)
+		if (databaseHelper == null) {
+			databaseHelper = ((ActivityTrackerApplication) getActivity().getApplication()).getDatabaseHelper();
+		}
+		if (database == null) {
+			database = ((ActivityTrackerApplication) getActivity().getApplication()).getDatabase();
+		}
+
+		if (!database.isOpen()) {
 			database = databaseHelper.getWritableDatabase();
-		if (!database.isOpen())
-			database = databaseHelper.getWritableDatabase();
+		}
 	}
+
+
 
 	/**
 	 * Find out if to display distances in ft/miles vs m/km

@@ -7,16 +7,16 @@ import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
 
 
-public class BackupRestoreActivity extends ExerciseMasterFragmentActivity {
+public class RestoreActivity extends ExerciseMasterFragmentActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setActivityTitle(R.string.activity_backup_restore);
+		setActivityTitle(R.string.activity_recovery);
 	}
 
 	protected Fragment createFragment() {
-		return new BackupRestoreFragment();
+		return new RestoreFragment();
 	}
 
 	// added for tablet

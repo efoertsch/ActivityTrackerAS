@@ -3,11 +3,16 @@ package com.fisincorporated.exercisetracker;
 ;
 
 public class GlobalValues {
+
+    // Assign at app startup
+	public static String DATABASE_PATH_AND_NAME = "";
+	public static String PACKAGE_NAME;
+
 	public static final String LOG_TAG = "ActivityTracker";
 	public static final String BUNDLE = "Bundle";
 	public static final String SORT_ORDER = "SORT_ORDER";
 	public static final String DATABASE_NAME = "exercise_tracker.db";
-	public static final String PACKAGE_NAME = "com.fisincorporated.ExerciseTracker";
+
 	public static final String EXERCISE_FILTER_PHRASE = "EXERCISE_FILTER_PHRASE";
 	public static final String LOCATION_FILTER_PHRASE = "LOCATION_FILTER_PHRASE";
 	public static final String UNDEFINED = "Undefined";
@@ -61,5 +66,13 @@ public class GlobalValues {
 
 	// -1 means no distance pins are to be placed on map
 	public static final int DEFAULT_NO_PINS = -1;
-	
+
+	// Back up
+	public static final String SQLITE_MIME_TYPE = "application/x-sqlite3";
+	public static final String BACKUP_TYPE = "BACKUP_TYPE";
+	public static final int BACKUP_TO_LOCAL = 0;
+	public static final int BACKUP_TO_DRIVE = 1;
+	public static final boolean DRIVE_SIGNIN_SUCCESSFUL = true;
+	public static final boolean DRIVE_SIGNIN_UNSUCCESSFUL = false;
+
 }

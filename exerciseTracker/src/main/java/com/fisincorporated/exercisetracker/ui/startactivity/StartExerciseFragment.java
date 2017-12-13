@@ -25,7 +25,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.fisincorporated.exercisetracker.ui.utils.ActivityDialogFragment;
-import com.fisincorporated.exercisetracker.ui.logger.ActivityLogger;
+import com.fisincorporated.exercisetracker.ui.logger.ActivityLoggerActivity;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.ExerciseDAO;
@@ -479,7 +479,7 @@ public class StartExerciseFragment extends ExerciseMasterFragment {
     }
 
     private void startActivity() {
-        Intent intent = new Intent(getActivity(), ActivityLogger.class);
+        Intent intent = new Intent(getActivity(), ActivityLoggerActivity.class);
         intent.putExtra(LocationExercise.LOCATION_EXERCISE_TABLE, ler);
         // and some general text info not stored on ler
         Cursor csr = (Cursor) spnrExercise.getSelectedItem();

@@ -11,7 +11,7 @@
     <string name="activity_maintenance">Activity Maintenance</string>
     <string name="activity_history">History</string>
     <string name="activity_options">Options</string>
-    <string name="activity_backup_restore">Backup/Restore</string>"
+    <string name="activity_recovery">Restore Database</string>"
     <string name="activity_about">About</string>
     <string name="activitytracker_database_restored">ActivityTracker com.fisincorporated.database restored.</string>
     <string name="add_new_activity">Add New Activity</string>
@@ -146,16 +146,16 @@
     <string name="post_stats">Post stats</string>
     <string name="post_to_facebook">Post to Facebook</string>
     <string name="post_to_facebook_q">Post to Facebook?</string>
-    <string name="press_backup_to_make_backup">The backup will overwrite any existing backup. Press Backup to continue else cancel"</string>
-    <string name="press_restore_to_restore">The restore will overwrite your existing activity com.fisincorporated.database. Press Restore to continue else cancel"</string>
-    <string name="press_yes_to_delete_selected_activities_or_no_to_cancel">Press Yes to delete the selected activities or No to cancel</string>
-    <string name="press_yes_to_delete_GPS_delail_or_no_to_cancel">Press YES to delete GPS detail or No to cancel</string>
+    <string name="press_backup_to_make_backup">The backup will overwrite any existing backup. Press Backup to continue else cancel."</string>
+    <string name="press_restore_to_restore">If you continue, there is no going back! The restore will overwrite your existing database! Press Restore to continue else cancel."</string>
+    <string name="press_yes_to_delete_selected_activities_or_no_to_cancel">Press Yes to delete the selected activities or No to cancel.</string>
+    <string name="press_yes_to_delete_GPS_delail_or_no_to_cancel">Press YES to delete GPS detail or No to cancel.</string>
     <string name="rack_up_the_miles">Rack up the miles!</string>
     <string name="reenter_location_for_activity">Reenter the location for the Activity</string>
     <string name="review_exercise">Review Exercise</string>
     <string name="restart">Restart</string>
     <string name="restore">Restore</string>
-    <string name="restore_file_will_be_read_from_above_backup_location">Restore file will be read from above backup location</string>
+    <string name="restore_file_will_be_read_from_above_backup_location">Restore file will be read from above backup location.</string>
     <string name="restore_database">Restore Database</string>
     <string name="restore_cancelled">Restore cancelled</string>
     <string name="satellite">Satellite</string>
@@ -214,12 +214,12 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-   <!-- menu items -->
+    <!-- menu items -->
     <string name="action_start_activity">Start Activity</string>
     <string name="action_history">History</string>
     <string name="action_exercise_setup">Exercise Setup</string>
     <string name="action_options">Options</string>
-    <string name="action_backup_restore">Backup/Restore</string>
+    <string name="action_restore_db">Restore</string>
     <string name="action_about">About</string>
     <string name="drawer_open">Drawer Open</string>
     <string name="drawer_close">Drawer Close</string>
@@ -251,5 +251,41 @@
     <string name="map_pin_miles">m</string>
     <string name="map_pin_kilometers">k</string>
 
+
+    <!-- Backup/Restore -->
+    <string name="title_activity_drive">DriveActivity</string>
+    <string name="drive_backup_success">ActivityTracker database successfully backed up to Drive</string>
+    <string name="local_backup_success">ActivityTracker database successfully backed up to local Download directory</string>
+    <string name="backup_error">Oops! ActivityTracker Backup Error!</string>
+    <string name="error_creating_local_backup_directory">No Download directory found!</string>
+    <string name="backup_scheduled">Backup scheduled.</string>
+    <string name="local_backup_directory_not_writeable">Local backup directory (%1$s) not writeable</string>
+    <string name="local_backup_directory_not_readable">Local backup directory (%1$s) not readable</string>
+    <string name="restore_error">Oops. An error occurred while restoring up ActivityTracker database. Error info %1$s</string>
+    <string name="drive_restore_success">ActivityTracker database successfully restored from Drive</string>
+    <string name="local_restore_success">ActivityTracker database successfully restored from local %1$s directory</string>
+    <string name="restore_database_from_local">Restore from local backup</string>
+    <string name="restore_will_be_from_local">Restore will be from %1$s directory</string>
+    <string name="restore_database_from_drive">Restore database from Drive</string>
+    <string name="restore_scheduled">Restore scheduled</string>
+    <string name="restore_successful">Restore successful</string>
+    <string name="drive_root_folder_not_found">Drive root folder not found.</string>
+    <string name="unable_to_create_new_folder">Unable to create folder %1$s under %2$s.</string>
+    <string name="unable_to_create_drivecontents">Unable to create DriveContents for new Google Drive file.</string>
+    <string name="unable_to_write_to_drive_file">Unable to write local file %1$s to Google Drive.</string>
+    <string name="sign_in_to_drive_before_backup">Oops. Before I can back up ActivityTracker to your Google Drive, you need to sign into Drive first.</string>
+    <string name="no_drive_backup_available">No Drive backup available.</string>
+    <string name="can_not_determine_if_drive_folder_exists">Can not determine if Drive folder (%1$s) exists.</string>
+    <string name="an_error_occurred_reading_file_from_drive">An error occurred while attempting to read file (%1$s) from Drive.</string>
+    <string name="backup_to_drive">Backup To Drive</string>
+    <string name="backup_to_local_download_folder">Backup to local Download folder</string>
+    <string name="drive_backup" translatable="false">drive_backup</string>
+    <string name="local_backup" translatable="false">local_backup</string>
+    <string name="would_you_like_to_schedule_backup_now">Would you like to schedule backup now?</string>
+    <string name="backup_now">Backup Now</string>
+    <string name="backup_later">Backup Later</string>
+    <string name="backup_button_key" translatable="false">backup_key_button</string>
+    <string name="backup_to_local">Backup To Local</string>
+    <string name="backup_to_google_drive">Backup to Google Drive</string>
 
 </resources>

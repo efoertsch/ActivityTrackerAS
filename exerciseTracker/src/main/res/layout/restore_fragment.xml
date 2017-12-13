@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="@dimen/margin_double">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/margin_double">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,87 +15,71 @@
             android:layout_marginTop="@dimen/dp8">
 
             <RelativeLayout
-                android:id="@+id/backup_restore_db_rlbackup"
+                android:id="@+id/restore_db_from_local_rl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp8">
 
                 <TextView
-                    android:id="@+id/backup_restore_db_lblbackup"
+                    android:id="@+id/restore_db_from_local_lbl"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:text="@string/backup_database"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:text="@string/restore_database_from_local"
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
 
                 <Button
-                    android:id="@+id/backup_restore_db_btnBackup"
+                    android:id="@+id/restore_db_from_local_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:text="@string/backup" />
+                    android:text="@string/restore"/>
             </RelativeLayout>
 
             <TextView
-                android:id="@+id/backup_restore_db_backup_text"
+                android:id="@+id/restore_db_from_local_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/backup_restore_db_rlbackup"
-                android:text="@string/backup_file_will_be_placed_at"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-            <TextView
-                android:id="@+id/backup_restore_db_backup_loc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/backup_restore_db_backup_text"
-                android:scrollHorizontally="true"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:layout_below="@id/restore_db_from_local_rl"
+                android:text="@string/restore_will_be_from_local"
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
 
         </RelativeLayout>
 
         <View
             style="@style/Divider"
             android:layout_marginBottom="@dimen/dp8"
-            android:layout_marginTop="@dimen/dp8" />
+            android:layout_marginTop="@dimen/dp8"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <RelativeLayout
-                android:id="@+id/backup_restore_db_rlrestore"
+                android:id="@+id/restore_db_from_drive_rl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/backup_restore_db_lblrestore"
+                    android:id="@+id/restore_db_from_drive_lbl"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:text="@string/restore_database"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:text="@string/restore_database_from_drive"
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
 
                 <Button
-                    android:id="@+id/backup_restore_db_btnRestore"
+                    android:id="@+id/restore_db_from_drive_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:text="@string/restore" />
+                    android:text="@string/restore"/>
             </RelativeLayout>
 
-            <TextView
-                android:id="@+id/backup_restore_db_restore_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@id/backup_restore_db_rlrestore"
-                android:text="@string/restore_file_will_be_read_from_above_backup_location"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
         </RelativeLayout>
     </LinearLayout>
 

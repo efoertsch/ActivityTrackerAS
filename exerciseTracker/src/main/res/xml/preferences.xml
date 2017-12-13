@@ -1,16 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <Preference
         android:key="@string/startup_image"
         android:title="@string/select_startup_background"/>
 
     <ListPreference
-        android:key="@string/display_units"
-        android:title="@string/display_units"
-        android:summary="%s"
+        android:defaultValue="@string/imperial"
         android:dialogTitle="@string/display_units"
         android:entries="@array/displayUnits"
         android:entryValues="@array/displayUnits"
-        android:defaultValue="@string/imperial" />
+        android:key="@string/display_units"
+        android:summary="%s"
+        android:title="@string/display_units"/>
+
+    <Preference
+        android:key="@string/backup_button_key"
+        android:title="@string/backup">
+
+    </Preference>
+
 </PreferenceScreen>

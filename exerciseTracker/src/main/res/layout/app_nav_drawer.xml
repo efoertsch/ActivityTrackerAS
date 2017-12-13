@@ -23,7 +23,7 @@
     </LinearLayout>
     <!-- The navigation drawer -->
     <android.support.design.widget.NavigationView
-        android:id="@+id/app_weather_drawer"
+        android:id="@+id/app_navigation_drawer"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"

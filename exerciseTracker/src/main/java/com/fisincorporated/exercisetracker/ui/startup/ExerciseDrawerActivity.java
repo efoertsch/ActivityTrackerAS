@@ -15,7 +15,8 @@ import android.view.MenuItem;
 
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.ui.about.AboutActivityTracker;
-import com.fisincorporated.exercisetracker.ui.backuprestore.BackupRestoreActivity;
+import com.fisincorporated.exercisetracker.ui.backuprestore.RestoreActivity;
+import com.fisincorporated.exercisetracker.ui.drive.DriveActivity;
 import com.fisincorporated.exercisetracker.ui.history.ActivityHistory;
 import com.fisincorporated.exercisetracker.ui.maintenance.ExerciseMaintenanceListActivity;
 import com.fisincorporated.exercisetracker.ui.preferences.SettingsActivity;
@@ -43,7 +44,7 @@ public class ExerciseDrawerActivity  extends AppCompatActivity  {
         drawerToggle.syncState();
         drawerLayout.addDrawerListener(drawerToggle);
 
-        navigationView = (NavigationView) findViewById(R.id.app_weather_drawer);
+        navigationView = (NavigationView) findViewById(R.id.app_navigation_drawer);
         setupDrawerContent(navigationView);
         displayPhotoFragment();
     }
@@ -107,17 +108,25 @@ public class ExerciseDrawerActivity  extends AppCompatActivity  {
             case R.id.nav_menu_settings:
                 displaySettings();
                 break;
-            case R.id.nav_menu_backup_restore:
-                displayBackupRestore();
+            case R.id.nav_menu_restore:
+                displayRestoreActivity();
                 break;
             case R.id.nav_menu_about:
                 displayAbout();
                 break;
 
+            case R.id.nav_menu_drive:
+                displayDrive();
+                break;
         }
 
         drawerLayout.closeDrawers();
+    }
 
+    private void displayDrive() {
+       // Intent intent = new Intent(this, DriveActivity.class);
+        Intent intent = new Intent(this, DriveActivity.class);
+        startActivity(intent);
     }
 
 
@@ -155,8 +164,8 @@ public class ExerciseDrawerActivity  extends AppCompatActivity  {
         startActivity(intent);
     }
 
-    private void displayBackupRestore() {
-        Intent intent = new Intent(this, BackupRestoreActivity.class);
+    private void displayRestoreActivity() {
+        Intent intent = new Intent(this, RestoreActivity.class);
         startActivity(intent);
     }
 

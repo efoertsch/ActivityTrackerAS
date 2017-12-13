@@ -1,48 +1,131 @@
 package com.fisincorporated.exercisetracker.ui.preferences;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
+import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
+import com.fisincorporated.exercisetracker.backupandrestore.BackupScheduler;
+import com.fisincorporated.exercisetracker.ui.drive.DriveSignOnActivity;
 import com.fisincorporated.exercisetracker.utility.PhotoUtils;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 import static android.app.Activity.RESULT_OK;
 
 
 
-public class SettingsFragment extends PreferenceFragmentCompat {
+public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String TAG = SettingsFragment.class.getSimpleName();
     private static final int PICK_PHOTO = 54321;
+    private static final int BACKUP_TO_DRIVE = 1234;
+
+    private boolean handleThisChange = true;
+
+    public static SettingsFragment newInstance(Bundle bundle) {
+        SettingsFragment settingsFragment = new SettingsFragment();
+        settingsFragment.setArguments(bundle);
+        return settingsFragment;
+    }
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         // Load the preferences from an XML resource
-        setPreferencesFromResource(R.xml.preferences, rootKey);
+        if (getArguments() == null) {
+            addPreferencesFromResource(R.xml.preferences);
+        } else {
+            addPreferencesFromResource(R.xml.preferences_backup);
+        }
+
         setupPreferences();
     }
 
     // cribbed some code from http://codetheory.in/android-pick-select-image-from-gallery-with-intents/
     private void setupPreferences() {
-        Preference prefereces = findPreference(getString(R.string.startup_image));
-        prefereces.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                Intent intent = new Intent();
-                // Show only images, no videos or anything else
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                // Always show the chooser (if there are multiple options available)
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_PHOTO);
-                return true;
+        Preference photoImagePreference = findPreference(getString(R.string.startup_image));
+        if (photoImagePreference != null) {
+            photoImagePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent intent = new Intent();
+                    // Show only images, no videos or anything else
+                    intent.setType("image/*");
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    // Always show the chooser (if there are multiple options available)
+                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_PHOTO);
+                    return true;
+                }
+            });
+        }
+
+        Preference backupPreference = findPreference(getString(R.string.backup_button_key));
+        if (backupPreference != null) {
+            backupPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent intent = new Intent(getActivity(), SettingsActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(getString(R.string.backup_button_key), 0);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                    return true;
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getPreferenceScreen().getSharedPreferences()
+                .registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getPreferenceScreen().getSharedPreferences()
+                .unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(getString(R.string.drive_backup)) && handleThisChange) {
+            boolean driveBackup = sharedPreferences.getBoolean(getString(R.string.drive_backup), false);
+            if (driveBackup) {
+                checkDriveSignOn();
+            } else {
+                // TODO revoke Drive approval
             }
-        });
+            handleThisChange = true;
+            return;
+        }
+        if (key.equals(getString(R.string.local_backup)) && handleThisChange) {
+            boolean localBackup = sharedPreferences.getBoolean(getString(R.string.local_backup), false);
+            if (localBackup) {
+                displayBackupNowDialog(GlobalValues.BACKUP_TO_LOCAL);
+            }
+            return;
+        }
+
+    }
+
+    private void checkDriveSignOn() {
+        GoogleSignInAccount signInAccount = GoogleSignIn.getLastSignedInAccount(getContext());
+        if (signInAccount == null) {
+            Intent intent = new Intent(getActivity(), DriveSignOnActivity.class);
+            startActivityForResult(intent, BACKUP_TO_DRIVE);
+        }
     }
 
     private void checkSelectPhoto() {
@@ -105,16 +188,57 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_PHOTO);
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
-        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == PICK_PHOTO
-                    && resultCode == RESULT_OK
-                    && imageReturnedIntent != null
-                    && imageReturnedIntent.getData() != null) {
-                PhotoUtils.saveToInternalStorage(getActivity(), imageReturnedIntent.getData());
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        switch (requestCode) {
+            case (PICK_PHOTO): {
+                if (resultCode == RESULT_OK
+                        && intent != null
+                        && intent.getData() != null) {
+                    PhotoUtils.saveToInternalStorage(getActivity(), intent.getData());
+                }
+            }
+            case (BACKUP_TO_DRIVE): {
+                if (resultCode == RESULT_OK) {
+                    boolean driveSigninSuccess = intent.getBooleanExtra(getString(R.string.drive_backup), false);
+                    updateDrivePreference(driveSigninSuccess);
+                }
             }
         }
     }
 
+    private void updateDrivePreference(boolean driveSigninSuccess) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        boolean doDriveBackup = sharedPreferences.getBoolean(getContext().getString(R.string.drive_backup), false);
+        if (driveSigninSuccess && !doDriveBackup) {
+            displayBackupNowDialog(GlobalValues.BACKUP_TO_DRIVE);
+        }
+        setDriveBackupPreference(sharedPreferences, driveSigninSuccess);
+    }
+
+    private void setDriveBackupPreference(SharedPreferences sharedPreferences, boolean doDriveBackup) {
+        handleThisChange = false;
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(getContext().getString(R.string.drive_backup), doDriveBackup);
+        editor.commit();
+    }
+
+    /**
+     * @param backupType - backup to local Download or to Drive
+     */
+    private void displayBackupNowDialog(int backupType) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.backup_database)
+                .setMessage(R.string.would_you_like_to_schedule_backup_now);
+        builder.setPositiveButton(R.string.backup_now, (dialog, which) -> {
+            BackupScheduler.scheduleBackupJob(getContext(), backupType);
+            dialog.dismiss();
+        });
+        builder.setNegativeButton(R.string.backup_later, (dialog, which) -> {
+            dialog.dismiss();
+        });
+        AlertDialog dialog = builder.create();
+        dialog.setCancelable(false);
+        dialog.show();
+    }
 }

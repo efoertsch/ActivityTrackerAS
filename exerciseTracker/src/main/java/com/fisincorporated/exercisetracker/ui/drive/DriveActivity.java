@@ -90,12 +90,12 @@ public class DriveActivity extends AppCompatActivity {
     }
 
     private void backupDbToLocal() {
-        Completable observable = LocalBackupUtils.getLocalBackupCompletable(getApplicationContext(), GlobalValues.DATABASE_NAME);
+        Completable observable = LocalBackupUtils.getLocalBackupCompletable(getApplicationContext(), getApplicationContext().getPackageName() , GlobalValues.DATABASE_NAME);
         subscribeToBackupRestoreObservable(observable, R.string.local_backup_success, R.string.backup_error);
     }
 
     private void restoreDbFromLocal() {
-        Completable observable = LocalBackupUtils.getRestoreLocalCompletable(getApplicationContext());
+        Completable observable = LocalBackupUtils.getRestoreLocalCompletable(getApplicationContext(),getApplicationContext().getPackageName(), GlobalValues.DATABASE_NAME);
         subscribeToBackupRestoreObservable(observable, R.string.local_restore_success, R.string.restore_error);
     }
 

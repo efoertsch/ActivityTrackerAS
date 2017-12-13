@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.backupandrestore.GoogleDriveUtil;
 import com.fisincorporated.exercisetracker.backupandrestore.LocalBackupUtils;
@@ -101,7 +102,7 @@ public class RestoreFragment extends ExerciseMasterFragment {
     private void runRestore(final int requestCode) {
         Completable completable;
         if (requestCode == RESTORE_FROM_LOCAL) {
-            completable = LocalBackupUtils.getRestoreLocalCompletable(getActivity());
+            completable = LocalBackupUtils.getRestoreLocalCompletable(getActivity().getApplicationContext(),getActivity().getApplicationContext().getPackageName(), GlobalValues.DATABASE_NAME);
             subscribeToCompletable(completable);
         } else {
             if (haveDriveAccess()) {

@@ -18,10 +18,10 @@ import io.reactivex.schedulers.Schedulers;
 
 public class LocalBackupUtils {
 
-    public static Completable getLocalBackupCompletable(Context context, String backupFileName) {
+    public static Completable getLocalBackupCompletable(Context context, String packageName, String fileName) {
         Completable completable = Completable.fromAction(() -> {
             try {
-                createDbBackupOnLocal(context, backupFileName);
+                copyDdFileToDownloadDirectory(context, packageName, fileName);
             } catch (Throwable throwable) {
                 throw Exceptions.propagate(throwable);
             }
@@ -29,24 +29,33 @@ public class LocalBackupUtils {
         return completable;
     }
 
-    public static void createDbBackupOnLocal(Context context, String backupFileName) throws
-            Throwable {
+    /**
+     * @param context
+     * @param packageName app package name
+     * @param fileName    name of file to be written to Download directory
+     * @throws Throwable
+     */
+    @SuppressWarnings("resource")
+    private static void copyDdFileToDownloadDirectory(Context context, String packageName, String fileName) throws Throwable {
+        File sd = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File data = Environment.getDataDirectory();
+        if (sd.canWrite()) {
+            String localFilePathAndName = "//data//" + packageName + "//databases//" + GlobalValues.DATABASE_NAME;
+            File appFile = new File(data, localFilePathAndName);
+            File externalFile = new File(sd, fileName);
+            copyFile(appFile, externalFile);
+        } else {
+            throw new Throwable(context.getString(R.string.local_backup_directory_not_writeable, sd.getName()));
+        }
+    }
+
+    private static void copyFile(File sourceFile, File destinationFile) throws Throwable {
         FileChannel src = null;
         FileChannel dst = null;
         try {
-            File downloadDir = getExternalStorageBackupDirectory();
-            File dataDir = Environment.getDataDirectory();
-            String  currentDBPath= "//data//" + GlobalValues.PACKAGE_NAME
-                    + "//databases//" + backupFileName;
-            if (downloadDir.canWrite()) {
-                File appDb = new File(downloadDir, GlobalValues.DATABASE_PATH_AND_NAME);
-                File backupFile = new File(downloadDir, backupFileName);
-                src = new FileInputStream(appDb).getChannel();
-                dst = new FileOutputStream(backupFile).getChannel();
-                dst.transferFrom(src, 0, src.size());
-            } else {
-                throw new Throwable(context.getString(R.string.local_backup_directory_not_writeable, getExternalStorageBackupDirectory().getName()));
-            }
+            src = new FileInputStream(sourceFile).getChannel();
+            dst = new FileOutputStream(destinationFile).getChannel();
+            dst.transferFrom(src, 0, src.size());
         } finally {
             try {
                 if (src != null) src.close();
@@ -56,14 +65,13 @@ public class LocalBackupUtils {
                 if (dst != null) dst.close();
             } catch (Exception e) {
             }
-
         }
     }
 
-    public static Completable getRestoreLocalCompletable(Context context) {
+    public static Completable getRestoreLocalCompletable(Context context, String packageName, String fileName) {
         Completable completable = Completable.fromAction(() -> {
             try {
-                restoreDbFromLocalBackup(context);
+                copyDownloadFileToDbDirectory(context, packageName, fileName);
             } catch (Throwable throwable) {
                 throw Exceptions.propagate(throwable);
             }
@@ -73,37 +81,19 @@ public class LocalBackupUtils {
         return completable;
     }
 
-    public static void restoreDbFromLocalBackup(Context context) throws Throwable {
-        FileChannel src = null;
-        FileChannel dst = null;
-        String backupFileName = GlobalValues.DATABASE_NAME;
-        try {
-            File sd = getExternalStorageBackupDirectory();
-            if (sd.canRead()) {
-                File appDB = new File(GlobalValues.DATABASE_PATH_AND_NAME);
-                File backupFile = new File(sd, backupFileName);
-                src = new FileInputStream(backupFile).getChannel();
-                dst = new FileOutputStream(appDB).getChannel();
-                dst.transferFrom(src, 0, src.size());
-            } else {
-                throw new Throwable(context.getString(R.string.local_backup_directory_not_readable, getExternalStorageBackupDirectory().getName()));
-            }
-        } finally {
-            try {
-                if (src != null) src.close();
-            } catch (Exception e) {
-            }
-            try {
-                if (dst != null) dst.close();
-            } catch (Exception e) {
-            }
-
+    @SuppressWarnings("resource")
+    private static void copyDownloadFileToDbDirectory(Context context, String packageName, String fileName) throws Throwable {
+        File sd = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File data = Environment.getDataDirectory();
+        if (sd.canRead()) {
+            String localFilePathAndName = "//data//" + packageName + "//databases//" + GlobalValues.DATABASE_NAME;
+            File appFile = new File(data, localFilePathAndName);
+            File externalFile = new File(sd, fileName);
+            copyFile(externalFile, appFile);
+        } else {
+            throw new Throwable(context.getString(R.string.local_backup_directory_not_readable, sd.getName()));
         }
-    }
 
-
-    public static File getExternalStorageBackupDirectory() {
-        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
     }
 
 }

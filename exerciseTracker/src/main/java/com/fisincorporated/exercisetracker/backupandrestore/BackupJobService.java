@@ -59,7 +59,7 @@ public class BackupJobService extends JobService {
     }
 
     private boolean doLocalBackup(JobParameters params) {
-        Completable observable = LocalBackupUtils.getLocalBackupCompletable(getApplicationContext(), GlobalValues.DATABASE_NAME);
+        Completable observable = LocalBackupUtils.getLocalBackupCompletable(getApplicationContext(), getApplicationContext().getPackageName(), GlobalValues.DATABASE_NAME);
         subscribeToBackupObservable(params, observable);
         return true;
     }

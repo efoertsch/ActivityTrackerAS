@@ -11,4 +11,7 @@ Interesting code used in this project:
 1. SQLite - stores activity info
 2. MPAndroidChart - used for charting
 3. Google maps
+4. Backup/restore to/from Android Drive
+5. Use Firebase JobDispatcher and JobService to handle backup
+6. Use RxJava/Android for backup and restore.
 

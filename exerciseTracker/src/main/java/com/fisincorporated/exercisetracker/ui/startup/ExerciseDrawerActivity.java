@@ -19,6 +19,7 @@ import com.fisincorporated.exercisetracker.ui.backuprestore.RestoreActivity;
 import com.fisincorporated.exercisetracker.ui.drive.DriveActivity;
 import com.fisincorporated.exercisetracker.ui.history.ActivityHistory;
 import com.fisincorporated.exercisetracker.ui.maintenance.ExerciseMaintenanceListActivity;
+import com.fisincorporated.exercisetracker.ui.photo.PhotoTestActivity;
 import com.fisincorporated.exercisetracker.ui.preferences.SettingsActivity;
 import com.fisincorporated.exercisetracker.ui.startactivity.StartExercise;
 
@@ -115,12 +116,23 @@ public class ExerciseDrawerActivity  extends AppCompatActivity  {
                 displayAbout();
                 break;
 
-            case R.id.nav_menu_drive:
-                displayDrive();
+
+            case R.id.nav_photo:
+                displayPhotActivity();
                 break;
+
+//            case R.id.nav_menu_drive:
+//                displayDrive();
+//                break;
         }
 
         drawerLayout.closeDrawers();
+    }
+
+    private void displayPhotActivity() {
+        // Intent intent = new Intent(this, DriveActivity.class);
+        Intent intent = new Intent(this, PhotoTestActivity.class);
+        startActivity(intent);
     }
 
     private void displayDrive() {

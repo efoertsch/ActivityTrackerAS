@@ -69,11 +69,14 @@ dependencies {
     // For background backups
     compile "com.firebase:firebase-jobdispatcher:$FIREBASE_VERSION"
 
-    // Facebook - TODO - reincorporate
-    compile 'com.facebook.android:facebook-android-sdk:4.7.0'
-
     // For charting
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
+
+    // For photos
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+
+    // Facebook - TODO - reincorporate
+    compile 'com.facebook.android:facebook-android-sdk:4.7.0'
 
     // Unit testing dependencies
     testCompile 'junit:junit:4.12'

@@ -175,6 +175,7 @@ public class ActivityMapFragment extends ExerciseMasterFragment implements
 
     private void setupMapPinInfo() {
         currentDistance = 0;
+        distance = 0;
         distanceUnits = (isImperialDisplay() ? getString(R.string.map_pin_miles) : getString(R.string.map_pin_kilometers));
     }
 

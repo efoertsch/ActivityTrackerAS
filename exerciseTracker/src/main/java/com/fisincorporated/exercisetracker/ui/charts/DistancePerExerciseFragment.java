@@ -16,7 +16,9 @@ import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
+import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
+import com.fisincorporated.exercisetracker.ui.utils.DisplayUnits;
 import com.fisincorporated.exercisetracker.utility.Utility;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -69,9 +71,8 @@ public class DistancePerExerciseFragment extends ExerciseMasterFragment {
     private View progressBar;
 
     public static DistancePerExerciseFragment newInstance(Bundle bundle) {
-        Bundle args = new Bundle();
         // is this easier/better than copying values?
-        args = (Bundle) bundle.clone();
+        Bundle args = (Bundle) bundle.clone();
         DistancePerExerciseFragment fragment = new DistancePerExerciseFragment();
         fragment.setArguments(args);
         return fragment;
@@ -95,7 +96,6 @@ public class DistancePerExerciseFragment extends ExerciseMasterFragment {
     public void onResume() {
         super.onResume();
         showGraph(false);
-        findDisplayUnits();
         getChartAndFilterArgs();
         createGraph();
     }
@@ -182,7 +182,7 @@ public class DistancePerExerciseFragment extends ExerciseMasterFragment {
     }
 
     private void getChartTitle(@StringRes int stringRes) {
-        chartTitle = resources.getString(stringRes, imperialMetric.equals(imperial) ? resources.getString(R.string.chart_miles) : resources.getString(R.string.chart_kilometers));
+        chartTitle = resources.getString(stringRes, DisplayUnits.isImperialDisplay() ? resources.getString(R.string.chart_miles) : resources.getString(R.string.chart_kilometers));
     }
 
 
@@ -190,7 +190,7 @@ public class DistancePerExerciseFragment extends ExerciseMasterFragment {
     private boolean getLastMonthBarData() {
         // 1. Find min activity based on filter parms
         StringBuffer query = new StringBuffer();
-        databaseHelper.getMonthAgoDateSQL(query, exerciseSelections,
+        TrackerDatabaseHelper.getMonthAgoDateSQL(query, exerciseSelections,
                 locationSelections);
         if (0 == getMinDateAndNumberTimeUnits(query.toString())) {
             return false;
@@ -203,7 +203,7 @@ public class DistancePerExerciseFragment extends ExerciseMasterFragment {
         totalDistanceValues = createZeroArrary(numberOfTimeUnits);
         // 3.Get the exercises, days, distances
         query.setLength(0);
-        databaseHelper.getDailyActivityDistancesSQL(query, exerciseSelections,
+        TrackerDatabaseHelper.getDailyActivityDistancesSQL(query, exerciseSelections,
                 locationSelections, startTimeStamp);
         getActivityDistances(query.toString());
         // 4. get labels in mm/dd or dd format for x axis
@@ -216,7 +216,7 @@ public class DistancePerExerciseFragment extends ExerciseMasterFragment {
     private boolean getWeeklyBarData() {
         // 1. Find min activity based on filter parms
         StringBuffer query = new StringBuffer();
-        databaseHelper.getMinWeekAndNumberOfWeeksSQL(query, exerciseSelections,
+        TrackerDatabaseHelper.getMinWeekAndNumberOfWeeksSQL(query, exerciseSelections,
                 locationSelections);
         if (0 == getMinDateAndNumberTimeUnits(query.toString())) {
             return false;
@@ -230,7 +230,7 @@ public class DistancePerExerciseFragment extends ExerciseMasterFragment {
         totalDistanceValues = createZeroArrary(numberOfTimeUnits);
         // 3.Get the exercises, days, distances
         query.setLength(0);
-        databaseHelper.getWeeklyActivityDistancesSQL(query, exerciseSelections,
+        TrackerDatabaseHelper.getWeeklyActivityDistancesSQL(query, exerciseSelections,
                 locationSelections, startTimeStamp);
         getActivityDistances(query.toString());
         // 4. get labels in mm/dd or dd format for x axis
@@ -242,7 +242,7 @@ public class DistancePerExerciseFragment extends ExerciseMasterFragment {
     private boolean getMonthlyBarData() {
         // 1. Find min activity based on filter parms
         StringBuffer query = new StringBuffer();
-        databaseHelper.getMinDateAndNumMonthsSQL(query, exerciseSelections,
+        TrackerDatabaseHelper.getMinDateAndNumMonthsSQL(query, exerciseSelections,
                 locationSelections);
         if (0 == getMinDateAndNumberTimeUnits(query.toString())) {
             return false;
@@ -256,7 +256,7 @@ public class DistancePerExerciseFragment extends ExerciseMasterFragment {
         totalDistanceValues = createZeroArrary(numberOfTimeUnits);
         // 3.Get the exercises, days, distances
         query.setLength(0);
-        databaseHelper.getMonthlyActivityDistancesSQL(query, exerciseSelections,
+        TrackerDatabaseHelper.getMonthlyActivityDistancesSQL(query, exerciseSelections,
                 locationSelections, startTimeStamp);
         getActivityDistances(query.toString());
         // 4. get labels in mm/dd or dd format for x axis
@@ -267,7 +267,7 @@ public class DistancePerExerciseFragment extends ExerciseMasterFragment {
     // show distances by year
     private boolean getYearlyBarData() {
         StringBuffer query = new StringBuffer();
-        databaseHelper.getMinYearAndNumYearsSQL(query, exerciseSelections,
+        TrackerDatabaseHelper.getMinYearAndNumYearsSQL(query, exerciseSelections,
                 locationSelections);
         if (0 == getMinDateAndNumberTimeUnits(query.toString())) {
             return false;
@@ -278,7 +278,7 @@ public class DistancePerExerciseFragment extends ExerciseMasterFragment {
         totalDistanceValues = createZeroArrary(numberOfTimeUnits);
         // 3.Get the exercises, years, distances
         query.setLength(0);
-        databaseHelper.getYearlyActivityDistancesSQL(query, exerciseSelections,
+        TrackerDatabaseHelper.getYearlyActivityDistancesSQL(query, exerciseSelections,
                 locationSelections, startTimeStamp);
         getActivityDistances(query.toString());
         // 4. get labels in mm/dd or dd format for x axis
@@ -364,7 +364,7 @@ public class DistancePerExerciseFragment extends ExerciseMasterFragment {
             // round to 1 decimal place
             origDistance = csrUtility.getInt(csrUtility
                     .getColumnIndex(LocationExercise.DISTANCE));
-            if (imperialMetric.equals(imperial)) {
+            if (DisplayUnits.isImperialDisplay()) {
                 distance = Utility.metersToMiles((float) origDistance);
             } else {
                 distance = origDistance / 1000d;

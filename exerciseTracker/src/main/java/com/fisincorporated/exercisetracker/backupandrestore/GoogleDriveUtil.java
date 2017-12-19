@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
+import com.fisincorporated.exercisetracker.utility.CustomException;
 import com.fisincorporated.exercisetracker.utility.IoUtils;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.drive.Drive;
@@ -84,7 +85,7 @@ public class GoogleDriveUtil {
             try {
                 googleDriveFile.setParentDriveFolder(Tasks.await(googleDriveFile.getDriveResourceClient().getRootFolder()));
             } catch (Exception e) {
-                throw new GoogleDriveException(googleDriveFile.getContext().getString(R.string.drive_root_folder_not_found), e);
+                throw new CustomException(googleDriveFile.getContext().getString(R.string.drive_root_folder_not_found), e);
             }
         });
         return completable;
@@ -115,7 +116,7 @@ public class GoogleDriveUtil {
                 }
                 googleDriveFile.setDriveFileFolder(driveFolder);
             } catch (Exception e) {
-                throw new GoogleDriveException(googleDriveFile.getContext().getString(R.string.unable_to_create_new_folder
+                throw new CustomException(googleDriveFile.getContext().getString(R.string.unable_to_create_new_folder
                         , googleDriveFile.getFolderName(), googleDriveFile.getParentDriveFolder().getDriveId().toString()), e);
             }
         });
@@ -140,7 +141,7 @@ public class GoogleDriveUtil {
                 }
                 googleDriveFile.setDriveContents(driveContents);
             } catch (Exception e) {
-                throw new GoogleDriveException(googleDriveFile.getContext().getString(R.string.unable_to_create_drivecontents), e);
+                throw new CustomException(googleDriveFile.getContext().getString(R.string.unable_to_create_drivecontents), e);
             }
         });
         return completable;
@@ -169,7 +170,7 @@ public class GoogleDriveUtil {
                 IoUtils.closeStream(inputStream);
 
             } catch (Exception e) {
-                throw new GoogleDriveException((googleDriveFile.getContext().getString(R.string.unable_to_write_to_drive_file, googleDriveFile.getLocalFile().getName())), e);
+                throw new CustomException((googleDriveFile.getContext().getString(R.string.unable_to_write_to_drive_file, googleDriveFile.getLocalFile().getName())), e);
             }
         });
         return completable;
@@ -194,10 +195,10 @@ public class GoogleDriveUtil {
                 if (driveId != null) {
                     googleDriveFile.setDriveFileFolder(driveId.asDriveFolder());
                 } else {
-                    throw new GoogleDriveException(googleDriveFile.getContext().getString(R.string.no_drive_backup_available));
+                    throw new CustomException(googleDriveFile.getContext().getString(R.string.no_drive_backup_available));
                 }
             } catch (Exception e) {
-                throw new GoogleDriveException(googleDriveFile.getContext().getString(R.string.no_drive_backup_available), e);
+                throw new CustomException(googleDriveFile.getContext().getString(R.string.no_drive_backup_available), e);
             }
         });
         return completable;
@@ -215,10 +216,10 @@ public class GoogleDriveUtil {
                     DriveContents driveContents = Tasks.await(googleDriveFile.getDriveResourceClient().openFile(driveFile, DriveFile.MODE_READ_ONLY));
                     googleDriveFile.setDriveContents(driveContents);
                 } else {
-                    throw new GoogleDriveException(googleDriveFile.getContext().getString(R.string.no_drive_backup_available));
+                    throw new CustomException(googleDriveFile.getContext().getString(R.string.no_drive_backup_available));
                 }
             } catch (Exception e) {
-                throw new GoogleDriveException(googleDriveFile.getContext().getString(R.string.no_drive_backup_available), e);
+                throw new CustomException(googleDriveFile.getContext().getString(R.string.no_drive_backup_available), e);
             }
         });
         return completable;
@@ -234,7 +235,7 @@ public class GoogleDriveUtil {
                 googleDriveFile.getDriveResourceClient().discardContents(googleDriveFile.getDriveContents());
                 IoUtils.closeStream(outputStream);
             } catch (Exception e) {
-                throw new GoogleDriveException((googleDriveFile.getContext().getString(R.string.an_error_occurred_reading_file_from_drive, googleDriveFile.getLocalFile().getName())), e);
+                throw new CustomException(googleDriveFile.getContext().getString(R.string.an_error_occurred_reading_file_from_drive, googleDriveFile.getLocalFile().getName()), e);
             }
         });
         return completable;

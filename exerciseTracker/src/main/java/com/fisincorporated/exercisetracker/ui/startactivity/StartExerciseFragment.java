@@ -166,7 +166,7 @@ public class StartExerciseFragment extends ExerciseMasterFragment {
     }
 
     public void setUpAutoCompletes() {
-        leDAO = new LocationExerciseDAO(databaseHelper);
+        leDAO = new LocationExerciseDAO();
         fillExerciseAutoComplete();
         fillLocationAutoComplete();
     }
@@ -296,10 +296,7 @@ public class StartExerciseFragment extends ExerciseMasterFragment {
             if (csr != null) {
                 try {
                     csr.close();
-                } catch (SQLException sqle) {
-                    ;
-                }
-                ;
+                } catch (SQLException sqle) {}
             }
         }
         if (locationRowId > 0)
@@ -325,7 +322,6 @@ public class StartExerciseFragment extends ExerciseMasterFragment {
                 csr.moveToFirst();
                 minDistanceToLog = csr.getFloat(csr
                         .getColumnIndex(Exercise.MIN_DISTANCE_TO_LOG));
-                ;
                 elevationInDistcalcs = csr.getInt(csr
                         .getColumnIndex(Exercise.ELEVATION_IN_DIST_CALCS));
                 logInterval = csr.getInt(csr.getColumnIndex(Exercise.LOG_INTERVAL));
@@ -337,10 +333,7 @@ public class StartExerciseFragment extends ExerciseMasterFragment {
             if (csr != null) {
                 try {
                     csr.close();
-                } catch (SQLException sqle) {
-                    ;
-                }
-                ;
+                } catch (SQLException sqle) {}
             }
         }
 
@@ -449,10 +442,7 @@ public class StartExerciseFragment extends ExerciseMasterFragment {
             if (csr != null) {
                 try {
                     csr.close();
-                } catch (SQLException sqle) {
-                    ;
-                }
-                ;
+                } catch (SQLException sqle) {}
             }
         }
         return leFoundForToday;
@@ -469,7 +459,7 @@ public class StartExerciseFragment extends ExerciseMasterFragment {
         database.beginTransaction();
         try {
             leDAO.createLocationExercise(ler);
-            exerciseDAO = new ExerciseDAO(databaseHelper);
+            exerciseDAO = new ExerciseDAO();
             exerciseDAO.updateTimesUsed(exerciseRowId, 1);
             database.setTransactionSuccessful();
         } finally {

@@ -1,7 +1,5 @@
 package com.fisincorporated.exercisetracker.database;
 
-import java.util.ArrayList;
-
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -10,31 +8,33 @@ import android.util.Log;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.GPSLog;
 
+import java.util.ArrayList;
+
 
 public class GPSLogDAO extends BaseDAO {
  
-	public GPSLogDAO(TrackerDatabaseHelper dbHelper) {
-		this.dbHelper = dbHelper;
+	public GPSLogDAO() {
+		super();
 	}
 
  
 	/**
 	 * 
-	 * @param GPSLogRecord
+	 * @param gpsLogRecord
 	 * @return GPSLogRecord For insert the _ID for the record will be
 	 *         assigned after the insert
 	 */
 	public GPSLogRecord createGPSLogRecord(
-			GPSLogRecord gpslr) {
+			GPSLogRecord gpsLogRecord) {
 		Long rowId = -1l;
 		ContentValues values = new ContentValues();
 		// all fields mandatory fields except for _ID 
-		values.put(GPSLog.LOCATION_EXERCISE_ID, Long.toString(gpslr.getLocationExerciseId()));
-		values.put(GPSLog.LATITUDE, Float.toString(gpslr.getLatitude()));
-		values.put(GPSLog.LONGITUDE, Float.toString(gpslr.getLongitude()));
-		values.put(GPSLog.ELEVATION,  Integer.toString(gpslr.getElevation()));
-		values.put(GPSLog.TIMESTAMP, gpslr.getTimestamp() );
-		values.put(GPSLog.DISTANCE_FROM_LAST_POINT, gpslr.getDistanceFromLastPoint());
+		values.put(GPSLog.LOCATION_EXERCISE_ID, Long.toString(gpsLogRecord.getLocationExerciseId()));
+		values.put(GPSLog.LATITUDE, Float.toString(gpsLogRecord.getLatitude()));
+		values.put(GPSLog.LONGITUDE, Float.toString(gpsLogRecord.getLongitude()));
+		values.put(GPSLog.ELEVATION,  Integer.toString(gpsLogRecord.getElevation()));
+		values.put(GPSLog.TIMESTAMP, gpsLogRecord.getTimestamp() );
+		values.put(GPSLog.DISTANCE_FROM_LAST_POINT, gpsLogRecord.getDistanceFromLastPoint());
 
 		try{ 
 		if (!dbIsOpen) {
@@ -42,7 +42,7 @@ public class GPSLogDAO extends BaseDAO {
 		}
 		rowId = database.insert(GPSLog.GPSLOG_TABLE, null,
 				values);
-		gpslr.set_id(rowId);
+		gpsLogRecord.set_id(rowId);
 		} catch (SQLException sqle) {
 			Log.e(GlobalValues.LOG_TAG,
 					"GPSLogDAO.createGPSLogRecord SQL exception:"
@@ -53,7 +53,7 @@ public class GPSLogDAO extends BaseDAO {
 							+ e.toString());
 		}
 		 //finally {close();}
-		return gpslr;
+		return gpsLogRecord;
 		
 		
 	}
@@ -66,18 +66,18 @@ public class GPSLogDAO extends BaseDAO {
 			}
 	/**
 	 * 
-	 * @param ler
+	 * @param gpsLogRecord
 	 *           The _id must be assigned in ler prior to calling this method
 	 */
-	public void updateGPSLog(GPSLogRecord gpslr) {
-		Long rowId = gpslr.get_id();
+	public void updateGPSLog(GPSLogRecord gpsLogRecord) {
+		Long rowId = gpsLogRecord.get_id();
 		ContentValues values = new ContentValues();
-		values.put(GPSLog.LOCATION_EXERCISE_ID, gpslr.getLocationExerciseId());
-		values.put(GPSLog.LATITUDE, Float.toString(gpslr.getLatitude()));
-		values.put(GPSLog.LONGITUDE, Float.toString(gpslr.getLongitude()));
-		values.put(GPSLog.ELEVATION,  Integer.toString(gpslr.getElevation()));
-		values.put(GPSLog.TIMESTAMP, gpslr.getTimestamp() );
-		values.put(GPSLog.DISTANCE_FROM_LAST_POINT, gpslr.getDistanceFromLastPoint());
+		values.put(GPSLog.LOCATION_EXERCISE_ID, gpsLogRecord.getLocationExerciseId());
+		values.put(GPSLog.LATITUDE, Float.toString(gpsLogRecord.getLatitude()));
+		values.put(GPSLog.LONGITUDE, Float.toString(gpsLogRecord.getLongitude()));
+		values.put(GPSLog.ELEVATION,  Integer.toString(gpsLogRecord.getElevation()));
+		values.put(GPSLog.TIMESTAMP, gpsLogRecord.getTimestamp() );
+		values.put(GPSLog.DISTANCE_FROM_LAST_POINT, gpsLogRecord.getDistanceFromLastPoint());
 
 		try{
 		if (!dbIsOpen) {

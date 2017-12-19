@@ -43,7 +43,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.preferences.SettingsActivity"
+            android:name=".ui.settings.SettingsActivity"
             android:parentActivityName=".ui.startup.ExerciseDrawerActivity"
             android:uiOptions="splitActionBarWhenNarrow">
 

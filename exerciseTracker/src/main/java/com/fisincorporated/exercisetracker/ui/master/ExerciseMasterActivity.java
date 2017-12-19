@@ -1,6 +1,5 @@
 package com.fisincorporated.exercisetracker.ui.master;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -14,7 +13,6 @@ import android.support.v7.widget.Toolbar;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
-import com.fisincorporated.exercisetracker.application.ActivityTrackerApplication;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 import com.fisincorporated.exercisetracker.facebook.FacebookPostStatsActivity;
@@ -31,27 +29,22 @@ abstract public class ExerciseMasterActivity extends AppCompatActivity implement
 	protected SQLiteDatabase database = null;
 	protected Cursor csrUtility;
 
-	protected static String imperialMetric;
-	protected static String imperial;
-	protected static String feetMeters;
-	protected static String milesKm;
-	protected static String mphKph;
-
 	protected ActionBar actionBar;
 	protected Toolbar toolbar;
 
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		getDatabaseSetup();
 	}
 
 	//TODO user Dagger injection
 	public void getDatabaseSetup() {
 		if (databaseHelper == null) {
-			databaseHelper = ((ActivityTrackerApplication) getApplication()).getDatabaseHelper();
+			databaseHelper = TrackerDatabaseHelper.getTrackerDatabaseHelper();
 		}
 		if (database == null) {
-			database = ((ActivityTrackerApplication) getApplication()).getDatabase();
+			database = databaseHelper.getWritableDatabase();
 		}
 
 		if (!database.isOpen()) {
@@ -59,37 +52,24 @@ abstract public class ExerciseMasterActivity extends AppCompatActivity implement
 		}
 	}
 
-	public TrackerDatabaseHelper getTrackerDataseHelper() {
-		return databaseHelper;
-	}
-
-	public SQLiteDatabase getSQLiteDatabase() {
-		return database;
-	}
-
-	@SuppressLint("NewApi")
-	public void deleteDatabase() {
-		databaseHelper.getDatabaseName();
-	}
-
 	public void onDestroy() {
-		if (database != null) {
-			if (database.isOpen()){
-				database.close();
-			}
-			database = null;
-		}
+//		if (database != null) {
+//			if (database.isOpen()){
+//				database.close();
+//			}
+//			database = null;
+//		}
 		super.onDestroy();
 	}
 
 	@Override
 	public void finalize() {
-		if (database != null) {
-			if (database.isOpen()){
-				database.close();
-			}
-			database = null;
-		}
+//		if (database != null) {
+//			if (database.isOpen()){
+//				database.close();
+//			}
+//			database = null;
+//		}
 	}
 	
 	public void onSelectedAction(Bundle args) {

@@ -38,10 +38,9 @@ public class StartExercise extends ExerciseMasterFragmentActivity {
 	}
 
 	private void directToActivityLogger(long id) {
-		getDatabaseSetup();
 		Intent intent = new Intent(this, ActivityLoggerActivity.class);
-		leDAO = new LocationExerciseDAO(databaseHelper);
-		eDAO = new ExerciseDAO(databaseHelper);
+		leDAO = new LocationExerciseDAO();
+		eDAO = new ExerciseDAO();
 		ler = leDAO.loadLocationExerciseRecordById(id);
 		intent.putExtra(LocationExercise.LOCATION_EXERCISE_TABLE, ler);
 		intent.putExtra(Exercise.EXERCISE, leDAO.getExercise(ler.getExerciseId()));

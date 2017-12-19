@@ -16,6 +16,7 @@ import com.fisincorporated.exercisetracker.database.TrackerDatabase;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.GPSLog;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
+import com.fisincorporated.exercisetracker.ui.utils.DisplayUnits;
 import com.fisincorporated.exercisetracker.utility.Utility;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -72,7 +73,6 @@ public class AltitudeVsDistanceGraphFragment extends ExerciseMasterFragment {
     public void onResume() {
         super.onResume();
         showGraph(false);
-        findDisplayUnits();
         setUpChart();
         getAltVsDistSeries();
     }
@@ -85,12 +85,12 @@ public class AltitudeVsDistanceGraphFragment extends ExerciseMasterFragment {
 
     private void setUpChart() {
         graphView.clear();
-        chartTitle = resources.getString(R.string.chart_title_elevation_vs_distance, feetMeters, milesKm
-                , title, description);
+        chartTitle = resources.getString(R.string.chart_title_elevation_vs_distance, DisplayUnits.getFeetMeters()
+                , DisplayUnits.getMilesKm(), title, description);
     }
 
     public void getAltVsDistSeries() {
-        // !!!! convert to CursorLoader (and remove csr.close() below)
+        // TODO convert to CursorLoader (and remove csr.close() below)
         Cursor csr;
 
         lineData = new LineData();
@@ -116,10 +116,10 @@ public class AltitudeVsDistanceGraphFragment extends ExerciseMasterFragment {
         } else {
             csr.moveToFirst();
             while (!csr.isAfterLast()) {
-                totalDistance += (double) (imperialMetric.equals(imperial) ? Utility
+                totalDistance += (double) (DisplayUnits.isImperialDisplay() ? Utility
                         .metersToMiles((float) csr.getDouble(0)) : ((float) csr
                         .getDouble(0)) / 1000);
-                elevation = (float) (imperialMetric.equals(imperial) ? Utility
+                elevation =  (DisplayUnits.isImperialDisplay() ? Utility
                         .metersToFeet((float) csr.getDouble(1)) : ((float) csr
                         .getDouble(1)) / 1000);
                 // elevation can be very noisy so just trying to smooth it out

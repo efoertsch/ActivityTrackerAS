@@ -8,10 +8,9 @@ import android.provider.MediaStore;
 
 import java.util.ArrayList;
 
-public class ActivityPhotosUtil {
+public class PhotosUtils {
 
-    private ActivityPhotosUtil() {
-    }
+    private PhotosUtils() {}
 
     public static ArrayList<PhotoDetail> getPhotosTaken(Context context, Long startTime, Long endTime) {
         ArrayList<PhotoDetail> photosTaken = new ArrayList<>();

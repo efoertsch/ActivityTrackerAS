@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker.ui.preferences;
+package com.fisincorporated.exercisetracker.ui.settings;
 
 import android.Manifest;
 import android.app.AlertDialog;

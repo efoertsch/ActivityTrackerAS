@@ -15,9 +15,14 @@ import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.ExrcsLocation;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
+import com.fisincorporated.exercisetracker.utility.CustomException;
 
 import java.util.ArrayList;
 
+import io.reactivex.Single;
+
+
+// TODO use Dagger
 public class TrackerDatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = GlobalValues.DATABASE_NAME;
     // Update DATABASE_VERSION if schema changes
@@ -30,16 +35,35 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
     private Context context;
     private static TrackerDatabaseHelper trackerDatabaseHelper = null;
 
+
     private TrackerDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
     }
 
+    /**
+     * Call only at app startup
+     * @param context
+     * @return
+     */
     public static TrackerDatabaseHelper getTrackerDatabaseHelper(Context context) {
         if (trackerDatabaseHelper == null) {
-            return new TrackerDatabaseHelper(context.getApplicationContext());
-        } else
-            return trackerDatabaseHelper;
+            trackerDatabaseHelper = new TrackerDatabaseHelper(context.getApplicationContext());
+        }
+        return trackerDatabaseHelper;
+    }
+
+    /**
+     * Use whenever database access required in app (after app startup)
+     *
+     * @return
+     */
+    public static TrackerDatabaseHelper  getTrackerDatabaseHelper(){
+        return trackerDatabaseHelper;
+    }
+
+    public static SQLiteDatabase getDatabase(){
+        return trackerDatabaseHelper.getWritableDatabase();
     }
 
     @SuppressLint("Override")
@@ -106,7 +130,8 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
         super.onOpen(db);
     }
 
-    public void loadExerciseTableIfNeeded(SQLiteDatabase db) {
+    // Turn all methods into static
+    private void loadExerciseTableIfNeeded(SQLiteDatabase db) {
         Cursor cursor = null;
         Log.i(GlobalValues.LOG_TAG,
                 "TrackerDatabaseHelper.loadExerciseTableIfNeeded db version: "
@@ -127,7 +152,7 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public void loadExerciseTable(SQLiteDatabase db) {
+    private void loadExerciseTable(SQLiteDatabase db) {
         // picking up array of strings from
         // http://stackoverflow.com/questions/4326037/android-resource-array-of-arrays
         // Note that default log values must be in quotes.
@@ -156,7 +181,7 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public void createActivitySQL(StringBuffer query,
+    public static void createActivitySQL(StringBuffer query,
                                   ArrayList<String> selectedExercises,
                                   ArrayList<String> selectedLocations, int sortOrder) {
         StringBuffer where = new StringBuffer();
@@ -226,7 +251,7 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
     }
 
     // replace createExerciseWherePhrase and createLocationWherePhrase
-    private void createActivityWherePhrase(StringBuffer wherePhrase,
+    private static void createActivityWherePhrase(StringBuffer wherePhrase,
                                            ArrayList<String> selections, String columnName) {
         if (selections.size() == 0)
             return;
@@ -243,7 +268,7 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
 
     // Prior month daily activity
     // First of 2 queries to find date 1 month ago and the number of days since 1 month ago
-    public void getMonthAgoDateSQL(StringBuffer query,
+    public static void getMonthAgoDateSQL(StringBuffer query,
                                    ArrayList<String> selectedExercises,
                                    ArrayList<String> selectedLocations) {
         StringBuffer where = new StringBuffer();
@@ -286,7 +311,7 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
     // Prior month daily activity
     // 2nd of 2 queries that find daily activity by exercise and the 'day index' that the activity occurred
 
-    public void getDailyActivityDistancesSQL(StringBuffer query,
+    public static void getDailyActivityDistancesSQL(StringBuffer query,
                                              ArrayList<String> selectedExercises,
                                              ArrayList<String> selectedLocations, String startTimeStamp) {
         StringBuffer where = new StringBuffer();
@@ -316,7 +341,7 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
 
     // Weekly activity
     // Get earliest activity date and number of weeks to last activity date
-    public void getMinWeekAndNumberOfWeeksSQL(StringBuffer query,
+    public static void getMinWeekAndNumberOfWeeksSQL(StringBuffer query,
                                               ArrayList<String> selectedExercises,
                                               ArrayList<String> selectedLocations) {
         StringBuffer where = new StringBuffer();
@@ -345,7 +370,7 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
 
 
     // Get weekly activity totals by exercise and the 'week index' of the activity
-    public void getWeeklyActivityDistancesSQL(StringBuffer query,
+    public static void getWeeklyActivityDistancesSQL(StringBuffer query,
                                               ArrayList<String> selectedExercises,
                                               ArrayList<String> selectedLocations, String startTimeStamp) {
         StringBuffer where = new StringBuffer();
@@ -397,7 +422,7 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
 
     // Monthly totals
     // First of 2 queries to find staring month and number of months of data
-    public void getMinDateAndNumMonthsSQL(StringBuffer query,
+    public static void getMinDateAndNumMonthsSQL(StringBuffer query,
                                           ArrayList<String> selectedExercises,
                                           ArrayList<String> selectedLocations) {
         StringBuffer where = new StringBuffer();
@@ -438,7 +463,7 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
         );
     }
 
-    public void getMonthlyActivityDistancesSQL(StringBuffer query,
+    public static void getMonthlyActivityDistancesSQL(StringBuffer query,
                                                ArrayList<String> selectedExercises,
                                                ArrayList<String> selectedLocations, String startTimeStamp) {
         StringBuffer where = new StringBuffer();
@@ -492,7 +517,7 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
 
     // Yearly totals
     // First of 2 queries to find staring year and number of years of data
-    public void getMinYearAndNumYearsSQL(StringBuffer query,
+    public static void getMinYearAndNumYearsSQL(StringBuffer query,
                                          ArrayList<String> selectedExercises,
                                          ArrayList<String> selectedLocations) {
         StringBuffer where = new StringBuffer();
@@ -533,7 +558,7 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
         );
     }
 
-    public void getYearlyActivityDistancesSQL(StringBuffer query,
+    public static void getYearlyActivityDistancesSQL(StringBuffer query,
                                               ArrayList<String> selectedExercises,
                                               ArrayList<String> selectedLocations, String startTimeStamp) {
         StringBuffer where = new StringBuffer();
@@ -578,6 +603,34 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
                 + Exercise.EXERCISE
                 + " order by activity_date, time_index, "
                 + Exercise.EXERCISE);
+    }
+
+
+    public static Single<LocationExerciseRecord> getLerSingleObservable(Long locationExerciseId) {
+        return Single.create(emitter -> {
+            try {
+                LocationExerciseRecord ler = new LocationExerciseDAO().loadLocationExerciseRecordById(locationExerciseId);
+                if (ler.get_id() > 0) {
+                    emitter.onSuccess(ler);
+                } else {
+                    emitter.onError(new CustomException(trackerDatabaseHelper.context.getString(R.string.valid_activity_record_not_found_with_id, ler.get_id())));
+                }
+            } catch (Exception e) {
+                emitter.onError(e);
+            }
+        });
+    }
+
+    public static Single<ExerciseRecord> getErSingleObservable(Long exerciseId) {
+        return Single.create(emitter -> {
+            emitter.onSuccess(new ExerciseDAO().loadExerciseRecordById(exerciseId));
+        });
+    }
+
+    public Single<ExrcsLocationRecord> getElrSingleObservable(Long locationId) {
+        return Single.create(emitter -> {
+            emitter.onSuccess(new ExrcsLocationDAO().loadExrcsLocationRecordById(locationId));
+        });
     }
 
 }

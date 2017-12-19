@@ -138,6 +138,7 @@
     <string name="normal">Normal</string>
     <string name="number_gps_points"># GPS Points</string>
     <string name="ok">OK</string>
+    <string name="error_reading_exercise_record">Oops. Error reading exercise record!</string>
     <string name="overall_altitude_change">Overall Altitude Change</string>
     <string name="pausing_activity">Pausing activity</string>
     <string name="permission_not_granted">Permission not granted</string>
@@ -194,7 +195,7 @@
     <string name="updated">updated</string>
     <string name="use_elevation_in_distance_calculations">Use Elevation In Distance Calculations</string>
     <string name="update_statistics">"Update Statistics"</string>
-    <string name="valid_activity_record_not_found_with_id">Valid activity record not found with id =</string>
+    <string name="valid_activity_record_not_found_with_id">Valid activity record not found with id: %1$d</string>
     <string name="value">Value</string>
     <string name="view_exercise">View Exercise</string>
     <string name="week">Week</string>
@@ -287,5 +288,8 @@
     <string name="backup_button_key" translatable="false">backup_key_button</string>
     <string name="backup_to_local">Backup To Local</string>
     <string name="backup_to_google_drive">Backup to Google Drive</string>
+    <string name="an_error_occured_in_mapping_gps_route">Sorry - an error occurred in mapping the GPS route.</string>
+    <string name="current_location">Current Location</string>
+    <string name="end">End</string>
 
 </resources>

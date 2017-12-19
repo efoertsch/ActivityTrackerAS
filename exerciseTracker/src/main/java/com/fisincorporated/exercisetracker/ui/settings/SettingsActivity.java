@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker.ui.preferences;
+package com.fisincorporated.exercisetracker.ui.settings;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

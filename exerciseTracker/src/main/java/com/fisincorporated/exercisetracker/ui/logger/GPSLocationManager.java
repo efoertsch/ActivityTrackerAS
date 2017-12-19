@@ -72,7 +72,6 @@ public class GPSLocationManager {
     private static GPSLogDAO sGpslrDAO = null;
     private static ExerciseDAO sEDao = null;
     private static ExerciseRecord sEr = null;
-    protected static TrackerDatabaseHelper sDatabaseHelper = null;
     //protected static SQLiteDatabase sDatabase = null;
     private static String sExercise;
     private static String sExrcsLocation;
@@ -94,7 +93,6 @@ public class GPSLocationManager {
         sAppContext = appContext;
         sLocationManager = (LocationManager) sAppContext
                 .getSystemService(Context.LOCATION_SERVICE);
-        sDatabaseHelper = TrackerDatabaseHelper.getTrackerDatabaseHelper(sAppContext);
         sPrefs = sAppContext.getSharedPreferences(PREFS_FILE,
                 Context.MODE_PRIVATE);
         sCurrentLerId = sPrefs.getLong(PREF_CURRENT_LER_ID, -1);
@@ -105,11 +103,11 @@ public class GPSLocationManager {
 
         }
         if (sLeDAO == null)
-            sLeDAO = new LocationExerciseDAO(sDatabaseHelper);
+            sLeDAO = new LocationExerciseDAO();
         if (sGpslrDAO == null)
-            sGpslrDAO = new GPSLogDAO(sDatabaseHelper);
+            sGpslrDAO = new GPSLogDAO();
         if (sEDao == null){
-            sEDao = new ExerciseDAO(sDatabaseHelper);
+            sEDao = new ExerciseDAO();
         }
         findDisplayUnits();
     }
@@ -360,8 +358,7 @@ public class GPSLocationManager {
             return;
         }
         sLastNotificationTime = System.currentTimeMillis();
-        Utility.formatActivityStats(sActivity, sStats, sLer, imperialMetric,
-                imperial, feetMeters, milesKm, mphKph);
+        Utility.formatActivityStats(sActivity, sStats, sLer);
         String notificationText = sExercise + "@" + sExrcsLocation +'\n';
 
         NotificationCompat.Builder builder =

@@ -8,13 +8,11 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.SQLiteCursorLoader;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
@@ -128,10 +126,10 @@ public class ExerciseMaintenanceListFragment extends ExerciseMasterFragment impl
         recyclerAdapter.swapCursor(null);
     }
 
-    public void finalize(){
-        Log.e(GlobalValues.LOG_TAG,"ExerciseMaintenanceDetailActivity.finalize. Calling super.finalize to close db");
-        super.finalize();
-    }
+//    public void finalize(){
+//        Log.e(GlobalValues.LOG_TAG,"ExerciseMaintenanceDetailActivity.finalize. Calling super.finalize to close db");
+//        super.finalize();
+//    }
 
 
 }

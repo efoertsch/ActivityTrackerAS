@@ -83,7 +83,7 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
         // problem in LocationReceiver.onLocationReceived() with passes just context
         gpsLocationManager.setNotification(getActivity(), exercise, exrcsLocation);
         GPSLocationManager.setActivityDetails(bundle);
-        findDisplayUnits();
+
         gpsLocationManager.startNewLer(ler);
     }
 
@@ -93,7 +93,6 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
             if (getArguments().containsKey(GlobalValues.BUNDLE)) {
                 bundle = getArguments().getBundle(GlobalValues.BUNDLE);
             }
-            ;
         } else if (savedInstanceState != null) {
             bundle = savedInstanceState;
         }
@@ -131,7 +130,7 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
     }
 
     private void getCurrentLer() {
-        leDAO = new LocationExerciseDAO(databaseHelper);
+        leDAO = new LocationExerciseDAO();
         ler = leDAO.loadLocationExerciseRecordById(ler.get_id());
     }
 
@@ -233,13 +232,13 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
                     ActivityDialogFragment.DIALOG_RESPONSE, -1);
             if (buttonPressed == DialogInterface.BUTTON_POSITIVE) {
                 gpsLocationManager.stopTrackingLer();
-                GPSLogDAO gpslogDAO = new GPSLogDAO(databaseHelper);
+                GPSLogDAO gpslogDAO = new GPSLogDAO();
                 database.beginTransaction();
                 try {
                     gpslogDAO.deleteGPSLogbyLerRowId(ler.get_id());
-                    leDAO = new LocationExerciseDAO(databaseHelper);
+                    leDAO = new LocationExerciseDAO();
                     leDAO.deleteLocationExercise(ler);
-                    exerciseDAO = new ExerciseDAO(databaseHelper);
+                    exerciseDAO = new ExerciseDAO();
                     exerciseDAO.updateTimesUsed(ler.get_id(), -1);
                     database.setTransactionSuccessful();
                 } finally {
@@ -271,8 +270,7 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
     }
 
     private void formatLerStarts(LocationExerciseRecord ler) {
-        Utility.formatActivityStats(getActivity(), stats, ler, imperialMetric,
-                imperial, feetMeters, milesKm, mphKph);
+        Utility.formatActivityStats(getActivity(), stats, ler);
     }
 
     private void checkStopRestartButton() {

@@ -16,11 +16,9 @@ import android.view.MenuItem;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.ui.about.AboutActivityTracker;
 import com.fisincorporated.exercisetracker.ui.backuprestore.RestoreActivity;
-import com.fisincorporated.exercisetracker.ui.drive.DriveActivity;
 import com.fisincorporated.exercisetracker.ui.history.ActivityHistory;
 import com.fisincorporated.exercisetracker.ui.maintenance.ExerciseMaintenanceListActivity;
-import com.fisincorporated.exercisetracker.ui.photo.PhotoTestActivity;
-import com.fisincorporated.exercisetracker.ui.preferences.SettingsActivity;
+import com.fisincorporated.exercisetracker.ui.settings.SettingsActivity;
 import com.fisincorporated.exercisetracker.ui.startactivity.StartExercise;
 
 public class ExerciseDrawerActivity  extends AppCompatActivity  {
@@ -115,37 +113,14 @@ public class ExerciseDrawerActivity  extends AppCompatActivity  {
             case R.id.nav_menu_about:
                 displayAbout();
                 break;
-
-
-            case R.id.nav_photo:
-                displayPhotActivity();
-                break;
-
-//            case R.id.nav_menu_drive:
-//                displayDrive();
-//                break;
         }
 
         drawerLayout.closeDrawers();
     }
 
-    private void displayPhotActivity() {
-        // Intent intent = new Intent(this, DriveActivity.class);
-        Intent intent = new Intent(this, PhotoTestActivity.class);
-        startActivity(intent);
-    }
-
-    private void displayDrive() {
-       // Intent intent = new Intent(this, DriveActivity.class);
-        Intent intent = new Intent(this, DriveActivity.class);
-        startActivity(intent);
-    }
-
-
     private void displayPhotoFragment() {
         Fragment fragment = new PhotoFragment();
         displayFragment(fragment);
-
     }
 
     private void displayFragment(Fragment fragment) {

@@ -1,11 +1,5 @@
 package com.fisincorporated.exercisetracker.ui.filters;
 
-import java.util.ArrayList;
-
-import com.fisincorporated.exercisetracker.GlobalValues;
-import com.fisincorporated.exercisetracker.R;
-import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -16,6 +10,12 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.widget.ArrayAdapter;
+
+import com.fisincorporated.exercisetracker.GlobalValues;
+import com.fisincorporated.exercisetracker.R;
+import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
+
+import java.util.ArrayList;
 
 public abstract class FilterDialogFragment extends DialogFragment {
 
@@ -47,12 +47,11 @@ public abstract class FilterDialogFragment extends DialogFragment {
 	// use by implementing class
 	protected void getDatabaseSetup() {
 		if (databaseHelper == null)
-			databaseHelper = TrackerDatabaseHelper
-					.getTrackerDatabaseHelper(getActivity().getApplicationContext());
+			databaseHelper = TrackerDatabaseHelper.getTrackerDatabaseHelper();
 		if (database == null) {
 			Log.i(GlobalValues.LOG_TAG,
 					"FilterDialog.getDatabaseSetup com.fisincorporated.exercisetracker.database null, calling getWritable");
-			database = databaseHelper.getWritableDatabase();
+			database = TrackerDatabaseHelper.getDatabase();
 		}
 		if (!database.isOpen()) {
 			Log.i(GlobalValues.LOG_TAG,
@@ -169,7 +168,7 @@ public abstract class FilterDialogFragment extends DialogFragment {
 	private void createNewFilterList() {
 		checkedSelections = new ArrayList<String>();
 		for (int i = 0; i < selections.size(); ++i) {
-			if (checkedItems[i] == true)
+			if (checkedItems[i])
 				checkedSelections.add(selections.get(i));
 		}
 	}
@@ -186,27 +185,27 @@ public abstract class FilterDialogFragment extends DialogFragment {
 	}
 
 	public void onDestroy() {
-		if (database != null) {
-			Log.i(GlobalValues.LOG_TAG, "FilterDialog.onDestroy com.fisincorporated.exercisetracker.database not null");
-			if (database.isOpen()) {
-				Log.i(GlobalValues.LOG_TAG,
-						"FilterDialog.onDestroy com.fisincorporated.exercisetracker.database is open so calling close ");
-				database.close();
-			}
-			database = null;
-		}
+//		if (database != null) {
+//			Log.i(GlobalValues.LOG_TAG, "FilterDialog.onDestroy com.fisincorporated.exercisetracker.database not null");
+//			if (database.isOpen()) {
+//				Log.i(GlobalValues.LOG_TAG,
+//						"FilterDialog.onDestroy com.fisincorporated.exercisetracker.database is open so calling close ");
+//				database.close();
+//			}
+//			database = null;
+//		}
 		super.onDestroy();
 	}
 
 	@Override
 	public void finalize() {
-		if (database != null) {
-			Log.i(GlobalValues.LOG_TAG, "FilterDialog.finalize com.fisincorporated.exercisetracker.database not null");
-			if (database.isOpen())
-				Log.i(GlobalValues.LOG_TAG,
-						"FilterDialog.finalize com.fisincorporated.exercisetracker.database is open so calling close");
-			database.close();
-			database = null;
-		}
+//		if (database != null) {
+//			Log.i(GlobalValues.LOG_TAG, "FilterDialog.finalize com.fisincorporated.exercisetracker.database not null");
+//			if (database.isOpen())
+//				Log.i(GlobalValues.LOG_TAG,
+//						"FilterDialog.finalize com.fisincorporated.exercisetracker.database is open so calling close");
+//			database.close();
+//			database = null;
+//		}
 	}
 }

@@ -1,12 +1,6 @@
 package com.fisincorporated.exercisetracker;
 
-;
-
 public class GlobalValues {
-
-    // Assign at app startup
-	public static String DATABASE_PATH_AND_NAME = "";
-	public static String PACKAGE_NAME;
 
 	public static final String LOG_TAG = "ActivityTracker";
 	public static final String BUNDLE = "Bundle";
@@ -40,8 +34,8 @@ public class GlobalValues {
 	public static final int ACTIVITY_LIST_LOADER = 2;
 	public static final int ACTIVITY_PAGER_LOADER = 3;
 	public static final int DELETE_ACTIVITY_LIST_LOADER = 4;
-	public static final int EXERICSE_LIST_LOADER = 5;
-	public static final int EXERICSE_PAGER_LOADER = 6;
+	public static final int EXERCISE_LIST_LOADER = 5;
+	public static final int EXERCISE_PAGER_LOADER = 6;
 	// values for Bar charts
 	public static final String BAR_CHART_TYPE = "bar_chart_type";
 	public static final int DISTANCE_VS_ELEVATION = 0;
@@ -74,5 +68,7 @@ public class GlobalValues {
 	public static final int BACKUP_TO_DRIVE = 1;
 	public static final boolean DRIVE_SIGNIN_SUCCESSFUL = true;
 	public static final boolean DRIVE_SIGNIN_UNSUCCESSFUL = false;
+
+	public static final String DISPLAY_UNITS_PREFERENCE_KEY = "DISPLAY_UNITS_PREFERENCE_KEY";
 
 }

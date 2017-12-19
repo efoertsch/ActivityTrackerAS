@@ -1,7 +1,5 @@
 package com.fisincorporated.exercisetracker.database;
 
-import java.util.ArrayList;
-
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -11,21 +9,18 @@ import android.util.Log;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 
+import java.util.ArrayList;
+
 public class ExerciseDAO extends BaseDAO {
 
     private Cursor csr;
 
     public ExerciseDAO() {
-
+        super();
     }
-
-    public ExerciseDAO(TrackerDatabaseHelper dbHelper) {
-        this.dbHelper = dbHelper;
-    }
-
 
     /**
-     * @param ExerciseRecord
+     * @param exerciser
      * @return ExerciseRecord For insert the _ID for the record will be assigned
      * after the insert
      */
@@ -57,7 +52,7 @@ public class ExerciseDAO extends BaseDAO {
     }
 
     /**
-     * @param ler The _id must be assigned in ler prior to calling this method
+     * @param exerciser The _id must be assigned in ler prior to calling this method
      */
     public void updateExercise(ExerciseRecord exerciser) {
         Long rowId = exerciser.get_id();
@@ -99,7 +94,7 @@ public class ExerciseDAO extends BaseDAO {
     }
 
     /**
-     * @param locationExerciseRowid
+     * @param exerciseRowid
      */
 
     public int deleteByExerciseRowid(long exerciseRowid) {

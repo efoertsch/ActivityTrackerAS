@@ -1,7 +1,5 @@
 package com.fisincorporated.exercisetracker.database;
 
-import java.sql.Timestamp;
-
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -13,15 +11,17 @@ import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.ExrcsLocation;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 
+import java.sql.Timestamp;
+
 public class LocationExerciseDAO extends BaseDAO {
 
-	public LocationExerciseDAO(TrackerDatabaseHelper dbHelper) {
-		this.dbHelper = dbHelper;
+	public LocationExerciseDAO() {
+		super();
 	}
 
 	/**
 	 * 
-	 * @param LocationExerciseRecord
+	 * @param  ler
 	 * @return LocationExerciseRecord For insert the _ID for the record will be
 	 *         assigned after the insert
 	 */

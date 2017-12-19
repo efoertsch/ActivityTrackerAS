@@ -17,7 +17,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.fisincorporated.exercisetracker.ui.utils.ActivityDialogFragment;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.GPSLogDAO;
@@ -26,6 +25,7 @@ import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.GPSLog;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
+import com.fisincorporated.exercisetracker.ui.utils.ActivityDialogFragment;
 import com.fisincorporated.exercisetracker.utility.Utility;
 
 import java.sql.Timestamp;
@@ -81,7 +81,6 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
         displayTitle();
 
         loadActivityRecords();
-        findDisplayUnits();
         formatActivityStats();
         StatsArrayAdapter statsArrayAdapter = new StatsArrayAdapter(
                 getActivity(), stats.toArray(new String[][]{}));
@@ -233,12 +232,12 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
     }
 
     public void doPositiveCancelClick() {
-        GPSLogDAO gpslogDAO = new GPSLogDAO(databaseHelper);
+        GPSLogDAO gpslogDAO = new GPSLogDAO();
         gpslogDAO.deleteGPSLogbyLerRowId(ler.get_id());
         Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.gps_log_detail_deleted),
                 Toast.LENGTH_SHORT).show();
         if (deleteDetailType == 1) {
-            leDAO = new LocationExerciseDAO(databaseHelper);
+            leDAO = new LocationExerciseDAO();
             leDAO.deleteLocationExercise(ler);
             Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.activity_deleted), Toast.LENGTH_SHORT)
                     .show();
@@ -256,7 +255,7 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
      * summary
      */
     private void loadActivityRecords() {
-        leDAO = new LocationExerciseDAO(databaseHelper);
+        leDAO = new LocationExerciseDAO();
         ler = leDAO.loadLocationExerciseRecordById(locationExerciseId);
         if (ler.get_id() < 1) {
             Toast.makeText(
@@ -272,8 +271,7 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
     }
 
     public void formatActivityStats() {
-        Utility.formatActivityStats(getActivity(), stats, ler, imperialMetric, imperial, feetMeters, milesKm, mphKph);
-
+        Utility.formatActivityStats(getActivity(), stats, ler);
     }
 
     public float calcMaxSpeedToPoint(Long lerId) {

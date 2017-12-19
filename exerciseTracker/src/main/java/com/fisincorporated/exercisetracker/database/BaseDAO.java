@@ -5,13 +5,20 @@ import android.database.sqlite.SQLiteDatabase;
 
 public abstract class BaseDAO {
  // Database fields
-	protected SQLiteDatabase database = null;
-	protected TrackerDatabaseHelper dbHelper = null;
-	protected boolean dbIsOpen = false;
- 
+	protected static SQLiteDatabase database = null;
+	protected static TrackerDatabaseHelper dbHelper = null;
+	protected static boolean dbIsOpen = false;
+
+	protected BaseDAO() {
+		if(dbHelper == null) {
+			dbHelper = TrackerDatabaseHelper.getTrackerDatabaseHelper();
+		}
+	}
 	public void open() throws SQLException {
-		database = dbHelper.getWritableDatabase();
-		dbIsOpen = true;
+		if (database == null || !database.isOpen()) {
+			database = dbHelper.getWritableDatabase();
+			dbIsOpen = true;
+		}
 	}
  
 //	public void close() {
@@ -26,10 +33,10 @@ public abstract class BaseDAO {
 //					+ e.toString());
 //		}
 //	}
-	public void finalize(){
-		if (database != null){
-			database.close();
-		}
-	}
+//	public void finalize(){
+//		if (database != null){
+//			database.close();
+//		}
+//	}
 
 }

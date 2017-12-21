@@ -291,5 +291,7 @@
     <string name="an_error_occured_in_mapping_gps_route">Sorry - an error occurred in mapping the GPS route.</string>
     <string name="current_location">Current Location</string>
     <string name="end">End</string>
+    <string name="error_get_photos_for_activity">Oops. An error occurred getting any photos for this activity.</string>
+    <string name="photo_points">Photo Points</string>
 
 </resources>

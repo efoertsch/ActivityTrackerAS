@@ -71,4 +71,6 @@ public class GlobalValues {
 
 	public static final String DISPLAY_UNITS_PREFERENCE_KEY = "DISPLAY_UNITS_PREFERENCE_KEY";
 
+	public static final String PHOTO_POINTS = "PHOTO_POINTS";
+	public static final String PHOTO_POINT_INDEX = "PHOTO_POINT_INDEX";
 }

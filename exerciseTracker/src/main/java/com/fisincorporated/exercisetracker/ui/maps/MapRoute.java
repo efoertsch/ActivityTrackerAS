@@ -1,6 +1,7 @@
 package com.fisincorporated.exercisetracker.ui.maps;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -14,7 +15,9 @@ import com.fisincorporated.exercisetracker.database.ExerciseRecord;
 import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.GPSLog;
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
+import com.fisincorporated.exercisetracker.ui.photos.PhotoGridPagerActivity;
 import com.fisincorporated.exercisetracker.ui.utils.DisplayUnits;
+import com.fisincorporated.exercisetracker.utility.PhotoUtils;
 import com.fisincorporated.exercisetracker.utility.Utility;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -22,10 +25,13 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.util.ArrayList;
 
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -33,7 +39,7 @@ import io.reactivex.disposables.CompositeDisposable;
 
 
 
-public class MapRoute {
+public class MapRoute implements GoogleMap.OnMarkerClickListener {
 
     private static String TAG = MapRoute.class.getSimpleName();
 
@@ -43,6 +49,7 @@ public class MapRoute {
     private LocationExerciseRecord ler;
     private boolean useCurrentLocationLabel;
     private Cursor cursor;
+    private int mapType;
 
     private ExerciseRecord er;
 
@@ -62,8 +69,10 @@ public class MapRoute {
     private float[] distanceBetweenPoints = {0f};
     private String distanceUnits = "";
 
-    // maptype must be GoogleMap.MAP_TYPE_HYBRID, _SATELLITE, ...
-    private int mapType;
+    // TODO set groupTime per exercise - currently 3 minutes
+    int groupTime = 3 * 60 * 1000;
+    ArrayList<PhotoDetail> photoDetailList = new ArrayList<>();
+    ArrayList<PhotoPoint> photoPoints = new ArrayList<>();
 
     CompositeDisposable compositeDisposable = new CompositeDisposable();
 
@@ -143,7 +152,7 @@ public class MapRoute {
         Single<ExerciseRecord> observable = TrackerDatabaseHelper.getErSingleObservable(ler.getExerciseId());
         compositeDisposable.add(observable.subscribe(exerciseRecord -> {
                     er = exerciseRecord;
-                    startPlotting();
+                    getPhotosTaken();
                 },
                 throwable -> {
                     Toast.makeText(context, R.string.error_reading_exercise_record, Toast.LENGTH_LONG).show();
@@ -152,6 +161,7 @@ public class MapRoute {
     }
 
 
+    // TODO get intial value from preferences, store any change to map type to preference
     public void setMapType(int mapType) {
         if (googleMap != null) {
             googleMap.setMapType(mapType);
@@ -203,8 +213,13 @@ public class MapRoute {
         LatLng toLatLng;
         int latIndex;
         int longIndex;
+        long fromTime;
+        long toTime;
         int elevationIndex;
         int timestampIndex;
+        int photoStartIndex = 0;
+        photoPoints.clear();
+
 
         if (csr.getCount() == 0 || csr.getCount() == 1) {
             return;
@@ -217,15 +232,19 @@ public class MapRoute {
             assignDistancePerPin();
             csr.moveToFirst();
             fromLatLng = new LatLng(csr.getDouble(latIndex), csr.getDouble(longIndex));
+            fromTime = Timestamp.valueOf(csr.getString(timestampIndex)).getTime();
             csr.moveToNext();
             while (!csr.isAfterLast()) {
                 toLatLng = new LatLng(csr.getDouble(latIndex), csr.getDouble(longIndex));
+                toTime = Timestamp.valueOf(csr.getString(timestampIndex)).getTime();
                 googleMap.addPolyline(new PolylineOptions().add(fromLatLng, toLatLng)
                         .width(5).color(Color.RED));
                 // determine if you need to display mileage pin
                 calcDistanceToPlacePin(fromLatLng, toLatLng, googleMap);
                 findGpsCorners(toLatLng);
+                photoStartIndex = setPhotoMarkers(fromLatLng, fromTime, toTime, groupTime,  photoStartIndex);
                 fromLatLng = toLatLng;
+                fromTime = toTime;
                 csr.moveToNext();
             }
             LatLng southwest = new LatLng(swLat, swLong);
@@ -234,9 +253,81 @@ public class MapRoute {
             googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds(
                     southwest, northeast), 500, 500, 0));
 
-            // cursor closed by LoadManager
-            // csr.close();
+            placePhotoPoints();
+
         }
+    }
+
+    private  int setPhotoMarkers(LatLng atLatLng, long fromTime, long toTime, int groupTime, int  photoStartIndex) {
+        Log.d(TAG, "Starting at photo" + photoStartIndex + " fromTime: " + fromTime + " toTime:" + toTime);
+        int photoPointsSize = 0;
+        long photoDate;
+        for (int i = photoStartIndex ; i < photoDetailList.size(); i++) {
+            photoPointsSize = photoPoints.size();
+            photoDate = photoDetailList.get(i).getDateTaken();
+            // Photo taken within groupTime and first photo that meets that criteria
+            if ((photoPointsSize == 0 && photoDate >= fromTime && photoDate <= (fromTime + groupTime) )
+                    // or photo taken within the groupTime period
+                || (photoPointsSize > 0 && photoDate >= photoPoints.get(photoPointsSize - 1).getTime() &&
+                    photoDate <= photoPoints.get(photoPointsSize - 1).getTime() + groupTime)
+                    // or photo first in new group
+                    || (photoDate >= fromTime && photoDate <= (fromTime + groupTime))
+                    // or GPS lost signal and toTime is greater than fromTime + groupTime so add to existing group
+                    || (photoDate >= fromTime && photoDate <= toTime)) {
+                addPhotoDetailToPhotoPoint(photoDetailList.get(i), atLatLng, fromTime, toTime, groupTime);
+                Log.d(TAG, "Adding photo " + i + "  fromTime: " + fromTime + " toTime:" + toTime + " photoTime:"
+                        + photoDetailList.get(i).getDateTaken()
+                        + " group:" + photoPoints.size() );
+                ++photoStartIndex;
+            }
+        }
+        return photoStartIndex;
+    }
+
+    private void addPhotoDetailToPhotoPoint(PhotoDetail photoDetail, LatLng latLng, long fromTime, long toTime,  int groupTime){
+        if (photoPoints.size() == 0){
+            addNewPhotoPoint(photoDetail, latLng, fromTime);
+        } else {
+            PhotoPoint photoPoint = photoPoints.get(photoPoints.size() - 1);
+            // see if photo can go into current group or start new group
+            if ((photoDetail.getDateTaken() <= photoPoint.getTime() + groupTime)
+                    || photoDetail.getDateTaken() >= fromTime && photoDetail.getDateTaken() <= toTime ){
+                photoPoint.addPhotoDetail(photoDetail);
+            } else {
+                // add photo to new group
+                addNewPhotoPoint(photoDetail, latLng, fromTime);
+            }
+        }
+    }
+
+    private void addNewPhotoPoint(PhotoDetail photoDetail, LatLng latLng, long fromTime) {
+        PhotoPoint photoPoint = PhotoPoint.getInstance(fromTime, latLng);
+        photoPoint.addPhotoDetail(photoDetail);
+        photoPoints.add(photoPoint);
+    }
+
+    private void placePhotoPoints() {
+        if (photoPoints.size() > 0 ) {
+            googleMap.setOnMarkerClickListener(this);
+        }
+        for (int i = 0; i < photoPoints.size(); ++i){
+            Marker marker = googleMap.addMarker(new MarkerOptions()
+                    .position(photoPoints.get(i).getLatlng())
+                    .title("P"));
+            marker.setTag(i);
+
+        }
+    }
+
+    /** Called when the user clicks a marker. */
+    @Override
+    public boolean onMarkerClick(final Marker marker) {
+        Integer photoPoint = (Integer) marker.getTag();
+        Intent intent = new Intent(context, PhotoGridPagerActivity.class);
+        intent.putExtra(GlobalValues.PHOTO_POINTS,photoPoints);
+        intent.putExtra(GlobalValues.PHOTO_POINT_INDEX, photoPoint);
+        context.startActivity(intent);
+        return true;
     }
 
     private void assignDistancePerPin() {
@@ -297,6 +388,33 @@ public class MapRoute {
             neLong = gpsLatLng.longitude;
         }
 
+    }
+
+
+    public void getPhotosTaken() {
+        long startTimeLong;
+        long endTimeLong;
+        startTimeLong = ler.getStartTimestamp().getTime();
+        endTimeLong = ler.getEndTimestamp().getTime();
+        compositeDisposable.add(getPhotoDetailListObservable(context, startTimeLong, endTimeLong)
+                .onErrorReturn(throwable -> {
+                            Toast.makeText(context, R.string.error_get_photos_for_activity, Toast.LENGTH_LONG).show();
+                            return new ArrayList<>();
+                        }
+                )
+                .subscribe(photoList -> {
+                            MapRoute.this.photoDetailList = photoList;
+                            startPlotting();
+                        },
+                        throwable -> {
+                            Toast.makeText(context, R.string.error_get_photos_for_activity, Toast.LENGTH_LONG).show();
+                        }));
+    }
+
+    private Single<ArrayList<PhotoDetail>> getPhotoDetailListObservable(Context context, Long startTime, Long endTime) {
+        return Single.create(emitter -> {
+            emitter.onSuccess(PhotoUtils.getPhotosTaken(context, startTime, endTime));
+        });
     }
 
     public void onTerminate() {

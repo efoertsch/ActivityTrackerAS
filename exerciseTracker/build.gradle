@@ -72,8 +72,9 @@ dependencies {
     // For charting
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
 
-    // For photos
-    compile 'com.github.bumptech.glide:glide:3.7.0'
+    // Glide for photos
+    compile 'com.github.bumptech.glide:glide:3.8.0'
+
 
     // Facebook - TODO - reincorporate
     compile 'com.facebook.android:facebook-android-sdk:4.7.0'

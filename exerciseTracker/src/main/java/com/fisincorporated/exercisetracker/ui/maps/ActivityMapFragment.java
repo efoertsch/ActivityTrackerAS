@@ -297,7 +297,7 @@ public class ActivityMapFragment extends ExerciseMasterFragment implements
                         GPSLog.LATITUDE, GPSLog.LONGITUDE, GPSLog.ELEVATION, GPSLog.TIMESTAMP},
                 GPSLog.LOCATION_EXERCISE_ID + " = ?",
                 new String[]{locationExerciseId + ""}, null, null,
-                GPSLog.TIMESTAMP);
+               GPSLog.TIMESTAMP + " ASC");
         return csrUtility;
     }
 

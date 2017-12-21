@@ -219,15 +219,30 @@
                 android:value="splitActionBarWhenNarrow"/>
         </activity>
 
+        <activity
+            android:name=".ui.photos.PhotoGridPagerActivity"
+            android:parentActivityName=".ui.startup.ExerciseDrawerActivity"
+            android:uiOptions="splitActionBarWhenNarrow">
+
+            <!-- Parent activity meta-data to support API level 7+ -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.startup.ExerciseDrawerActivity"/>
+            <meta-data
+                android:name="android.support.UI_OPTIONS"
+                android:value="splitActionBarWhenNarrow"/>
+        </activity>
 
 
 
+        <!-- TODO reimplement
         <activity android:name=".facebook.FacebookPostStatsActivity"/>
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+        -->
 
 
 

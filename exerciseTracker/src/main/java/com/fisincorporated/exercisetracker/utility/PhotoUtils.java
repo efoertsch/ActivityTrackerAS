@@ -17,12 +17,14 @@ import android.widget.ImageView;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
+import com.fisincorporated.exercisetracker.ui.maps.PhotoDetail;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 
 public class PhotoUtils {
@@ -237,6 +239,41 @@ public class PhotoUtils {
 
     public static int getScreenHeight() {
         return Resources.getSystem().getDisplayMetrics().heightPixels;
+    }
+
+
+    public static ArrayList<PhotoDetail> getPhotosTaken(Context context, Long startTime, Long endTime) {
+        ArrayList<PhotoDetail> photosTaken = new ArrayList<>();
+        if (startTime != null && endTime != null){
+            Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+            Cursor cursor;
+            String[] projection = {MediaStore.MediaColumns.DATA,
+                    MediaStore.Images.Media.LATITUDE, MediaStore.Images.Media.LONGITUDE, MediaStore.Images.Media.DATE_TAKEN};
+            String selection = MediaStore.Images.Media.DATE_TAKEN + " >= ? and " + MediaStore.Images.Media.DATE_TAKEN + " <=  ?";
+            String[] selectionArgs = {startTime.toString(), endTime.toString()};
+//            String selection = null;
+//            String[] selectionArgs = null;
+
+
+            String orderBy = MediaStore.Images.Media.DATE_TAKEN;
+
+            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, orderBy + " ASC");
+
+            int pathIndex = cursor.getColumnIndex(MediaStore.MediaColumns.DATA);
+            int latitudeIndex = cursor.getColumnIndex(MediaStore.Images.Media.LATITUDE);
+            int longitudeIndex = cursor.getColumnIndex(MediaStore.Images.Media.LONGITUDE);
+            int dateTakenIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN);
+
+            while (cursor.moveToNext()) {
+                PhotoDetail photoDetail = new PhotoDetail().setPhotoPath(cursor.getString(pathIndex))
+                        .setDateTaken(Long.parseLong(cursor.getString(dateTakenIndex)))
+                        .setLatitude(cursor.getString(latitudeIndex))
+                        .setLongitude(cursor.getString(longitudeIndex));
+                photosTaken.add(photoDetail);
+            }
+            cursor.close();
+        }
+        return photosTaken;
     }
 
 }

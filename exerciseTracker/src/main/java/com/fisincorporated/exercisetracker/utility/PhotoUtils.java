@@ -24,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 
@@ -251,13 +252,9 @@ public class PhotoUtils {
                     MediaStore.Images.Media.LATITUDE, MediaStore.Images.Media.LONGITUDE, MediaStore.Images.Media.DATE_TAKEN};
             String selection = MediaStore.Images.Media.DATE_TAKEN + " >= ? and " + MediaStore.Images.Media.DATE_TAKEN + " <=  ?";
             String[] selectionArgs = {startTime.toString(), endTime.toString()};
-//            String selection = null;
-//            String[] selectionArgs = null;
+            String orderBy = MediaStore.Images.Media.DATE_TAKEN + " ASC";
 
-
-            String orderBy = MediaStore.Images.Media.DATE_TAKEN;
-
-            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, orderBy + " ASC");
+            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, orderBy);
 
             int pathIndex = cursor.getColumnIndex(MediaStore.MediaColumns.DATA);
             int latitudeIndex = cursor.getColumnIndex(MediaStore.Images.Media.LATITUDE);
@@ -266,10 +263,14 @@ public class PhotoUtils {
 
             while (cursor.moveToNext()) {
                 PhotoDetail photoDetail = new PhotoDetail().setPhotoPath(cursor.getString(pathIndex))
-                        .setDateTaken(Long.parseLong(cursor.getString(dateTakenIndex)))
+                        .setDateTaken(Long.parseLong(cursor.getString(dateTakenIndex)) - 2 * 60 * 60 * 1000)
                         .setLatitude(cursor.getString(latitudeIndex))
                         .setLongitude(cursor.getString(longitudeIndex));
                 photosTaken.add(photoDetail);
+                Log.d(TAG, " Photo:" + photoDetail.getPhotoPath()
+                        + " Adjusted Time:" + new Timestamp(photoDetail.getDateTaken())
+                        + " At:" + photoDetail.getLatitude() + ":" + photoDetail.getLongitude());
+
             }
             cursor.close();
         }

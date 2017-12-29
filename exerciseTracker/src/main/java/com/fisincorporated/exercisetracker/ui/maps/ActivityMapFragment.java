@@ -107,6 +107,7 @@ public class ActivityMapFragment extends ExerciseMasterFragment implements
         setHasOptionsMenu(true);
         getReferencedViews(view);
         logicPath = FOR_MAP_PLOT;
+        createMap();
         return view;
     }
 
@@ -122,15 +123,19 @@ public class ActivityMapFragment extends ExerciseMasterFragment implements
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
+    public void createMap(){
         checkForGooglePlayServices();
         if (ler == null) {
             loadLocationExerciseRecord(locationExerciseId);
         } else {
             restartCursorLoader();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
     }
 
     @Override

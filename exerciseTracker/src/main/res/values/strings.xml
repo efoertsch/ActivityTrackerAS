@@ -293,5 +293,8 @@
     <string name="end">End</string>
     <string name="error_get_photos_for_activity">Oops. An error occurred getting any photos for this activity.</string>
     <string name="photo_points">Photo Points</string>
+    <string name="photos">Photos</string>
+
+    <string name="activity_fullscreen_photo">Photo</string>
 
 </resources>

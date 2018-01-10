@@ -8,7 +8,6 @@ import android.widget.FrameLayout;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
-import com.fisincorporated.exercisetracker.ui.maps.PhotoPoint;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
 import com.fisincorporated.exercisetracker.ui.utils.DepthPageTransformer;
 
@@ -19,6 +18,7 @@ public class PhotoGridPagerActivity extends ExerciseMasterFragmentActivity {
     private ViewPager viewPager;
     private ArrayList<PhotoPoint> photoPoints;
     private int photoPointIndex = 0;
+    private String title = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,12 +53,14 @@ public class PhotoGridPagerActivity extends ExerciseMasterFragmentActivity {
         }
         setActivityTitle(R.string.photo_points);
         setPhotoGrid(photoPointIndex);
+        setActivityTitle(title);
     }
 
     private void getPhotoPointsFromIntent() {
         Intent intent = getIntent();
         photoPointIndex = intent.getIntExtra(GlobalValues.PHOTO_POINT_INDEX, 0);
         photoPoints = intent.getParcelableArrayListExtra(GlobalValues.PHOTO_POINTS);
+        title = intent.getStringExtra(GlobalValues.TITLE);
     }
 
     @Override
@@ -67,7 +69,6 @@ public class PhotoGridPagerActivity extends ExerciseMasterFragmentActivity {
     }
 
     public void setPhotoGrid(int position){
-
         viewPager.setAdapter(new PhotoGridPagerAdapter<>(
                 getSupportFragmentManager(),PhotoGridFragment.class,
                 photoPoints));

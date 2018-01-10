@@ -33,6 +33,7 @@ import com.fisincorporated.exercisetracker.database.TrackerDatabase.GPSLog;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
+import com.fisincorporated.exercisetracker.ui.photos.PhotoDetail;
 import com.fisincorporated.exercisetracker.ui.utils.ActivityDialogFragment;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -40,13 +41,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
 
-public class ActivityMapFragment extends ExerciseMasterFragment implements
-        LoaderCallbacks<Cursor> {
+public class ActivityMapFragment extends ExerciseMasterFragment implements LoaderCallbacks<Cursor>,
+        MapRoute.ActivityPhotosCallback {
     public static final String USE_CURRENT_LOCATION_LABEL = "ActivityMapFragment.CURRENT_LOCATION_LABEL";
     private static final int DELETE_REQUESTCODE = 1;
     private LocationExerciseRecord ler = null;
@@ -68,11 +70,11 @@ public class ActivityMapFragment extends ExerciseMasterFragment implements
     private int logicPath;
 
     private TextView tvInfo;
-
     private GoogleMap map;
     //private MapFragment mapFragment = null;
     private SupportMapFragment supportMapFragment = null;
     private MapRoute mapRoute;
+    private ArrayList<PhotoDetail> photoDetails;
     // maptype must be GoogleMap.MAP_TYPE_HYBRID, _SATELLITE, ...
     private int mapType;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -274,6 +276,14 @@ public class ActivityMapFragment extends ExerciseMasterFragment implements
         getLoaderManager().restartLoader(GlobalValues.MAP_LOADER, null, this);
     }
 
+    // MapRoute.ActivityPhotosCallback
+    @Override
+    public void photoList(ArrayList<PhotoDetail> photoDetails) {
+        if (photoDetails != null && photoDetails.size() > 0) {
+            this.photoDetails = photoDetails;
+        }
+    }
+
     private static class GPSPointsCursorLoader extends SQLiteCursorLoader {
         ActivityMapFragment am;
 
@@ -323,7 +333,9 @@ public class ActivityMapFragment extends ExerciseMasterFragment implements
         builder.setLocationExerciseRecord(ler)
                 .setMapType(mapType)
                 .setUseCurrentLocationLabel(useCurrentLocationLabel)
-                .setCursor(csr);
+                .setCursor(csr)
+                .setTitle(activityTitle)
+                .setActivityPhotosCallback(this);
         mapRoute = builder.build();
         mapRoute.plotGpsRoute();
     }

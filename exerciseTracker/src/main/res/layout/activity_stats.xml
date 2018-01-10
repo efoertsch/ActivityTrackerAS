@@ -2,7 +2,7 @@
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-
+                android:animateLayoutChanges="true"
                 android:orientation="vertical">
 
     <TextView
@@ -44,20 +44,35 @@
             android:id="@+id/activity_detail_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_double"
+            android:layout_marginStart="@dimen/margin_triple"
             android:clickable="true"
             android:isScrollContainer="true"
-            android:layout_marginStart="@dimen/margin_triple"
-            android:layout_marginEnd="@dimen/margin_double"
             android:scrollbarAlwaysDrawVerticalTrack="true"
             android:scrollbars="vertical"/>
     </RelativeLayout>
 
+
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabMap"
+        android:id="@+id/activity_detail_photos_fab"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="16dp"
+        android:scaleType="center"
+        android:src="@drawable/ic_photo_black_48dp"
+
+        app:backgroundTint="@color/fab_background"
+        app:elevation="4dp"/>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/activity_detail_map_fab"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
         android:layout_margin="16dp"
         android:scaleType="center"
         android:src="@drawable/ic_device_gps_fixed"

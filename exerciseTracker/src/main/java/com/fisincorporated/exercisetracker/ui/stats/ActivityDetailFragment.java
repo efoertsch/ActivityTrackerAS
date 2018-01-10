@@ -1,6 +1,7 @@
 package com.fisincorporated.exercisetracker.ui.stats;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -24,12 +25,19 @@ import com.fisincorporated.exercisetracker.database.LocationExerciseDAO;
 import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.GPSLog;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
+import com.fisincorporated.exercisetracker.ui.photos.FullscreenPhotoPagerActivity;
+import com.fisincorporated.exercisetracker.ui.photos.PhotoDetail;
+import com.fisincorporated.exercisetracker.ui.photos.PhotoPoint;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
+import com.fisincorporated.exercisetracker.ui.photos.PhotoGridPagerActivity;
 import com.fisincorporated.exercisetracker.ui.utils.ActivityDialogFragment;
+import com.fisincorporated.exercisetracker.utility.PhotoUtils;
 import com.fisincorporated.exercisetracker.utility.Utility;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+
+import io.reactivex.disposables.CompositeDisposable;
 
 public class ActivityDetailFragment extends ExerciseMasterFragment {
     private static final int DELETE_REQUESTCODE = 1;
@@ -41,6 +49,11 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
     private ArrayList<String[]> stats = new ArrayList<String[]>();
     private int deleteDetailType;
     private String description;
+
+    private ArrayList<PhotoDetail> photoDetails = new ArrayList<>();
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private FloatingActionButton mapFab;
+    private FloatingActionButton photosFab;
 
     /**
      * Pass in the arguments needed by this fragment
@@ -68,8 +81,6 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
         super.onCreate(savedInstanceState);
         // Enable the option menu for the Fragment
         setHasOptionsMenu(true);
-
-
     }
 
     @Override
@@ -79,7 +90,6 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
         getReferencedViews(view);
         lookForArguments(savedInstanceState);
         displayTitle();
-
         loadActivityRecords();
         formatActivityStats();
         StatsArrayAdapter statsArrayAdapter = new StatsArrayAdapter(
@@ -87,18 +97,15 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
         ListView statsList = (ListView) view
                 .findViewById(R.id.activity_detail_list);
         statsList.setAdapter(statsArrayAdapter);
-
+        getPhotosTakenFromStartToFinish();
         return view;
     }
-
 
     private void lookForArguments(Bundle savedInstanceState) {
         Bundle bundle = null;
         if (getArguments() != null) {
             bundle = getArguments();
         }
-// If fragment destroyed as not needed in FragmentStatePagerAdapter
-// but then later recreated, the savedInstanceState will hold info 
         if (savedInstanceState != null && savedInstanceState.containsKey(LocationExercise._ID)) {
             bundle = savedInstanceState;
         }
@@ -106,6 +113,7 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
             locationExerciseId = bundle.getLong(LocationExercise._ID, -1);
             title = bundle.getString(GlobalValues.TITLE);
             description = bundle.getString(LocationExercise.DESCRIPTION);
+            photoDetails = bundle.getParcelableArrayList(GlobalValues.PHOTO_DETAIL_LIST);
         }
 
     }
@@ -115,33 +123,47 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
         savedInstanceState.putLong(LocationExercise._ID, locationExerciseId);
         savedInstanceState.putString(GlobalValues.TITLE, title);
         savedInstanceState.putString(LocationExercise.DESCRIPTION, description);
+        savedInstanceState.putParcelableArrayList(GlobalValues.PHOTO_DETAIL_LIST, photoDetails);
         super.onSaveInstanceState(savedInstanceState);
-
     }
-
 
     private void getReferencedViews(View view) {
         tvExerciseLocation = (TextView) view
                 .findViewById(R.id.activity_detail_tvExerciseLocation);
-        FloatingActionButton fabMap = (FloatingActionButton) view.findViewById(R.id.fabMap);
-        fabMap.setVisibility(View.VISIBLE);
-        fabMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle args = new Bundle();
-                args.putLong(LocationExercise._ID, locationExerciseId);
-                args.putString(GlobalValues.TITLE, title);
-                args.putString(LocationExercise.DESCRIPTION, description);
-                args.putInt(GlobalValues.DISPLAY_TARGET, GlobalValues.DISPLAY_MAP);
-                Toast.makeText(getActivity().getBaseContext(),
-                        getActivity().getResources().getString(R.string.displaying_the_map_may_take_a_moment), Toast.LENGTH_SHORT)
-                        .show();
-                callBacks.onSelectedAction(args);
-            }
+        mapFab = (FloatingActionButton) view.findViewById(R.id.activity_detail_map_fab);
+        mapFab.setVisibility(View.VISIBLE);
+        mapFab.setOnClickListener(v -> {
+            Bundle args = new Bundle();
+            args.putLong(LocationExercise._ID, locationExerciseId);
+            args.putString(GlobalValues.TITLE, title);
+            args.putString(LocationExercise.DESCRIPTION, description);
+            args.putInt(GlobalValues.DISPLAY_TARGET, GlobalValues.DISPLAY_MAP);
+            Toast.makeText(getActivity().getBaseContext(),
+                    getActivity().getResources().getString(R.string.displaying_the_map_may_take_a_moment), Toast.LENGTH_SHORT)
+                    .show();
+            callBacks.onSelectedAction(args);
         });
-
+        photosFab = (FloatingActionButton) view.findViewById(R.id.activity_detail_photos_fab);
+        photosFab.setOnClickListener(v -> {
+            Intent intent;
+            if (photoDetails.size() == 1) {
+                intent = new Intent(getContext(), FullscreenPhotoPagerActivity.class);
+                intent.putExtra(GlobalValues.PHOTO_DETAIL_LIST, photoDetails);
+            } else {
+                PhotoPoint photoPoint = PhotoPoint.getInstance(0, null);
+                photoPoint.setPhotoDetails(photoDetails);
+                ArrayList<PhotoPoint> photoPoints = new ArrayList<>();
+                photoPoints.add(photoPoint);
+                intent = new Intent(getContext(), PhotoGridPagerActivity.class);
+                intent.putExtra(GlobalValues.TITLE, title);
+                intent.putExtra(GlobalValues.PHOTO_POINTS, photoPoints);
+                intent.putExtra(GlobalValues.PHOTO_POINT_INDEX, 0);
+            }
+            startActivity(intent);
+        });
     }
 
+    @Override
     public void onResume() {
         super.onResume();
     }
@@ -155,14 +177,13 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
             inflater.inflate(R.menu.activity_detail_for_tablet, menu);
         }
         MenuItem showMap = menu.findItem(R.id.activity_detail_showMap);
-        if (showMap != null){
+        if (showMap != null) {
             showMap.setVisible(false);
         }
 
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-
         ActivityDialogFragment dialog;
         Bundle args = new Bundle();
         switch (item.getItemId()) {
@@ -321,9 +342,42 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
         return maxSpeedToPoint;
     }
 
+    @Override
     public void onDestroy() {
         Log.i(GlobalValues.LOG_TAG, "ActivityDetailFragment.onDestroy. Has close error occurred yet?");
+        compositeDisposable.dispose();
         super.onDestroy();
+    }
+
+    private void getPhotosTakenFromStartToFinish() {
+        long startTimeLong;
+        long endTimeLong;
+        startTimeLong = ler.getStartTimestamp().getTime();
+        endTimeLong = ler.getEndTimestamp().getTime();
+        getPhotosTaken(getContext(), startTimeLong, endTimeLong);
+    }
+
+    private void getPhotosTaken(Context context, long startTime, long endTime) {
+        compositeDisposable.add(PhotoUtils.getPhotoDetailListObservable(context, startTime, endTime)
+                .onErrorReturn(throwable -> {
+                            Toast.makeText(context, R.string.error_get_photos_for_activity, Toast.LENGTH_LONG).show();
+                            return new ArrayList<>();
+                        }
+                )
+                .subscribe(photoList -> {
+                            displayPhotoFab(photoList);
+                        },
+                        throwable -> {
+                            Toast.makeText(context, R.string.error_get_photos_for_activity, Toast.LENGTH_LONG).show();
+                        }));
+    }
+
+    private void displayPhotoFab(ArrayList<PhotoDetail> photoList) {
+        photoDetails = photoList;
+        if (photoDetails != null && photoDetails.size() > 0) {
+            photosFab.setVisibility(View.VISIBLE);
+        }
+
     }
 
 }

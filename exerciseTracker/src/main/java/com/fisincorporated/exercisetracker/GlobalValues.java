@@ -73,4 +73,6 @@ public class GlobalValues {
 
 	public static final String PHOTO_POINTS = "PHOTO_POINTS";
 	public static final String PHOTO_POINT_INDEX = "PHOTO_POINT_INDEX";
+    public static final String PHOTO_DETAIL_LIST = "PHOTO_DETAIL_LIST";
+    public static final String PHOTO_URI = "PHOTO_URI" ;
 }

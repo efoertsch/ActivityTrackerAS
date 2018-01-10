@@ -8,7 +8,6 @@ import android.widget.GridView;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
-import com.fisincorporated.exercisetracker.ui.maps.PhotoDetail;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
 
 import java.util.ArrayList;

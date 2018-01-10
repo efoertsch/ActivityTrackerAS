@@ -3,6 +3,8 @@ package com.fisincorporated.exercisetracker.application;
 import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.bumptech.glide.request.target.ViewTarget;
+import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 import com.fisincorporated.exercisetracker.ui.utils.DisplayUnits;
 
@@ -21,6 +23,9 @@ public class ActivityTrackerApplication extends Application {
         getDatabaseSetup();
         setupDisplayUnits();
         activityTrackerApplication = this;
+
+        // To be able to use setTag with Glide
+        ViewTarget.setTagId(R.id.glide_tag);
     }
 
     private void setupDisplayUnits() {

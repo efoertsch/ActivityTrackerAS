@@ -17,9 +17,9 @@ import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.ui.startactivity.StartExercise;
 import com.fisincorporated.exercisetracker.utility.PhotoUtils;
 
-public class PhotoFragment extends Fragment {
+public class StartupPhotoFragment extends Fragment {
 
-    private static final String TAG = PhotoFragment.class.getSimpleName();
+    private static final String TAG = StartupPhotoFragment.class.getSimpleName();
 
     private View view;
     private ImageView imageView;

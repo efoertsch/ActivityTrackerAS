@@ -119,7 +119,7 @@ public class ExerciseDrawerActivity  extends AppCompatActivity  {
     }
 
     private void displayPhotoFragment() {
-        Fragment fragment = new PhotoFragment();
+        Fragment fragment = new StartupPhotoFragment();
         displayFragment(fragment);
     }
 

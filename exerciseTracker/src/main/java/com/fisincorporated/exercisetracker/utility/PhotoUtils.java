@@ -17,7 +17,7 @@ import android.widget.ImageView;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
-import com.fisincorporated.exercisetracker.ui.maps.PhotoDetail;
+import com.fisincorporated.exercisetracker.ui.photos.PhotoDetail;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+
+import io.reactivex.Single;
 
 
 public class PhotoUtils {
@@ -242,6 +244,11 @@ public class PhotoUtils {
         return Resources.getSystem().getDisplayMetrics().heightPixels;
     }
 
+    public static Single<ArrayList<PhotoDetail>> getPhotoDetailListObservable(Context context, Long startTime, Long endTime) {
+        return Single.create(emitter -> {
+            emitter.onSuccess(PhotoUtils.getPhotosTaken(context, startTime, endTime));
+        });
+    }
 
     public static ArrayList<PhotoDetail> getPhotosTaken(Context context, Long startTime, Long endTime) {
         ArrayList<PhotoDetail> photosTaken = new ArrayList<>();
@@ -263,12 +270,12 @@ public class PhotoUtils {
 
             while (cursor.moveToNext()) {
                 PhotoDetail photoDetail = new PhotoDetail().setPhotoPath(cursor.getString(pathIndex))
-                        .setDateTaken(Long.parseLong(cursor.getString(dateTakenIndex)) - 2 * 60 * 60 * 1000)
+                        .setDateTaken(Long.parseLong(cursor.getString(dateTakenIndex)) )
                         .setLatitude(cursor.getString(latitudeIndex))
                         .setLongitude(cursor.getString(longitudeIndex));
                 photosTaken.add(photoDetail);
                 Log.d(TAG, " Photo:" + photoDetail.getPhotoPath()
-                        + " Adjusted Time:" + new Timestamp(photoDetail.getDateTaken())
+                        + " Time:" + new Timestamp(photoDetail.getDateTaken())
                         + " At:" + photoDetail.getLatitude() + ":" + photoDetail.getLongitude());
 
             }

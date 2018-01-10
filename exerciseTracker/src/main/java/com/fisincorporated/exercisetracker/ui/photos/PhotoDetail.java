@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker.ui.maps;
+package com.fisincorporated.exercisetracker.ui.photos;
 
 
 import android.os.Parcel;
@@ -46,8 +46,6 @@ public class PhotoDetail implements Parcelable {
     public String getLongitude() {
         return longitude;
     }
-
-
 
     @Override
     public int describeContents() {

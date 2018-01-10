@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker.ui.maps;
+package com.fisincorporated.exercisetracker.ui.photos;
 
 
 import android.os.Parcel;

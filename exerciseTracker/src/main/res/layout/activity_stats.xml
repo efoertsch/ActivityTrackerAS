@@ -62,10 +62,9 @@
         android:layout_margin="16dp"
         android:scaleType="center"
         android:src="@drawable/ic_photo_black_48dp"
-
+        android:visibility="gone"
         app:backgroundTint="@color/fab_background"
         app:elevation="4dp"/>
-
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/activity_detail_map_fab"

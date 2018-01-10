@@ -17,12 +17,17 @@ import android.widget.ImageView;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
+import com.fisincorporated.exercisetracker.ui.photos.PhotoDetail;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+
+import io.reactivex.Single;
 
 
 public class PhotoUtils {
@@ -237,6 +242,46 @@ public class PhotoUtils {
 
     public static int getScreenHeight() {
         return Resources.getSystem().getDisplayMetrics().heightPixels;
+    }
+
+    public static Single<ArrayList<PhotoDetail>> getPhotoDetailListObservable(Context context, Long startTime, Long endTime) {
+        return Single.create(emitter -> {
+            emitter.onSuccess(PhotoUtils.getPhotosTaken(context, startTime, endTime));
+        });
+    }
+
+    public static ArrayList<PhotoDetail> getPhotosTaken(Context context, Long startTime, Long endTime) {
+        ArrayList<PhotoDetail> photosTaken = new ArrayList<>();
+        if (startTime != null && endTime != null){
+            Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+            Cursor cursor;
+            String[] projection = {MediaStore.MediaColumns.DATA,
+                    MediaStore.Images.Media.LATITUDE, MediaStore.Images.Media.LONGITUDE, MediaStore.Images.Media.DATE_TAKEN};
+            String selection = MediaStore.Images.Media.DATE_TAKEN + " >= ? and " + MediaStore.Images.Media.DATE_TAKEN + " <=  ?";
+            String[] selectionArgs = {startTime.toString(), endTime.toString()};
+            String orderBy = MediaStore.Images.Media.DATE_TAKEN + " ASC";
+
+            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, orderBy);
+
+            int pathIndex = cursor.getColumnIndex(MediaStore.MediaColumns.DATA);
+            int latitudeIndex = cursor.getColumnIndex(MediaStore.Images.Media.LATITUDE);
+            int longitudeIndex = cursor.getColumnIndex(MediaStore.Images.Media.LONGITUDE);
+            int dateTakenIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN);
+
+            while (cursor.moveToNext()) {
+                PhotoDetail photoDetail = new PhotoDetail().setPhotoPath(cursor.getString(pathIndex))
+                        .setDateTaken(Long.parseLong(cursor.getString(dateTakenIndex)) )
+                        .setLatitude(cursor.getString(latitudeIndex))
+                        .setLongitude(cursor.getString(longitudeIndex));
+                photosTaken.add(photoDetail);
+                Log.d(TAG, " Photo:" + photoDetail.getPhotoPath()
+                        + " Time:" + new Timestamp(photoDetail.getDateTaken())
+                        + " At:" + photoDetail.getLatitude() + ":" + photoDetail.getLongitude());
+
+            }
+            cursor.close();
+        }
+        return photosTaken;
     }
 
 }

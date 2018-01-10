@@ -34,6 +34,7 @@ import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
 import com.fisincorporated.exercisetracker.ui.utils.ActivityDialogFragment;
+import com.fisincorporated.exercisetracker.ui.utils.DisplayUnits;
 import com.fisincorporated.exercisetracker.utility.Utility;
 
 import java.text.DecimalFormat;
@@ -78,7 +79,6 @@ public class ExerciseMaintenanceDetailFragment extends ExerciseMasterFragment {
         View view;
         view = inflater.inflate(R.layout.exercise_maintanence, container, false);
         lookForArguments(savedInstanceState);
-        findDisplayUnits();
         getMapPinDistanceArray();
         getReferencedViews(view);
         return view;
@@ -131,7 +131,7 @@ public class ExerciseMaintenanceDetailFragment extends ExerciseMasterFragment {
         tvMinDistToTravel = (TextView) view.findViewById(R.id.exercise_maintenance_lblMinDistToTravel);
         etMinDistToTravel = (EditText) view
                 .findViewById(R.id.exercise_maintenance_etMinDistToTravel);
-        etMinDistToTravel.setText(getString(R.string.minimum_distance_to_travel_to_log_gps_points, feetMeters));
+        etMinDistToTravel.setText(getString(R.string.minimum_distance_to_travel_to_log_gps_points, DisplayUnits.getFeetMeters()));
         chkbxElevationInCalcs = (CheckBox) view
                 .findViewById(R.id.exercise_maintenance_chkbxElevationInCalcs);
         etLogInterval.setFilters(new InputFilter[]{new InputFilterMinMax("1",
@@ -299,7 +299,7 @@ public class ExerciseMaintenanceDetailFragment extends ExerciseMasterFragment {
             exerciseRecord.setLogInterval(ExerciseRecord.LOG_INTERVAL);
         }
         try {
-            if (feetMeters.equalsIgnoreCase("m")) {
+            if (!DisplayUnits.isImperialDisplay()) {
                 exerciseRecord.setMinDistanceToLog(Float
                         .parseFloat(etMinDistToTravel.getText().toString()));
             } else {
@@ -311,7 +311,7 @@ public class ExerciseMaintenanceDetailFragment extends ExerciseMasterFragment {
         } catch (NumberFormatException nfe) {
             exerciseRecord.setMinDistanceToLog(ExerciseRecord.MIN_DISTANCE_TO_LOG);
         }
-        exerciseRecord.setElevationInDistCalcs(chkbxElevationInCalcs.isChecked() == true ? 1 : 0);
+        exerciseRecord.setElevationInDistCalcs(chkbxElevationInCalcs.isChecked() ? 1 : 0);
         exerciseRecord.setPinEveryXMiles(mapPinDistances[mapPinDistanceSpinner.getSelectedItemPosition()]);
     }
 
@@ -425,10 +425,7 @@ public class ExerciseMaintenanceDetailFragment extends ExerciseMasterFragment {
             if (csr != null) {
                 try {
                     csr.close();
-                } catch (SQLException sqle) {
-                    ;
-                }
-                ;
+                } catch (SQLException sqle) {}
             }
         }
         if (exerciseRowId > 0)
@@ -445,19 +442,18 @@ public class ExerciseMaintenanceDetailFragment extends ExerciseMasterFragment {
         //chkbxLogDetail.setChecked(exerciseRecord.getLogDetail() == 1 ? true : false);
         etLogInterval.setText("" + exerciseRecord.getLogInterval());
         etDefaultLogInterval.setText("" + exerciseRecord.getDefaultLogInterval());
-        tvMinDistToTravel.setText(getString(R.string.minimum_distance_to_travel_to_log_gps_points,feetMeters));
-        if (feetMeters.equalsIgnoreCase("m")) {
+        tvMinDistToTravel.setText(getString(R.string.minimum_distance_to_travel_to_log_gps_points,DisplayUnits.getFeetMeters()));
+        if (!DisplayUnits.isImperialDisplay()) {
             etMinDistToTravel.setText(new DecimalFormat("#####")
                     .format(exerciseRecord.getMinDistanceToLog()));
         } else
             etMinDistToTravel.setText(new DecimalFormat("#####").format(Utility
                     .metersToFeet(exerciseRecord.getMinDistanceToLog())));
         chkbxElevationInCalcs
-                .setChecked(exerciseRecord.getElevationInDistCalcs() == 1 ? true
-                        : false);
+                .setChecked(exerciseRecord.getElevationInDistCalcs() == 1 );
         etLogInterval.requestFocus();
         etLogInterval.setCursorVisible(true);
-        spinnerLabel.setText(getString(R.string.map_pin_display_mileage_at, milesKm));
+        spinnerLabel.setText(getString(R.string.map_pin_display_mileage_at, DisplayUnits.getMilesKm()));
         setMapPinSpinnerValue();
     }
 

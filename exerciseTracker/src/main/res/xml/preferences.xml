@@ -6,12 +6,13 @@
         android:key="@string/startup_image"
         android:title="@string/select_startup_background"/>
 
+    <!-- key must match to GlobalValues.DISPLAY_UNITS_PREFERENCE_KEY -->
     <ListPreference
         android:defaultValue="@string/imperial"
         android:dialogTitle="@string/display_units"
         android:entries="@array/displayUnits"
         android:entryValues="@array/displayUnits"
-        android:key="@string/display_units"
+        android:key="DISPLAY_UNITS_PREFERENCE_KEY"
         android:summary="%s"
         android:title="@string/display_units"/>
 

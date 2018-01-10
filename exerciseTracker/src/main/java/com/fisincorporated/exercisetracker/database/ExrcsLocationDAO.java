@@ -1,7 +1,5 @@
 package com.fisincorporated.exercisetracker.database;
 
-import java.util.ArrayList;
-
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -12,21 +10,21 @@ import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.ExrcsLocation;
 
-public class ExrcsLocationDAO extends BaseDAO {
-   
+import java.util.ArrayList;
 
-	public ExrcsLocationDAO(TrackerDatabaseHelper dbHelper) {
-		this.dbHelper = dbHelper;
+public class ExrcsLocationDAO extends BaseDAO {
+
+	public ExrcsLocationDAO() {
+		super();
 	}
  
 	/**
 	 * 
-	 * @param exrcsLocationecord
+	 * @param exrcsLocation
 	 * @return exrcsLocationecord For insert the _ID for the record will be
 	 *         assigned after the insert
 	 */
-	public ExrcsLocationRecord createExrcsLocationRecord(
-			ExrcsLocationRecord exrcsLocation) {
+	public ExrcsLocationRecord createExrcsLocationRecord(ExrcsLocationRecord exrcsLocation) {
 		Long rowId = -1l;
 		ContentValues values = new ContentValues();
 		// all fields mandatory fields except for _ID
@@ -52,7 +50,7 @@ public class ExrcsLocationDAO extends BaseDAO {
 
 	/**
 	 * 
-	 * @param ler
+	 * @param exrcsLocation
 	 *           The _id must be assigned in ler prior to calling this method
 	 */
 	public void updateExrcsLocation(ExrcsLocationRecord exrcsLocation) {

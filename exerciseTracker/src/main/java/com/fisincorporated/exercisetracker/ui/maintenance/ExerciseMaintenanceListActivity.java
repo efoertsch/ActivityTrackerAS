@@ -52,7 +52,7 @@ public class ExerciseMaintenanceListActivity extends ExerciseMasterFragmentActiv
             Fragment oldDetail = fm.findFragmentById(R.id.detailFragmentContainer);
             Bundle args = new Bundle();
             args.putParcelable(Exercise.EXERCISE_TABLE,
-                    new ExerciseDAO(databaseHelper).loadExerciseRecordById(exerciseId));
+                    new ExerciseDAO().loadExerciseRecordById(exerciseId));
             args.putInt(GlobalValues.CURSOR_POSITION, position);
             newDetail = ExerciseMaintenanceDetailFragment.newInstance(args);
             if (oldDetail != null) {

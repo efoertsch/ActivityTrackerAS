@@ -40,8 +40,8 @@ public class ExerciseMaintenancePagerActivity extends ExerciseMasterFragmentActi
 
 	public void onResume() {
 		super.onResume();
-		getDatabaseSetup();
-		getSupportLoaderManager().restartLoader(GlobalValues.EXERICSE_PAGER_LOADER, null, this);
+		//getDatabaseSetup();
+		getSupportLoaderManager().restartLoader(GlobalValues.EXERCISE_PAGER_LOADER, null, this);
 	}
 
     @Override

@@ -153,10 +153,10 @@ public class DeleteHistoryFragment extends AbstractActivityHistoryFragment imple
         GPSLocationManager gpsLocationManager = GPSLocationManager.get(getActivity());
         long currentLerId = gpsLocationManager.getCurrentLer();
         if (leDAO == null) {
-            leDAO = new LocationExerciseDAO(databaseHelper);
+            leDAO = new LocationExerciseDAO();
         }
         if (gpslrDAO == null) {
-            gpslrDAO = new GPSLogDAO(databaseHelper);
+            gpslrDAO = new GPSLogDAO();
         }
         database.beginTransaction();
         try {

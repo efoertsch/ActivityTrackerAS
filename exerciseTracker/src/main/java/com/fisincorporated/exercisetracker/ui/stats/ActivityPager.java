@@ -66,7 +66,7 @@ public class ActivityPager extends ExerciseMasterFragmentActivity implements
 	
 	public void onResume(){
 		super.onResume();
-		getDatabaseSetup();
+		//getDatabaseSetup();
 		getSupportLoaderManager().restartLoader(GlobalValues.ACTIVITY_PAGER_LOADER, null, this);
 	}
 

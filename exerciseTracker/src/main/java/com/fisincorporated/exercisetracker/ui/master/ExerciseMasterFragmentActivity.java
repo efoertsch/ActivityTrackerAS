@@ -52,6 +52,13 @@ public abstract class ExerciseMasterFragmentActivity extends ExerciseMasterActiv
 
 	}
 
+	public void setActivityTitle(String title){
+		if (actionBar != null) {
+			actionBar.setTitle(title);
+		}
+
+	}
+
 	
 	
  

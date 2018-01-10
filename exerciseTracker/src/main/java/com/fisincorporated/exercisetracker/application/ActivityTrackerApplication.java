@@ -3,8 +3,10 @@ package com.fisincorporated.exercisetracker.application;
 import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.fisincorporated.exercisetracker.GlobalValues;
+import com.bumptech.glide.request.target.ViewTarget;
+import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
+import com.fisincorporated.exercisetracker.ui.utils.DisplayUnits;
 
 
 public class ActivityTrackerApplication extends Application {
@@ -19,15 +21,23 @@ public class ActivityTrackerApplication extends Application {
     public void onCreate() {
         super.onCreate();
         getDatabaseSetup();
+        setupDisplayUnits();
         activityTrackerApplication = this;
+
+        // To be able to use setTag with Glide
+        ViewTarget.setTagId(R.id.glide_tag);
+    }
+
+    private void setupDisplayUnits() {
+        DisplayUnits.initialize(this);
     }
 
     // TODO use Dagger injection
     public void getDatabaseSetup() {
         databaseHelper = TrackerDatabaseHelper
                 .getTrackerDatabaseHelper(this);
+        // do this to fire any table changes
         database = databaseHelper.getReadableDatabase();
-        GlobalValues.DATABASE_PATH_AND_NAME = this.getDatabasePath(GlobalValues.DATABASE_NAME).getPath();
     }
 
     @Override
@@ -36,18 +46,6 @@ public class ActivityTrackerApplication extends Application {
             database.close();
         }
         super.onTerminate();
-    }
-
-    public static ActivityTrackerApplication getActivityTrackerApplication() {
-        return activityTrackerApplication;
-    }
-
-    public TrackerDatabaseHelper getDatabaseHelper() {
-        return databaseHelper;
-    }
-
-    public SQLiteDatabase getDatabase() {
-        return database;
     }
 
 }

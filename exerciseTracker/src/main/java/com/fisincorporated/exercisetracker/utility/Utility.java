@@ -7,6 +7,7 @@ import android.widget.Toast;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
+import com.fisincorporated.exercisetracker.ui.utils.DisplayUnits;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,11 +22,16 @@ import java.util.Date;
 public class Utility {
 
 
-    public static void formatActivityStats(FragmentActivity activity, ArrayList<String[]> stats,
-                                           LocationExerciseRecord ler, String imperialMetric, String imperial, String feetMeters, String milesKm, String mphKph) {
+    public static void formatActivityStats(Context activity, ArrayList<String[]> stats,
+                                           LocationExerciseRecord ler) {
+        boolean isImperialDisplay = DisplayUnits.isImperialDisplay();
+        String feetMeters = DisplayUnits.getFeetMeters();
+        String milesKm = DisplayUnits.getMilesKm();
+        String mphKph = DisplayUnits.getMphKph();
+
         stats.clear();
 
-        float distance = (imperialMetric.equals(imperial) ? Utility
+        float distance = (isImperialDisplay ? Utility
                 .metersToMiles((float) ler.getDistance()) : ((float) ler
                 .getDistance()) / 1000f);
         stats.add(new String[]{
@@ -56,23 +62,23 @@ public class Utility {
                 activity.getResources().getString(R.string.max_speed),
                 String.format(
                         "%.2f " + mphKph,
-                        imperialMetric.equals(imperial) ? Utility
+                        isImperialDisplay ? Utility
                                 .kilometersToMiles(ler.getMaxSpeedToPoint())
                                 : ler.getMaxSpeedToPoint())});
 
-        int altitude = (int) (imperialMetric.equals(imperial) ? (int) Utility
+        int altitude = (int) (isImperialDisplay ? (int) Utility
                 .metersToFeet(ler.getAltitudeGained()) : ler.getAltitudeGained());
         stats.add(new String[]{
                 activity.getResources().getString(R.string.altitude_gained),
                 String.format("%d " + feetMeters, altitude)});
 
-        altitude = (int) (imperialMetric.equals(imperial) ? (int) Utility
+        altitude = (int) (isImperialDisplay ? (int) Utility
                 .metersToFeet(ler.getAltitudeLost()) : ler.getAltitudeLost());
         stats.add(new String[]{
                 activity.getResources().getString(R.string.altitude_lost),
                 String.format("%d " + feetMeters, altitude)});
 
-        altitude = (int) (imperialMetric.equals(imperial) ? (int) Utility
+        altitude = (int) (isImperialDisplay ? (int) Utility
                 .metersToFeet(ler.getAltitudeGained() - ler.getAltitudeLost())
                 : ler.getAltitudeGained() - ler.getAltitudeLost());
         stats.add(new String[]{
@@ -82,11 +88,16 @@ public class Utility {
     }
 
     public static void formatActivityStatsForFacebook(FragmentActivity activity, StringBuilder sb,
-                                                      LocationExerciseRecord ler, String imperialMetric, String imperial, String feetMeters, String milesKm, String mphKph) {
+                                                      LocationExerciseRecord ler) {
+        boolean isImperialDisplay = DisplayUnits.isImperialDisplay();
+        String feetMeters = DisplayUnits.getFeetMeters();
+        String milesKm = DisplayUnits.getMilesKm();
+        String mphKph = DisplayUnits.getMphKph();
+
         sb.setLength(0);
         String lineSeparator = System.getProperty("line.separator");
 
-        float distance = (imperialMetric.equals(imperial) ? Utility
+        float distance = (isImperialDisplay ? Utility
                 .metersToMiles((float) ler.getDistance()) : ((float) ler
                 .getDistance()) / 1000f);
         sb.append(activity.getResources().getString(R.string.distance_traveled) + " : " +
@@ -113,23 +124,23 @@ public class Utility {
         sb.append(activity.getResources().getString(R.string.max_speed) + " : " +
                 String.format(
                         "%.2f " + mphKph,
-                        imperialMetric.equals(imperial) ? Utility
+                        isImperialDisplay ? Utility
                                 .kilometersToMiles(ler.getMaxSpeedToPoint())
                                 : ler.getMaxSpeedToPoint()) + lineSeparator);
 
-        int altitude = (int) (imperialMetric.equals(imperial) ? (int) Utility
+        int altitude = (int) (isImperialDisplay ? (int) Utility
                 .metersToFeet(ler.getAltitudeGained()) : ler.getAltitudeGained());
         sb.append(
                 activity.getResources().getString(R.string.altitude_gained) + " : " +
                         String.format("%d " + feetMeters, altitude) + lineSeparator);
 
-        altitude = (int) (imperialMetric.equals(imperial) ? (int) Utility
+        altitude = (int) (isImperialDisplay ? (int) Utility
                 .metersToFeet(ler.getAltitudeLost()) : ler.getAltitudeLost());
         sb.append(
                 activity.getResources().getString(R.string.altitude_lost) + " : " +
                         String.format("%d " + feetMeters, altitude) + lineSeparator);
 
-        altitude = (int) (imperialMetric.equals(imperial) ? (int) Utility
+        altitude = (int) (isImperialDisplay ? (int) Utility
                 .metersToFeet(ler.getAltitudeGained() - ler.getAltitudeLost())
                 : ler.getAltitudeGained() - ler.getAltitudeLost());
         sb.append(activity.getResources().getString(R.string.overall_altitude_change) + " : " +

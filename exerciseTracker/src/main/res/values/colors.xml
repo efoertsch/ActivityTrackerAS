@@ -20,5 +20,7 @@
 
     <item name="toolbarTextColor" type="color">#ffffffff</item>
 
+    <color name="black_overlay">#66000000</color>
+
 
 </resources> 

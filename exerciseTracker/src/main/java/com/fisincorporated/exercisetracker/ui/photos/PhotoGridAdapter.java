@@ -1,7 +1,6 @@
 package com.fisincorporated.exercisetracker.ui.photos;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +9,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
 import com.bumptech.glide.RequestManager;
-import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 
 import java.io.File;
@@ -55,10 +53,9 @@ public class PhotoGridAdapter extends ArrayAdapter {
                 .into((ImageView) convertView);
         convertView.setTag(position);
         convertView.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), FullscreenPhotoPagerActivity.class);
-            intent.putExtra(GlobalValues.PHOTO_DETAIL_LIST, photoDetails);
-            intent.putExtra(GlobalValues.PHOTO_POINT_INDEX, (int) v.getTag());
-            context.startActivity(intent);
+            FullscreenPhotoPagerActivity.IntentBuilder intentBuilder = FullscreenPhotoPagerActivity.IntentBuilder.getBuilder(getContext());
+            intentBuilder.setPhotoDetails(photoDetails).setPhotoDetailPosition((int) v.getTag());
+            context.startActivity(intentBuilder.build());
         });
 
         return convertView;

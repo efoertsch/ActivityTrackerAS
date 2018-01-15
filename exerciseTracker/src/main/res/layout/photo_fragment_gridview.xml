@@ -12,6 +12,7 @@
               android:horizontalSpacing="2dp"
               android:verticalSpacing="2dp"
               android:numColumns="2"
+              android:layout_marginTop="2dp"
               android:stretchMode="columnWidth"/>
 
 </android.support.constraint.ConstraintLayout>

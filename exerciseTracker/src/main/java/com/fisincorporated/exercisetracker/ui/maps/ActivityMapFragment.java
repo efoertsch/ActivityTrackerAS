@@ -47,6 +47,8 @@ import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
 
+
+//TODO replace CursorLoader
 public class ActivityMapFragment extends ExerciseMasterFragment implements LoaderCallbacks<Cursor>,
         MapRoute.ActivityPhotosCallback {
     public static final String USE_CURRENT_LOCATION_LABEL = "ActivityMapFragment.CURRENT_LOCATION_LABEL";
@@ -78,6 +80,7 @@ public class ActivityMapFragment extends ExerciseMasterFragment implements Loade
     // maptype must be GoogleMap.MAP_TYPE_HYBRID, _SATELLITE, ...
     private int mapType;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private Cursor cursor;
 
 
     public static ActivityMapFragment newInstance(Bundle bundle) {
@@ -144,6 +147,19 @@ public class ActivityMapFragment extends ExerciseMasterFragment implements Loade
     public void onPause() {
         super.onPause();
         compositeDisposable.dispose();
+    }
+
+    @Override
+    public void onDestroy(){
+        if (cursor != null && !cursor.isClosed()) {
+            cursor.close();
+            cursor = null;
+        }
+        if (mapRoute != null) {
+            mapRoute.onTerminate();
+            mapRoute = null;
+        }
+        super.onDestroy();
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -363,6 +379,7 @@ public class ActivityMapFragment extends ExerciseMasterFragment implements Loade
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         try {
             plotRoute(cursor);
+            this.cursor = cursor;
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -13,7 +13,7 @@ import com.fisincorporated.exercisetracker.R;
 
 import java.lang.ref.WeakReference;
 
-
+//TODO replace CursorLoader
 public class ActivityHistoryFragment extends AbstractActivityHistoryFragment implements IHistoryListCallbacks {
 
     protected RecyclerView recyclerView;
@@ -49,6 +49,7 @@ public class ActivityHistoryFragment extends AbstractActivityHistoryFragment imp
     }
 
     // LoaderCallBacks interface methods
+    // #1 is in superclass
     // Note this gets called before onResume
     // #2
     @Override

@@ -108,12 +108,10 @@ public class ActivityHistory extends ExerciseMasterFragmentActivity {
 
     // Note: this is not called when on prioractivities list and back pressed to go back to main menu
     private FragmentManager.OnBackStackChangedListener getListener() {
-        FragmentManager.OnBackStackChangedListener result = new FragmentManager.OnBackStackChangedListener() {
-            public void onBackStackChanged() {
-                FragmentManager manager = getSupportFragmentManager();
-                if (manager != null) {
-                    checkToEnableDelete();
-                }
+        FragmentManager.OnBackStackChangedListener result = () -> {
+            FragmentManager manager = getSupportFragmentManager();
+            if (manager != null) {
+                checkToEnableDelete();
             }
         };
         return result;

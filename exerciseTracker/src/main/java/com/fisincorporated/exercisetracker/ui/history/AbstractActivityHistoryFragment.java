@@ -37,7 +37,7 @@ public abstract class AbstractActivityHistoryFragment  extends ExerciseMasterFra
     protected ArrayList<String> locationSelections = new ArrayList<>();
     protected static boolean doRefresh = false;
 
-    protected Cursor csrUtility = null;
+    protected Cursor cursor = null;
 
     //dateFormat used in subclasses
     protected SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -69,7 +69,14 @@ public abstract class AbstractActivityHistoryFragment  extends ExerciseMasterFra
         super.onCreate(savedInstanceState);
     }
 
-
+    @Override
+    public void onDestroy(){
+        if (cursor != null && !cursor.isClosed()) {
+            cursor.close();
+            cursor = null;
+        }
+        super.onDestroy();
+    }
 
     // save the sort order so if you change orientation you will keep sort order
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -167,10 +174,10 @@ public abstract class AbstractActivityHistoryFragment  extends ExerciseMasterFra
         StringBuffer query = new StringBuffer();
         getDatabaseSetup();
         databaseHelper.createActivitySQL(query, exerciseSelections, locationSelections, sortOrder);
-        csrUtility = database.rawQuery(query.toString(), null);
-        if (csrUtility.getCount() == 0)
+        cursor = database.rawQuery(query.toString(), null);
+        if (cursor.getCount() == 0)
             return null;
-        return csrUtility;
+        return cursor;
     }
 
 
@@ -226,7 +233,7 @@ public abstract class AbstractActivityHistoryFragment  extends ExerciseMasterFra
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         // we only ever load the runs, so assume this is the case
         getDatabaseSetup();
-        return new ListCursorLoader(getActivity(), this);
+        return new ListCursorLoader(getContext(), this);
     }
 
     // #2

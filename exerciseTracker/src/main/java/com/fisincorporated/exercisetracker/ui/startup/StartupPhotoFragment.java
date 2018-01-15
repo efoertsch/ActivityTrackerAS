@@ -46,12 +46,9 @@ public class StartupPhotoFragment extends Fragment {
 
         photoPath = PhotoUtils.getStartupPhotoPath(getActivity());
         startFab = (FloatingActionButton) view.findViewById(R.id.startup_photo_fab);
-        startFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), StartExercise.class);
-                startActivity(intent);
-            }
+        startFab.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), StartExercise.class);
+            startActivity(intent);
         });
         loadUserPhoto();
 

@@ -46,7 +46,7 @@ public class ScreenSlidePageFragment extends Fragment {
     }
 
     private void displayPhoto(String uri) {
-        Glide.with(getContext())
+        Glide.with(this)
                 .load(Uri.fromFile(new File(uri)))
                 .into(photoView);
     }

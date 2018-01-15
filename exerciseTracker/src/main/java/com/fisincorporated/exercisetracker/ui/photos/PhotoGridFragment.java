@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 
+import com.bumptech.glide.Glide;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
@@ -33,7 +34,7 @@ public class PhotoGridFragment extends ExerciseMasterFragment {
         View view = inflater.inflate(R.layout.photo_fragment_gridview, container, false);
         getReferencedViews(view);
         lookForArguments(savedInstanceState);
-        gridView.setAdapter(new PhotoGridAdapter(getContext(),  photoDetails));
+        gridView.setAdapter(new PhotoGridAdapter(getContext(), Glide.with(this),  photoDetails));
 
         return view;
     }

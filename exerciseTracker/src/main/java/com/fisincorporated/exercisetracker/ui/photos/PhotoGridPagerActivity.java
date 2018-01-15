@@ -1,5 +1,6 @@
 package com.fisincorporated.exercisetracker.ui.photos;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -74,6 +75,37 @@ public class PhotoGridPagerActivity extends ExerciseMasterFragmentActivity {
                 photoPoints));
         viewPager.setCurrentItem(photoPointIndex);
 
+    }
+
+    public static class IntentBuilder{
+        private Intent intent;
+
+        private IntentBuilder(Context context){
+            intent = new Intent(context, PhotoGridPagerActivity.class);
+        }
+
+        public static IntentBuilder getBuilder(Context context) {
+            return  new PhotoGridPagerActivity.IntentBuilder(context);
+        }
+
+        public IntentBuilder setTitle(String title){
+            intent.putExtra(GlobalValues.TITLE, title);
+            return this;
+        }
+
+        public IntentBuilder setPhotoPoints(ArrayList<PhotoPoint> photoPoints){
+            intent.putExtra(GlobalValues.PHOTO_POINTS, photoPoints);
+            return this;
+        }
+
+        public IntentBuilder setPhotoPointPosition(int position){
+            intent.putExtra(GlobalValues.PHOTO_POINT_INDEX, position);
+            return this;
+        }
+
+        public Intent build(){
+            return intent;
+        }
     }
 
 

@@ -147,17 +147,17 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
         photosFab.setOnClickListener(v -> {
             Intent intent;
             if (photoDetails.size() == 1) {
-                intent = new Intent(getContext(), FullscreenPhotoPagerActivity.class);
-                intent.putExtra(GlobalValues.PHOTO_DETAIL_LIST, photoDetails);
+                FullscreenPhotoPagerActivity.IntentBuilder intentBuilder = FullscreenPhotoPagerActivity.IntentBuilder.getBuilder(getContext());
+                intentBuilder.setPhotoDetails(photoDetails);
+                intent = intentBuilder.build();
             } else {
                 PhotoPoint photoPoint = PhotoPoint.getInstance(0, null);
                 photoPoint.setPhotoDetails(photoDetails);
                 ArrayList<PhotoPoint> photoPoints = new ArrayList<>();
                 photoPoints.add(photoPoint);
-                intent = new Intent(getContext(), PhotoGridPagerActivity.class);
-                intent.putExtra(GlobalValues.TITLE, title);
-                intent.putExtra(GlobalValues.PHOTO_POINTS, photoPoints);
-                intent.putExtra(GlobalValues.PHOTO_POINT_INDEX, 0);
+                PhotoGridPagerActivity.IntentBuilder intentBuilder = PhotoGridPagerActivity.IntentBuilder.getBuilder(getContext());
+                intentBuilder.setPhotoPoints(photoPoints).setTitle(title).setPhotoPointPosition(0);
+                intent = intentBuilder.build();
             }
             startActivity(intent);
         });

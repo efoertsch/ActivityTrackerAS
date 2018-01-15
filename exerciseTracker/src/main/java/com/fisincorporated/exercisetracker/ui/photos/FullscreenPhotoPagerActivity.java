@@ -1,6 +1,7 @@
 package com.fisincorporated.exercisetracker.ui.photos;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -41,9 +42,7 @@ public class FullscreenPhotoPagerActivity extends AppCompatActivity {
     private final Handler hideHandler = new Handler();
     private View controlsView;
     private boolean visibleControls;
-
     private ViewPager pager;
-
     private ArrayList<PhotoDetail> photoDetails = new ArrayList<>();
     private int currentItem = 0;
 
@@ -93,9 +92,7 @@ public class FullscreenPhotoPagerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_fullscreen);
-
         visibleControls = true;
         controlsView = findViewById(R.id.fullscreen_content_controls);
 
@@ -150,7 +147,7 @@ public class FullscreenPhotoPagerActivity extends AppCompatActivity {
             finish();
             return false;
         }
-        currentItem = intent.getIntExtra(GlobalValues.PHOTO_POINT_INDEX, 0);
+        currentItem = intent.getIntExtra(GlobalValues.PHOTO_DETAIL_INDEX, 0);
         return true;
     }
 
@@ -214,5 +211,32 @@ public class FullscreenPhotoPagerActivity extends AppCompatActivity {
         // Schedule a runnable to display UI elements after a delay
         hideHandler.removeCallbacks(hidePart2Runnable);
         hideHandler.postDelayed(showPart2Runnable, UI_ANIMATION_DELAY);
+    }
+
+    public static class IntentBuilder{
+        private Intent intent;
+
+        private IntentBuilder(Context context){
+            intent = new Intent(context, FullscreenPhotoPagerActivity.class);
+        }
+
+        public static IntentBuilder getBuilder(Context context) {
+            return  new IntentBuilder(context);
+        }
+
+        public IntentBuilder setPhotoDetails(ArrayList<PhotoDetail> photoDetails){
+            intent.putExtra(GlobalValues.PHOTO_DETAIL_LIST, photoDetails);
+            return this;
+        }
+
+
+        public IntentBuilder setPhotoDetailPosition(int position){
+            intent.putExtra(GlobalValues.PHOTO_DETAIL_INDEX, position);
+            return this;
+        }
+
+        public Intent build(){
+            return intent;
+        }
     }
 }

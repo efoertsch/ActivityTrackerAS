@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.ui.startactivity.StartExercise;
@@ -25,6 +27,8 @@ public class StartupPhotoFragment extends Fragment {
     private ImageView imageView;
     private String photoPath;
     private FloatingActionButton startFab;
+    private TextView noPhotoTextView;
+    private ProgressBar progressBar;
     private ValueAnimator valueAnimator;
     private int animationTime = 10 * 1000;
     private float animatedFloat;
@@ -42,29 +46,14 @@ public class StartupPhotoFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.startup_photo, container, false);
-        imageView = (ImageView) view.findViewById(R.id.startup_photo_view);
-
-        photoPath = PhotoUtils.getStartupPhotoPath(getActivity());
-        startFab = (FloatingActionButton) view.findViewById(R.id.startup_photo_fab);
-        startFab.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), StartExercise.class);
-            startActivity(intent);
-        });
-        loadUserPhoto();
-
+        getReferencedViews(view);
         return view;
     }
 
     @Override
     public void onResume() {
-        String currentPhotoPath;
         super.onResume();
-        currentPhotoPath = PhotoUtils.getStartupPhotoPath(getActivity());
-        if (currentPhotoPath != null &&
-                (photoPath == null || !currentPhotoPath.equals(photoPath))) {
-            photoPath = currentPhotoPath;
-            loadUserPhoto();
-        }
+        checkForStartupPhoto();
         setupActivityFabAnimator(startFab);
         valueAnimator.start();
     }
@@ -78,12 +67,36 @@ public class StartupPhotoFragment extends Fragment {
     @Override
     public void onDestroy(){
         super.onDestroy();
-
     }
 
-    private void loadUserPhoto() {
-        if (!PhotoUtils.loadPhotoToImageView(imageView, photoPath)) {
-            imageView.setImageResource(R.drawable.zion_canyon);
+    private void getReferencedViews(View view) {
+        imageView = (ImageView) view.findViewById(R.id.startup_photo_view);
+        noPhotoTextView = (TextView) view.findViewById(R.id.startup_photo_no_photo_text);
+        progressBar = (ProgressBar) view.findViewById(R.id.change_startup_photo_progressBar);
+        startFab = (FloatingActionButton) view.findViewById(R.id.startup_photo_fab);
+        startFab.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), StartExercise.class);
+            startActivity(intent);
+        });
+        checkForStartupPhoto();
+    }
+
+    private void checkForStartupPhoto() {
+        String currentPhotoPath = PhotoUtils.getStartupPhotoPath();
+        if (currentPhotoPath == null) {
+            noPhotoTextView.setVisibility(View.VISIBLE);
+        } else {
+            if (photoPath == null || !currentPhotoPath.equals(photoPath)) {
+                photoPath = currentPhotoPath;
+                loadUserPhoto(photoPath);
+            }
+        }
+    }
+
+    private void loadUserPhoto(String photoPath) {
+        if (!PhotoUtils.loadPhotoToImageView(imageView, photoPath, progressBar, noPhotoTextView)) {
+            noPhotoTextView.setVisibility(View.VISIBLE);
+
         }
     }
 

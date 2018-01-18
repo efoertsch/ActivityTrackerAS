@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker.ui.photos;
+package com.fisincorporated.exercisetracker.ui.photos.slideshow;
 
 import android.net.Uri;
 import android.os.Bundle;

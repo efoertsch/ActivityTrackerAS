@@ -1,9 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="standard_display">
+    <style name="standard_display_white">
         <item name="android:textSize">12sp</item>
-        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textColor">#FFFFFFFF</item>
+    </style>
+
+    <style name="standard_display_black_bold">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@android:color/primary_text_light</item>
+    </style>
+
+    <style name="standard_button_style">
+        <item name="android:textColor">@color/textColorWhite</item>
+        <item name="android:background">@color/colorPrimaryDark</item>
+        <item name="android:paddingStart">@dimen/margin_standard</item>
+        <item name="android:paddingEnd">@dimen/margin_standard</item>
     </style>
 
     <style name="facebook_btn">

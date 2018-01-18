@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker.ui.photos;
+package com.fisincorporated.exercisetracker.ui.photos.photogrid;
 
 import android.content.Context;
 import android.net.Uri;
@@ -10,6 +10,8 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.RequestManager;
 import com.fisincorporated.exercisetracker.R;
+import com.fisincorporated.exercisetracker.ui.photos.PhotoDetail;
+import com.fisincorporated.exercisetracker.ui.photos.slideshow.FullscreenPhotoPagerActivity;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker.ui.photos;
+package com.fisincorporated.exercisetracker.ui.photos.photogrid;
 
 
 import android.os.Bundle;
@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
+import com.fisincorporated.exercisetracker.ui.photos.PhotoPoint;
 
 import java.util.ArrayList;
 

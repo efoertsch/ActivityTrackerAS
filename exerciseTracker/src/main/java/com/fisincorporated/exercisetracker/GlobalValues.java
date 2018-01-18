@@ -64,8 +64,8 @@ public class GlobalValues {
 	// Back up
 	public static final String SQLITE_MIME_TYPE = "application/x-sqlite3";
 	public static final String BACKUP_TYPE = "BACKUP_TYPE";
-	public static final int BACKUP_TO_LOCAL = 0;
-	public static final int BACKUP_TO_DRIVE = 1;
+	public static final int BACKUP_TO_LOCAL = 1111;
+	public static final int BACKUP_TO_DRIVE = 1234;
 	public static final boolean DRIVE_SIGNIN_SUCCESSFUL = true;
 	public static final boolean DRIVE_SIGNIN_UNSUCCESSFUL = false;
 
@@ -76,4 +76,6 @@ public class GlobalValues {
 	public static final String PHOTO_DETAIL_INDEX = "PHOTO_DETAIL_INDEX";
     public static final String PHOTO_DETAIL_LIST = "PHOTO_DETAIL_LIST";
     public static final String PHOTO_URI = "PHOTO_URI" ;
+	public static final int PICK_PHOTO = 54321;
+
 }

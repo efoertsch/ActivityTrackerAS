@@ -198,10 +198,12 @@
                 android:name="android.support.UI_OPTIONS"
                 android:value="splitActionBarWhenNarrow"/>
         </activity>
+
         <activity
             android:name=".ui.drive.DriveActivity"
             android:label="@string/title_activity_drive">
         </activity>
+
         <activity
             android:name=".ui.drive.DriveSignOnActivity"
             android:parentActivityName=".ui.startup.ExerciseDrawerActivity"
@@ -215,8 +217,9 @@
                 android:name="android.support.UI_OPTIONS"
                 android:value="splitActionBarWhenNarrow"/>
         </activity>
+
         <activity
-            android:name=".ui.photos.PhotoGridPagerActivity"
+            android:name=".ui.photos.photogrid.PhotoGridPagerActivity"
             android:parentActivityName=".ui.startup.ExerciseDrawerActivity"
             android:uiOptions="splitActionBarWhenNarrow">
 
@@ -230,12 +233,27 @@
         </activity>
 
         <activity
-            android:name=".ui.photos.FullscreenPhotoPagerActivity"
-            android:parentActivityName=".ui.startup.ExerciseDrawerActivity"
+            android:name=".ui.photos.slideshow.FullscreenPhotoPagerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:uiOptions="splitActionBarWhenNarrow"
             android:label="@string/activity_fullscreen_photo"
-            android:theme="@style/FullscreenTheme">
+            android:parentActivityName=".ui.startup.ExerciseDrawerActivity"
+            android:theme="@style/FullscreenTheme"
+            android:uiOptions="splitActionBarWhenNarrow">
+
+            <!-- Parent activity meta-data to support API level 7+ -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.startup.ExerciseDrawerActivity"/>
+            <meta-data
+                android:name="android.support.UI_OPTIONS"
+                android:value="splitActionBarWhenNarrow"/>
+        </activity>
+
+        <activity
+            android:name=".ui.settings.ChangeStartupPhotoActivity"
+            android:label="@string/title_activity_change_startup_photo"
+            android:parentActivityName=".ui.startup.ExerciseDrawerActivity"
+            android:uiOptions="splitActionBarWhenNarrow">
 
             <!-- Parent activity meta-data to support API level 7+ -->
             <meta-data
@@ -294,6 +312,7 @@
                 <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
             </intent-filter>
         </service>
+
 
     </application>
 

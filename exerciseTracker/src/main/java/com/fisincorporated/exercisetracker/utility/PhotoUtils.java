@@ -13,8 +13,15 @@ import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.ui.photos.PhotoDetail;
@@ -34,24 +41,74 @@ public class PhotoUtils {
 
     private static final String TAG = PhotoUtils.class.getSimpleName();
 
-    public static void storePhotoPath(Context context, String filePath) {
+    private static Context context;
+
+    public static void init(Context context){
+        PhotoUtils.context = context;
+    }
+
+    public static void storePhotoPath(String filePath) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(context.getString(R.string.startup_image), filePath);
         editor.commit();
     }
 
-    public static String getStartupPhotoPath(Context context) {
+    public static String getStartupPhotoPath() {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         return sharedPref.getString(context.getString(R.string.startup_image), null);
     }
 
-    public static boolean loadPhotoToImageView(ImageView imageView, String photoPath) {
+    public static boolean loadPhotoToImageView(ImageView imageView, String photoPath, ProgressBar progressBar, TextView errorTextView) {
         if (photoPath != null) {
             File imgFile = new File(photoPath);
             if (imgFile.exists()) {
-                imageView.setImageURI(Uri.fromFile(imgFile));
-                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                progressBar.setVisibility(View.VISIBLE);
+                Glide.with(imageView.getContext())
+                        .load(imgFile)
+                        //.load(Uri.fromFile(imgFile))
+//                        .listener(new RequestListener<Uri, GlideDrawable>() {
+//                            @Override
+//                            public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
+//                                errorTextView.setText(R.string.error_occurred_loading_photo);
+//                                progressBar.setVisibility(View.GONE);
+//                                errorTextView.setVisibility(View.VISIBLE);
+//                                return false;
+//                            }
+//
+//                            @Override
+//                            public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+//                                progressBar.setVisibility(View.GONE);
+//                                errorTextView.setVisibility(View.GONE);
+//                                return true;
+//                            }
+//                        })
+//
+                        .listener(new RequestListener<File, GlideDrawable>() {
+                            @Override
+                            public boolean onException(Exception e, File model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                errorTextView.setText(R.string.error_occurred_loading_photo);
+                                progressBar.setVisibility(View.GONE);
+                                if (errorTextView != null) {
+                                    errorTextView.setVisibility(View.VISIBLE);
+                                }
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(GlideDrawable resource, File model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                progressBar.setVisibility(View.GONE);
+                                if (errorTextView != null) {
+                                    errorTextView.setVisibility(View.GONE);
+                                }
+                                imageView.setVisibility(View.VISIBLE);
+                                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                                return false;
+                            }
+                        })
+                        .error(R.id.startup_photo_no_photo_text)
+                        .into(imageView);
+
                 return true;
             }
         }
@@ -63,8 +120,8 @@ public class PhotoUtils {
         try {
             imageStream = activity.getContentResolver().openInputStream(imageUri);
             Bitmap bitmapImage = BitmapFactory.decodeStream(imageStream);
-            String filename = PhotoUtils.getFileNameFromURI(activity, imageUri);
-            writeResizedBitmap(activity, bitmapImage, filename);
+            String filename = PhotoUtils.getFileNameFromURI(imageUri);
+            writeResizedBitmap(bitmapImage, filename);
         } catch (FileNotFoundException e) {
             Log.d(TAG, e.toString());
 
@@ -78,16 +135,14 @@ public class PhotoUtils {
         }
     }
 
-    public static void writeResizedBitmap(Activity activity, Bitmap bitmapImage, String filename) {
+    public static void writeResizedBitmap(Bitmap bitmapImage, String filename) {
         FileOutputStream fos = null;
         try {
-            ContextWrapper cw = new ContextWrapper(activity);
-            // path to /data/data/yourapp/app_data/imageDir
-            File directory = cw.getDir(GlobalValues.IMAGE_DIR, Context.MODE_PRIVATE);
+            File directory = getPhotoFileDirectory();
             // Create imageDir
             File photoPathFile = new File(directory, filename);
             deleteAllFiles(directory);
-            storePhotoPath(activity, photoPathFile.toString());
+            storePhotoPath(photoPathFile.toString());
             fos = new FileOutputStream(photoPathFile);
             // Use the compress method on the BitMap object to write image to the OutputStream
             Log.d(TAG, resizeForPortraitView(bitmapImage).compress(Bitmap.CompressFormat.JPEG, 50, fos) ? " Successful save of image" : " Unsuccessful save of image");
@@ -101,6 +156,18 @@ public class PhotoUtils {
                 }
             }
         }
+    }
+
+    public static File getPhotoFileDirectory() {
+        ContextWrapper cw = new ContextWrapper(context);
+        // path to /data/data/yourapp/app_data/imageDir
+        return cw.getDir(GlobalValues.IMAGE_DIR, Context.MODE_PRIVATE);
+    }
+
+    public static void removeStorePhotoPreference() {
+        File directory = getPhotoFileDirectory();
+        deleteAllFiles(directory);
+        storePhotoPath(null);
     }
 
 
@@ -203,7 +270,7 @@ public class PhotoUtils {
     }
 
 
-    public static String getFileNameFromURI(Context context, Uri uri) {
+    public static String getFileNameFromURI(Uri uri) {
         String fileName = "";
         ContentResolver cr = context.getContentResolver();
         String[] projection = {MediaStore.MediaColumns.DISPLAY_NAME};
@@ -222,8 +289,9 @@ public class PhotoUtils {
 
     public static void deleteAllFiles(File dir) {
         for (File file : dir.listFiles())
-            if (!file.isDirectory() && file.toString().endsWith(".jpeg"))
+            if (!file.isDirectory() && file.toString().endsWith(".jpeg")) {
                 file.delete();
+            }
     }
 
     /**

@@ -228,7 +228,7 @@
 
     <!-- Preference screen -->
     <string name="startup_image" translatable="false">startup_image</string>
-    <string name="select_startup_background">Main screen photo</string>
+    <string name="select_startup_background">Startup screen photo</string>
 
     <!-- literals used for distance and speed -->
     <string name="feet_abbrev" translatable="false">ft</string>
@@ -296,5 +296,12 @@
     <string name="photos">Photos</string>
 
     <string name="activity_fullscreen_photo">Photo</string>
+    <string name="error_occurred_loading_photo">Ooops. An error occurred while loading your photo</string>
+    <string name="title_activity_change_startup_photo">Change Photo</string>
+    <string name="activity_change_photo">Change Photo</string>
+    <string name="tap_image_to_select_new_photo">Tap image to select new photo</string>
+    <string name="go_to_settings_to_display_photo_on_startup">Go to Settings to display your activity photo here.</string>
+    <string name="startup_photo">Startup photo</string>
+    <string name="remove_startup_photo">Remove startup photo</string>
 
 </resources>

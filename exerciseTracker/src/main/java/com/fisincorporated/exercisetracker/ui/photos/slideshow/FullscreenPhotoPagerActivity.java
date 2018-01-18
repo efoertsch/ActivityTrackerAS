@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker.ui.photos;
+package com.fisincorporated.exercisetracker.ui.photos.slideshow;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -16,6 +16,7 @@ import android.view.View;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
+import com.fisincorporated.exercisetracker.ui.photos.PhotoDetail;
 import com.fisincorporated.exercisetracker.ui.utils.ZoomOutPageTransformer;
 
 import java.util.ArrayList;

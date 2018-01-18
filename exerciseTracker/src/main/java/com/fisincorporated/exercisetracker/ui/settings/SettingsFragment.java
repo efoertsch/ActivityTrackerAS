@@ -28,8 +28,7 @@ import static android.app.Activity.RESULT_OK;
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String TAG = SettingsFragment.class.getSimpleName();
-    private static final int PICK_PHOTO = 54321;
-    private static final int BACKUP_TO_DRIVE = 1234;
+
 
     private boolean handleThisChange = true;
 
@@ -57,12 +56,17 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         if (photoImagePreference != null) {
             photoImagePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
-                    Intent intent = new Intent();
-                    // Show only images, no videos or anything else
-                    intent.setType("image/*");
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                    // Always show the chooser (if there are multiple options available)
-                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_PHOTO);
+                    String currentPhotoPath = PhotoUtils.getStartupPhotoPath();
+                    if (currentPhotoPath == null) {
+                        Intent intent = new Intent();
+                        // Show only images, no videos or anything else
+                        intent.setType("image/*");
+                        intent.setAction(Intent.ACTION_GET_CONTENT);
+                        startActivityForResult(Intent.createChooser(intent, "Select Picture"), GlobalValues.PICK_PHOTO);
+                    } else {
+                        Intent intent = new Intent(SettingsFragment.this.getContext(), ChangeStartupPhotoActivity.class);
+                        startActivity(intent);
+                    }
                     return true;
                 }
             });
@@ -124,7 +128,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         GoogleSignInAccount signInAccount = GoogleSignIn.getLastSignedInAccount(getContext());
         if (signInAccount == null) {
             Intent intent = new Intent(getActivity(), DriveSignOnActivity.class);
-            startActivityForResult(intent, BACKUP_TO_DRIVE);
+            startActivityForResult(intent, GlobalValues.BACKUP_TO_DRIVE);
         }
     }
 
@@ -144,7 +148,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                     // No explanation needed, we can request the permission.
                     ActivityCompat.requestPermissions(getActivity(),
                             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                            PICK_PHOTO);
+                            GlobalValues.PICK_PHOTO);
 
                     // MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an
                     // app-defined int constant. The callback method gets the
@@ -153,7 +157,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             } else {
                 ActivityCompat.requestPermissions(getActivity(),
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        PICK_PHOTO);
+                        GlobalValues.PICK_PHOTO);
             }
         } else {
             selectPhotoFromGallery();
@@ -163,7 +167,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case PICK_PHOTO: {
+            case GlobalValues.PICK_PHOTO: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -185,20 +189,20 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         // Always show the chooser (if there are multiple options available)
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_PHOTO);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), GlobalValues.PICK_PHOTO);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         switch (requestCode) {
-            case (PICK_PHOTO): {
+            case (GlobalValues.PICK_PHOTO): {
                 if (resultCode == RESULT_OK
                         && intent != null
                         && intent.getData() != null) {
                     PhotoUtils.saveToInternalStorage(getActivity(), intent.getData());
                 }
             }
-            case (BACKUP_TO_DRIVE): {
+            case (GlobalValues.BACKUP_TO_DRIVE): {
                 if (resultCode == RESULT_OK) {
                     boolean driveSigninSuccess = intent.getBooleanExtra(getString(R.string.drive_backup), false);
                     updateDrivePreference(driveSigninSuccess);

@@ -19,6 +19,7 @@
     <item name="fab_background_white" type="color">#ffffffff</item>
 
     <item name="toolbarTextColor" type="color">#ffffffff</item>
+    <item name="textColorWhite" type="color">#ffffffff</item>
 
     <color name="black_overlay">#66000000</color>
 

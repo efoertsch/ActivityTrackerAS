@@ -9,14 +9,36 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.fisincorporated.exercisetracker.ui.startup.ExerciseDrawerActivity">
 
-    <com.fisincorporated.exercisetracker.ui.custom.ProportionalImageView
+    <TextView
+        android:id="@+id/startup_photo_no_photo_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/go_to_settings_to_display_photo_on_startup"
+        android:layout_margin="@dimen/margin_double"
+        android:visibility="gone"/>
+
+    <ProgressBar
+        android:id="@+id/change_startup_photo_progressBar"
+        style="?android:attr/indeterminateProgressStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
+    <!-- <com.fisincorporated.exercisetracker.ui.custom.ProportionalImageView -->
+   <!-- <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"> -->
+    <ImageView
         android:id="@+id/startup_photo_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
         android:adjustViewBounds="true"
-        android:background="@drawable/zion_canyon"/>
+        android:contentDescription="@string/startup_photo"
+        />
+   <!-- </ScrollView> -->
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/startup_photo_fab"
@@ -25,7 +47,8 @@
         android:layout_gravity="bottom|right"
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_action_directions_run"
-        app:backgroundTint="@color/fab_background_white"/>
+        app:backgroundTint="@color/fab_background_white"
+        android:contentDescription="@string/start_activity"/>
 
 
 </android.support.design.widget.CoordinatorLayout>

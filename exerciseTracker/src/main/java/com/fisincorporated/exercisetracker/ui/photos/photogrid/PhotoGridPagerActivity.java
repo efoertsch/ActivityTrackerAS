@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker.ui.photos;
+package com.fisincorporated.exercisetracker.ui.photos.photogrid;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
+import com.fisincorporated.exercisetracker.ui.photos.PhotoPoint;
 import com.fisincorporated.exercisetracker.ui.utils.DepthPageTransformer;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker.ui.photos;
+package com.fisincorporated.exercisetracker.ui.photos.photogrid;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
+import com.fisincorporated.exercisetracker.ui.photos.PhotoDetail;
 
 import java.util.ArrayList;
 

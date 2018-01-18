@@ -7,6 +7,7 @@ import com.bumptech.glide.request.target.ViewTarget;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 import com.fisincorporated.exercisetracker.ui.utils.DisplayUnits;
+import com.fisincorporated.exercisetracker.utility.PhotoUtils;
 
 
 public class ActivityTrackerApplication extends Application {
@@ -23,6 +24,7 @@ public class ActivityTrackerApplication extends Application {
         getDatabaseSetup();
         setupDisplayUnits();
         activityTrackerApplication = this;
+        initializePhotoUtils();
 
         // To be able to use setTag with Glide
         ViewTarget.setTagId(R.id.glide_tag);
@@ -38,6 +40,10 @@ public class ActivityTrackerApplication extends Application {
                 .getTrackerDatabaseHelper(this);
         // do this to fire any table changes
         database = databaseHelper.getReadableDatabase();
+    }
+
+    private void initializePhotoUtils(){
+        PhotoUtils.init(this);
     }
 
     @Override

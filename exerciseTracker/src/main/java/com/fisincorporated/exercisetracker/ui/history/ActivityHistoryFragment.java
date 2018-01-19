@@ -48,6 +48,11 @@ public class ActivityHistoryFragment extends AbstractActivityHistoryFragment imp
         }
     }
 
+    public void onResume() {
+        super.onResume();
+        getLoaderManager().restartLoader(0, null, this);
+    }
+
     // LoaderCallBacks interface methods
     // #1 is in superclass
     // Note this gets called before onResume

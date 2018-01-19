@@ -85,6 +85,9 @@
             android:id="@+id/activity_history_delete_list_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="@style/standard_button_style"
+            android:layout_marginTop="@dimen/margin_standard"
+            android:layout_marginBottom="@dimen/margin_standard"
             android:layout_alignParentRight="true"
             android:enabled="false"
             android:text="@string/delete"/>

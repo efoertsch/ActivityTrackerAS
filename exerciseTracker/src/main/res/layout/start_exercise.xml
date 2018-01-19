@@ -103,8 +103,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:paddingLeft="@dimen/dp8"
-                    android:paddingRight="@dimen/dp8"
+                    style="@style/standard_button_style"
                     android:text="@string/start" />
 
             </RelativeLayout>

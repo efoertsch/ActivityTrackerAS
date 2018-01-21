@@ -23,8 +23,7 @@ The email recipient can display the track on Google Earth.
 <p>The charts are implemented using MPAndroidChart.</p>
 
 <p>A backup of the tracker database is written to your devices local download directory.
-Additionally you can take a backup to Google Drive if you have an account.
-The Drive backup is taken only when unmetered network access is available.</p>
+ Additionally you can take a backup to Google Drive if you have an account. The Drive backup is taken only when unmetered network access is available.</p>
 
 <p>Please email Eric Foertsch (efoertsch@fisincorporated.com) with any bugs found or for enhancement requests.
 </p>

@@ -49,7 +49,7 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
     private String exercise;
     private String description;
 
-    private ArrayList<String[]> stats = new ArrayList<String[]>();
+    private ArrayList<String[]> stats = new ArrayList<>();
 
     protected LocationExerciseRecord ler = null;
     private LocationExerciseDAO leDAO = null;
@@ -96,8 +96,7 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
         } else if (savedInstanceState != null) {
             bundle = savedInstanceState;
         }
-        ler = (LocationExerciseRecord) bundle
-                .getParcelable(LocationExercise.LOCATION_EXERCISE_TABLE);
+        ler =  bundle.getParcelable(LocationExercise.LOCATION_EXERCISE_TABLE);
         // exerciseRowId = ler.get_id();
         exercise = bundle.getString(Exercise.EXERCISE);
         // locationRowid = ler.getLocationId();
@@ -137,10 +136,8 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
     private void getReferencedViews(View view) {
         tvExerciseLocation = (TextView) view
                 .findViewById(R.id.activity_detail_tvExerciseLocation);
-        tvExerciseLocation.setText(exercise + "@" + exrcsLocation + " "
-                + description);
-
-        View buttonView = (View) view.findViewById(R.id.buttonfooter);
+        tvExerciseLocation.setText(getString(R.string.exercise_at_location_plus_description,exercise, exrcsLocation, description));
+        View buttonView = (View) view.findViewById(R.id.activity_detail_buttonfooter);
         buttonView.setVisibility(View.VISIBLE);
         // stats.add(new String[] {"xxxx", "yyyy"});
         statsArrayAdapter = new StatsArrayAdapter(getActivity(),
@@ -150,25 +147,23 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
 
         btnStopRestart = (Button) view
                 .findViewById(R.id.activity_stats_stop_restart);
-        btnStopRestart.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (btnStopRestart.getText().equals(
-                        getResources().getString(R.string.stop))) {
+        btnStopRestart.setOnClickListener(v -> {
+            if (btnStopRestart.getText().equals(
+                    getResources().getString(R.string.stop))) {
 
-                    // gpsLocationManager.stopLocationUpdates();
-                    gpsLocationManager.stopTrackingLer();
+                // gpsLocationManager.stopLocationUpdates();
+                gpsLocationManager.stopTrackingLer();
 
-                    Toast.makeText(getActivity(), "Stopping GPS logging",
-                            Toast.LENGTH_SHORT).show();
-                    checkStopRestartButton();
-                    startBackups();
-                } else {
-                    // gpsLocationManager.startLocationUpdates();
-                    gpsLocationManager.startTrackingLer(ler);
-                    Toast.makeText(getActivity(), "Continuing GPS logging",
-                            Toast.LENGTH_SHORT).show();
-                    checkStopRestartButton();
-                }
+                Toast.makeText(getActivity(), "Stopping GPS logging",
+                        Toast.LENGTH_SHORT).show();
+                checkStopRestartButton();
+                startBackups();
+            } else {
+                // gpsLocationManager.startLocationUpdates();
+                gpsLocationManager.startTrackingLer(ler);
+                Toast.makeText(getActivity(), "Continuing GPS logging",
+                        Toast.LENGTH_SHORT).show();
+                checkStopRestartButton();
             }
         });
 
@@ -182,12 +177,7 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        // 11 = Honeycomb and using this to assume tablet
-        if (android.os.Build.VERSION.SDK_INT < 11) {
-            inflater.inflate(R.menu.activity_detail, menu);
-        } else {
             inflater.inflate(R.menu.activity_detail_for_tablet, menu);
-        }
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {

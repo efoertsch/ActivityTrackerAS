@@ -4,33 +4,32 @@
               android:layout_height="wrap_content"
               android:orientation="vertical">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:orientation="horizontal"
+        android:weightSum="100">
+
+        <include
+            layout="@layout/activity_row_summary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="95"/>
 
         <ImageButton
             android:id="@+id/activity_history_row_btnShowMap"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
+            android:layout_weight="5"
             android:background="@android:color/transparent"
             android:focusable="false"
             android:src="@drawable/ic_device_gps_fixed"
             android:text="@string/map"
             android:textAppearance="?android:attr/textAppearanceSmall"/>
 
-        <include
-            layout="@layout/activity_row_summary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/activity_history_row_btnShowMap"
-            android:clickable="true"/>
-
-    </RelativeLayout>
+    </LinearLayout>
 
     <include layout="@layout/divider_vertical"/>
 

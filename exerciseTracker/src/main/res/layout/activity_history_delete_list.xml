@@ -4,43 +4,45 @@
                 android:id="@+id/activity_history_delete_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
+                android:animateLayoutChanges="true"
                 android:paddingLeft="@dimen/margin_double"
-                android:paddingRight="@dimen/margin_double"
-                android:animateLayoutChanges="true">
+                android:paddingRight="@dimen/margin_double">
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/activity_history_delete_columns"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_standard"
+        android:layout_alignParentTop="true"
         android:layout_marginBottom="@dimen/margin_standard"
-        android:layout_alignParentTop="true">
+        android:layout_marginTop="@dimen/margin_standard"
+        android:orientation="horizontal"
+        android:weightSum="100">
 
-        <TextView
-            android:id="@+id/activity_history_delete_list_activity"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/exercise"
-            android:textAppearance="?android:attr/textAppearanceMedium"/>
+            android:layout_weight="95"
+            android:orientation="horizontal"
+            android:weightSum="100">
 
-        <TextView
-            android:id="@+id/activity_history_delete_list_location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="44dp"
-            android:layout_toRightOf="@+id/activity_history_delete_list_activity"
-            android:text="@string/location"
-            android:textAppearance="?android:attr/textAppearanceMedium"/>
+            <TextView
+                android:id="@+id/activity_history_delete_list_activity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="30"
+                android:text="@string/exercise"
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
 
-        <TextView
-            android:id="@+id/activity_history_delete_list_checkbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="@string/delete"
-            android:textAppearance="?android:attr/textAppearanceMedium"/>
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/activity_history_delete_list_location"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="70"
+                android:text="@string/location"
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
+        </LinearLayout>
+
+    </LinearLayout>
 
     <include
         android:id="@+id/activity_history_delete_divider"
@@ -55,7 +57,6 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/activity_history_delete_buttonfooter"
         android:layout_below="@+id/activity_history_delete_divider"
-        android:clickable="true"
         android:scrollbarAlwaysDrawVerticalTrack="true"
         android:scrollbars="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
@@ -83,12 +84,12 @@
 
         <Button
             android:id="@+id/activity_history_delete_list_delete"
+            style="@style/standard_button_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/standard_button_style"
-            android:layout_marginTop="@dimen/margin_standard"
-            android:layout_marginBottom="@dimen/margin_standard"
             android:layout_alignParentRight="true"
+            android:layout_marginBottom="@dimen/margin_standard"
+            android:layout_marginTop="@dimen/margin_standard"
             android:enabled="false"
             android:text="@string/delete"/>
     </RelativeLayout>

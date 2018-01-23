@@ -6,7 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.fisincorporated.exercisetracker.R;
@@ -37,24 +37,22 @@ public class ActivityHistoryDeleteAdapter extends RecyclerViewCursorAdapter<Acti
         holder.bindItem(ActivityHistorySummary.getFromCursor(cursor));
     }
 
-    public class ItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private WeakReference<IHistoryDeleteCallbacks> viewCallbacks;
+    public class ItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         private View view;
         private TextView tvActivity;
         private TextView tvLocation;
         private TextView tvDate;
         private TextView tvDescription;
-        private CheckBox cbxDelete;
+        private ImageView ivCheckedToDelete;
 
         public ItemHolder(View itemView, WeakReference<IHistoryDeleteCallbacks> callbacks) {
             super(itemView);
-            viewCallbacks = callbacks;
             view = itemView.findViewById(R.id.activity_row_summary_layout);
             tvActivity = (TextView) itemView.findViewById(R.id.activity_history_row_activity);
             tvLocation = (TextView) itemView.findViewById(R.id.activity_history_row_location);
             tvDate = (TextView) itemView.findViewById(R.id.activity_history_row_date);
             tvDescription = (TextView) itemView.findViewById(R.id.activity_history_row_description);
-            cbxDelete = (CheckBox) itemView.findViewById(R.id.activity_history_delete_delete_checkbox);
+            ivCheckedToDelete = (ImageView) itemView.findViewById(R.id.activity_history_check_to_delete);
         }
 
         public void bindItem(final ActivityHistorySummary activityHistorySummary) {
@@ -64,23 +62,26 @@ public class ActivityHistoryDeleteAdapter extends RecyclerViewCursorAdapter<Acti
             tvLocation.setText(activityHistorySummary.getLocation());
             tvDate.setText(activityHistorySummary.getActivityDate());
             tvDescription.setText(activityHistorySummary.getDescription());
-            cbxDelete.setTag(activityHistorySummary);
-            cbxDelete.setOnClickListener(this);
-            cbxDelete.setChecked(callbacks.get().isSetToDelete(activityHistorySummary));
+            ivCheckedToDelete.setTag(activityHistorySummary);
+            ivCheckedToDelete.setOnLongClickListener(this);
+            setCheckedToDelete(activityHistorySummary);
         }
 
         @Override
         public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.activity_history_delete_delete_checkbox:
-                    callbacks.get().deleteThisActivity(((ActivityHistorySummary) v.getTag()));
-                    break;
-                default:
-                    callbacks.get().displayStats((ActivityHistorySummary) v.getTag(), getAdapterPosition());
-                    break;
-            }
+            callbacks.get().displayStats((ActivityHistorySummary) v.getTag(), getAdapterPosition());
         }
 
-        ;
+        @Override
+        public boolean onLongClick(View v) {
+            callbacks.get().deleteThisActivity((ActivityHistorySummary) v.getTag());
+            setCheckedToDelete((ActivityHistorySummary) v.getTag());
+            return true;
+        }
+
+        private void setCheckedToDelete(ActivityHistorySummary activityHistorySummary) {
+            ivCheckedToDelete.setVisibility(callbacks.get().isSetToDelete(activityHistorySummary) ? View.VISIBLE : View.INVISIBLE);
+
+        }
     }
 }

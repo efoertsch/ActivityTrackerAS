@@ -36,39 +36,46 @@ public class ActivityHistoryItemAdapter extends RecyclerViewCursorAdapter<Activi
         holder.bindItem(ActivityHistorySummary.getFromCursor(cursor));
     }
 
-    public class ItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         private WeakReference<IHistoryListCallbacks> viewCallbacks;
-        private View view;
+        private View summaryTextView;
         private TextView tvActivity;
         private TextView tvLocation;
         private TextView tvDate;
         private TextView tvDescription;
         private ImageButton imgbtnMap;
+        private boolean ignoreClick = false;
 
         public ItemHolder(View itemView, WeakReference<IHistoryListCallbacks> callbacks) {
             super(itemView);
             viewCallbacks = callbacks;
-            view = itemView.findViewById(R.id.activity_row_summary_layout);
+            summaryTextView = itemView.findViewById(R.id.activity_row_summary_layout);
             tvActivity = (TextView) itemView.findViewById(R.id.activity_history_row_activity);
             tvLocation = (TextView) itemView.findViewById(R.id.activity_history_row_location);
             tvDate = (TextView) itemView.findViewById(R.id.activity_history_row_date);
             tvDescription = (TextView) itemView.findViewById(R.id.activity_history_row_description);
             imgbtnMap = (ImageButton) itemView.findViewById(R.id.activity_history_row_btnShowMap);
+            summaryTextView.setOnLongClickListener(this);
+            summaryTextView.setOnClickListener(this);
+
         }
 
         public void bindItem(final ActivityHistorySummary activityHistorySummary) {
-            view.setTag(activityHistorySummary);
-            view.setOnClickListener(this);
+            summaryTextView.setTag(activityHistorySummary);
+            summaryTextView.setOnClickListener(this);
             tvActivity.setText(activityHistorySummary.getExercise());
             tvLocation.setText(activityHistorySummary.getLocation());
             tvDate.setText(activityHistorySummary.getActivityDate());
             tvDescription.setText(activityHistorySummary.getDescription());
             imgbtnMap.setTag(activityHistorySummary);
-            imgbtnMap.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
+            if (ignoreClick) {
+                // was longclick
+                return;
+            }
             switch (v.getId()) {
                 case R.id.activity_row_summary_layout:
                     viewCallbacks.get().displayStats((ActivityHistorySummary) v.getTag(), getAdapterPosition());
@@ -77,6 +84,21 @@ public class ActivityHistoryItemAdapter extends RecyclerViewCursorAdapter<Activi
                     viewCallbacks.get().displayMap((ActivityHistorySummary) v.getTag());
                     break;
             }
+            ignoreClick=false;
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            switch (v.getId()) {
+                case R.id.activity_row_summary_layout:
+                    // TODO animate in checkmark
+                    // toggle to delete/undelete activity
+                    ignoreClick = true;
+                    break;
+            }
+            return false;
         }
     }
+
+
 }

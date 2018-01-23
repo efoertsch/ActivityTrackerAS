@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="about_activity_tracker">ActivityTracker was created solely as an exercise to learn Android programming.\n\nThe activity graph is implemented using AChartEngine( http://code.google.com/p/achartengine/ )\n</string>
+    <string name="about_activity_tracker">ActivityTracker was created solely as an exercise to learn Android programming.\n\nThe activity graph is implemented using MPAndroidChart.\n</string>
     <string name="activity">Activity</string>
     <string name="activity_asc">Activity ascending</string>
     <string name="activity_desc">Activity descending</string>
@@ -266,7 +266,7 @@
     <string name="drive_restore_success">ActivityTracker database successfully restored from Drive</string>
     <string name="local_restore_success">ActivityTracker database successfully restored from local %1$s directory</string>
     <string name="restore_database_from_local">Restore from local backup</string>
-    <string name="restore_will_be_from_local">Restore will be from %1$s directory</string>
+    <string name="restore_will_be_from_local">Restore will be from \'%1$s\' directory</string>
     <string name="restore_database_from_drive">Restore database from Drive</string>
     <string name="restore_scheduled">Restore scheduled</string>
     <string name="restore_successful">Restore successful</string>
@@ -303,5 +303,6 @@
     <string name="go_to_settings_to_display_photo_on_startup">Go to Settings to display your activity photo here.</string>
     <string name="startup_photo">Startup photo</string>
     <string name="remove_startup_photo">Remove startup photo</string>
+    <string name="exercise_at_location_plus_description">%1$s@%2$s %3$s</string>
 
 </resources>

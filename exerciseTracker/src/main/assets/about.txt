@@ -18,10 +18,12 @@ The email recipient can display the track on Google Earth.
  <p> 3. Distance summary by activity for by week.</p>
  <p> 4. Distance summary by activity for by month.</p>
  <p> 5. Distance summary by activity for by year.</p> 
- <p> The distance summaries can be customized by filtering on exercise and location.</p> 
- 
+ <p> The distance summaries can be customized by filtering on exercise and location.</p>
 
-<p>Please email Eric Foertsch (efoertsch@fisincorporated.com) with any bugs found (hopefully you won't find any!) or enhancement requests
+<p>The charts are implemented using MPAndroidChart.</p>
+
+<p>A backup of the tracker database is written to your devices local download directory.
+ Additionally you can take a backup to Google Drive if you have an account. The Drive backup is taken only when unmetered network access is available.</p>
+
+<p>Please email Eric Foertsch (efoertsch@fisincorporated.com) with any bugs found or for enhancement requests.
 </p>
-
-<p>The activity graph is implemented using AChartEngine (http://code.google.com/p/achartengine ).</p>

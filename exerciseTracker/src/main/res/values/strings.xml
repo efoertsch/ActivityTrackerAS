@@ -304,5 +304,7 @@
     <string name="startup_photo">Startup photo</string>
     <string name="remove_startup_photo">Remove startup photo</string>
     <string name="exercise_at_location_plus_description">%1$s@%2$s %3$s</string>
+    <string name="checked_for_deletion">Checked for deletion</string>
+    <string name="delete_activity_n">Delete(%1$d)</string>
 
 </resources>

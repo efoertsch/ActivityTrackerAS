@@ -1,57 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:id="@+id/prior_activity_list"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical"
-              android:paddingLeft="@dimen/margin_double"
-              android:paddingRight="@dimen/margin_double">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/activity_history_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/margin_double"
+                android:paddingStart="@dimen/margin_double">
 
     <LinearLayout
-        android:id="@+id/prior_activity_list_columns"
+        android:id="@+id/activity_history_list_columns"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_standard"
+        android:layout_alignParentTop="true"
         android:layout_marginBottom="@dimen/margin_standard"
-        android:clickable="true"
-        android:orientation="horizontal">
+        android:layout_marginTop="@dimen/margin_standard"
+        android:orientation="horizontal"
+        android:weightSum="100">
 
-        <TextView
-            android:id="@+id/prior_activity_list_activity"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/exercise"
-            android:textAppearance="?android:attr/textAppearanceMedium"/>
+            android:layout_weight="95"
+            android:orientation="horizontal"
+            android:weightSum="100">
 
-        <TextView
-            android:id="@+id/prior_activity_list_location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="44dp"
-            android:text="@string/location"
-            android:textAppearance="?android:attr/textAppearanceMedium"/>
+            <TextView
+                android:id="@+id/activity_history_list_activity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="30"
+                android:text="@string/exercise"
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+            <TextView
+                android:id="@+id/activity_history_list_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="70"
+                android:text="@string/location"
+                android:layout_marginStart="@dimen/margin_double"
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 
-    <include layout="@layout/divider_vertical"/>
+    <include
+        android:id="@+id/activity_history_divider_vertical"
+        layout="@layout/divider_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/activity_history_list_columns"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/activity_history_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="true"
         android:scrollbarAlwaysDrawVerticalTrack="true"
         android:scrollbars="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_below="@+id/activity_history_divider_vertical"/>
 
     <TextView
         android:id="@+id/activity_history_empty"
-        android:paddingTop="@dimen/margin_standard"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_horizontal"
+        android:paddingTop="@dimen/margin_standard"
         android:text="@string/no_activities_to_display"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:layout_below="@+id/activity_history_divider_vertical"/>
 
-</LinearLayout>
+</RelativeLayout>

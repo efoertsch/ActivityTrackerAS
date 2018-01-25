@@ -51,26 +51,6 @@ abstract public class ExerciseMasterActivity extends AppCompatActivity implement
 			database = databaseHelper.getWritableDatabase();
 		}
 	}
-
-	public void onDestroy() {
-//		if (database != null) {
-//			if (database.isOpen()){
-//				database.close();
-//			}
-//			database = null;
-//		}
-		super.onDestroy();
-	}
-
-	@Override
-	public void finalize() {
-//		if (database != null) {
-//			if (database.isOpen()){
-//				database.close();
-//			}
-//			database = null;
-//		}
-	}
 	
 	public void onSelectedAction(Bundle args) {
 		Fragment newDetail = null;

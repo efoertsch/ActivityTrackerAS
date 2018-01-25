@@ -33,7 +33,6 @@
     <!-- for .AppBarLayout height -->
     <dimen name="detail_backdrop_height">256dp</dimen>
 
-
     <!-- margins -->
     <dimen name="margin_half">4dp</dimen>
     <dimen name="margin_standard">8dp</dimen>
@@ -46,5 +45,10 @@
 
     <!--Floating action button-->
     <dimen name="design_fab_image_size" tools:override="true">36dp</dimen>
+
+    <!-- Photo Grid -->
+    <dimen name="photo_grid_spacing">2dp</dimen>
+    <dimen name="photo_grid_margin">2dp</dimen>
+
 
 </resources>

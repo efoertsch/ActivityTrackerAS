@@ -15,10 +15,9 @@ import com.fisincorporated.exercisetracker.database.ExerciseRecord;
 import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.GPSLog;
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
-import com.fisincorporated.exercisetracker.ui.photos.slideshow.FullscreenPhotoPagerActivity;
 import com.fisincorporated.exercisetracker.ui.photos.PhotoDetail;
-import com.fisincorporated.exercisetracker.ui.photos.photogrid.PhotoGridPagerActivity;
 import com.fisincorporated.exercisetracker.ui.photos.PhotoPoint;
+import com.fisincorporated.exercisetracker.ui.photos.photogrid.PhotoGridPagerActivity;
 import com.fisincorporated.exercisetracker.ui.utils.DisplayUnits;
 import com.fisincorporated.exercisetracker.utility.PhotoUtils;
 import com.fisincorporated.exercisetracker.utility.Utility;
@@ -360,16 +359,10 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
         Integer photoPointPosition = (Integer) marker.getTag();
         if (photoPointPosition != NON_PHOTO_PIN) {
             PhotoPoint photoPoint = photoPoints.get(photoPointPosition);
-            if (photoPoint.getPhotoDetails().size() == 1) {
-                intent = FullscreenPhotoPagerActivity.IntentBuilder.getBuilder(context)
-                        .setPhotoDetails(photoPoint.getPhotoDetails())
-                        .setPhotoDetailPosition(0).build();
-            } else {
                 intent = PhotoGridPagerActivity.IntentBuilder.getBuilder(context)
                         .setPhotoPoints(photoPoints)
                         .setPhotoPointPosition(photoPointPosition)
                         .setTitle(title).build();
-            }
             context.startActivity(intent);
             return true;
         }

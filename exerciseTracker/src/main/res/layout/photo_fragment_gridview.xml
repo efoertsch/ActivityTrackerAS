@@ -9,10 +9,10 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:gravity="center"
-              android:horizontalSpacing="2dp"
-              android:verticalSpacing="2dp"
+              android:horizontalSpacing="@dimen/photo_grid_spacing"
+              android:verticalSpacing="@dimen/photo_grid_spacing"
               android:numColumns="2"
-              android:layout_marginTop="2dp"
+              android:layout_marginTop="@dimen/photo_grid_margin"
               android:stretchMode="columnWidth"/>
 
 </android.support.constraint.ConstraintLayout>

@@ -15,19 +15,35 @@
             layout="@layout/activity_row_summary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="95"/>
+            android:layout_gravity="center"
+            android:layout_weight="95"
+            />
 
-        <ImageButton
-            android:id="@+id/activity_history_row_btnShowMap"
-            style="?android:attr/buttonStyleSmall"
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="5"
-            android:background="@android:color/transparent"
-            android:focusable="false"
-            android:src="@drawable/ic_device_gps_fixed"
-            android:text="@string/map"
-            android:textAppearance="?android:attr/textAppearanceSmall"/>
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/activity_history_row_btnShowMap"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/ic_device_gps_fixed"
+                android:text="@string/map"/>
+
+            <ImageView
+                android:id="@+id/activity_history_check_to_delete"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_check_circle"
+                android:text="@string/checked_for_deletion"/>
+
+        </RelativeLayout>
 
     </LinearLayout>
 

@@ -1,6 +1,8 @@
 package com.fisincorporated.exercisetracker.ui.history;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,26 +13,27 @@ import android.view.MenuItem;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
-import com.fisincorporated.exercisetracker.ui.charts.GraphActivity;
 import com.fisincorporated.exercisetracker.ui.charts.DistancePerExerciseFragment;
+import com.fisincorporated.exercisetracker.ui.charts.GraphActivity;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
+import com.fisincorporated.exercisetracker.ui.master.IChangeToolbar;
 
-public class ActivityHistory extends ExerciseMasterFragmentActivity {
-    AbstractActivityHistoryFragment alf = null;
+public class ActivityHistory extends ExerciseMasterFragmentActivity implements IChangeToolbar {
+    ActivityFragmentHistory alf = null;
     Menu myMenu = null;
+    Drawable actionBarDrawable = null;
+    String originalTitle = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setActivityTitle(R.string.activity_history);
+        originalTitle = getString(R.string.activity_history);
     }
 
     @Override
     protected Fragment createFragment() {
-        // backstack listener from
-        // http://stackoverflow.com/questions/6503189/fragments-onresume-from-back-stack
-        getSupportFragmentManager().addOnBackStackChangedListener(getListener());
-        return alf = new ActivityHistoryFragment();
+        return alf = new ActivityFragmentHistory();
     }
 
     // added for tablet
@@ -50,9 +53,6 @@ public class ActivityHistory extends ExerciseMasterFragmentActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         getCurrentFragment();
         switch (item.getItemId()) {
-            case R.id.activities_list_options_delete:
-                switchToDeleteFragment();
-                return true;
             case R.id.activities_list_filter_by_exercise:
                 alf.showExerciseFilter();
                 return true;
@@ -85,50 +85,9 @@ public class ActivityHistory extends ExerciseMasterFragmentActivity {
 
     private void getCurrentFragment() {
         FragmentManager fm = getSupportFragmentManager();
-        alf = (AbstractActivityHistoryFragment) fm.findFragmentById(R.id.fragmentContainer);
+        alf = (ActivityFragmentHistory) fm.findFragmentById(R.id.fragmentContainer);
     }
 
-    public void switchToDeleteFragment() {
-        FragmentManager fm = getSupportFragmentManager();
-        Bundle sortFilter = ((AbstractActivityHistoryFragment) fm
-                .findFragmentById(R.id.fragmentContainer)).getSortFilterValues();
-        FragmentTransaction ft = fm.beginTransaction();
-        alf = new DeleteHistoryFragment();
-        alf.setArguments(sortFilter);
-        ft.replace(R.id.fragmentContainer, alf, "DeleteActivities");
-        ft.addToBackStack(null);
-        ft.commit();
-
-    }
-
-    public void onBackPressed() {
-        checkToEnableDelete();
-        super.onBackPressed();
-    }
-
-    // Note: this is not called when on prioractivities list and back pressed to go back to main menu
-    private FragmentManager.OnBackStackChangedListener getListener() {
-        FragmentManager.OnBackStackChangedListener result = () -> {
-            FragmentManager manager = getSupportFragmentManager();
-            if (manager != null) {
-                checkToEnableDelete();
-            }
-        };
-        return result;
-    }
-
-    public void checkToEnableDelete() {
-        FragmentManager fm = getSupportFragmentManager();
-        if (myMenu == null) {
-            return;
-        }
-        if (null == fm.findFragmentByTag("DeleteActivities"))
-            myMenu.findItem(R.id.activities_list_options_delete).setEnabled(true)
-                    .setVisible(true);
-        else
-            myMenu.findItem(R.id.activities_list_options_delete).setEnabled(false)
-                    .setVisible(false);
-    }
 
     public void showChart(int chartType) {
         Bundle bundle = alf.getSortFilterValues();
@@ -153,5 +112,30 @@ public class ActivityHistory extends ExerciseMasterFragmentActivity {
             }
             ft.commit();
         }
+    }
+
+    @Override
+    public void setToolbarColor(int color) {
+        if (actionBar != null) {
+            actionBar.setBackgroundDrawable(new ColorDrawable(color));
+        }
+
+    }
+
+    @Override
+    public void resetToolbarColorToDefault() {
+        setActionBarBackgroundColorToDefault();
+
+    }
+
+    @Override
+    public void setToolbarTitle(String title) {
+        setActivityTitle(title);
+    }
+
+    @Override
+    public void resetToolbarTitleToDefault() {
+        setActivityTitle(originalTitle);
+
     }
 }

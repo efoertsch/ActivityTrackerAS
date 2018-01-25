@@ -65,6 +65,7 @@ public class ActivityHistoryItemAdapter extends RecyclerViewCursorAdapter<Activi
             tvDescription = (TextView) itemView.findViewById(R.id.activity_history_row_description);
             imgbtnMap = (ImageButton) itemView.findViewById(R.id.activity_history_row_btnShowMap);
             imgvDeleteCheckmark = (ImageView) itemView.findViewById(R.id.activity_history_check_to_delete);
+            imgbtnMap.setOnClickListener(this);
             summaryTextView.setOnLongClickListener(this);
             summaryTextView.setOnClickListener(this);
         }

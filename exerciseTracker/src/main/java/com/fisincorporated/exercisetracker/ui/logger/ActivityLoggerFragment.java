@@ -1,10 +1,9 @@
 package com.fisincorporated.exercisetracker.ui.logger;
 
-import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,8 +19,6 @@ import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.backupandrestore.BackupScheduler;
 import com.fisincorporated.exercisetracker.broadcastreceiver.UpdateLerReceiver;
-import com.fisincorporated.exercisetracker.database.ExerciseDAO;
-import com.fisincorporated.exercisetracker.database.GPSLogDAO;
 import com.fisincorporated.exercisetracker.database.LocationExerciseDAO;
 import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
@@ -29,7 +26,6 @@ import com.fisincorporated.exercisetracker.database.TrackerDatabase.ExrcsLocatio
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
 import com.fisincorporated.exercisetracker.ui.stats.StatsArrayAdapter;
-import com.fisincorporated.exercisetracker.ui.utils.ActivityDialogFragment;
 import com.fisincorporated.exercisetracker.utility.Utility;
 
 import java.util.ArrayList;
@@ -38,8 +34,8 @@ import java.util.ArrayList;
 
 public class ActivityLoggerFragment extends ExerciseMasterFragment {
 
-    private static final int CANCEL_REQUESTCODE = 0;
-    private TextView tvExerciseLocation = null;
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+
     ListView statsList = null;
     StatsArrayAdapter statsArrayAdapter = null;
 
@@ -52,8 +48,8 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
     private ArrayList<String[]> stats = new ArrayList<>();
 
     protected LocationExerciseRecord ler = null;
-    private LocationExerciseDAO leDAO = null;
-    private ExerciseDAO exerciseDAO = null;
+
+    private MenuItem cameraMenuItem;
 
     private GPSLocationManager gpsLocationManager = null;
     private UpdateLerReceiver updateLerReceiver = new UpdateLerReceiver() {
@@ -83,8 +79,8 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
         // problem in LocationReceiver.onLocationReceived() with passes just context
         gpsLocationManager.setNotification(getActivity(), exercise, exrcsLocation);
         GPSLocationManager.setActivityDetails(bundle);
-
         gpsLocationManager.startNewLer(ler);
+        setHasOptionsMenu(true);
     }
 
     private Bundle lookForArguments(Bundle savedInstanceState) {
@@ -96,7 +92,7 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
         } else if (savedInstanceState != null) {
             bundle = savedInstanceState;
         }
-        ler =  bundle.getParcelable(LocationExercise.LOCATION_EXERCISE_TABLE);
+        ler = bundle.getParcelable(LocationExercise.LOCATION_EXERCISE_TABLE);
         // exerciseRowId = ler.get_id();
         exercise = bundle.getString(Exercise.EXERCISE);
         // locationRowid = ler.getLocationId();
@@ -125,19 +121,32 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
             getCurrentLer();
             displayActivityStats(ler);
         }
-
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        getActivity().registerReceiver(updateLerReceiver,
+                new IntentFilter(GPSLocationManager.LER_UPDATE));
+    }
+
+    @Override
+    public void onStop() {
+        getActivity().unregisterReceiver(updateLerReceiver);
+        super.onStop();
+    }
+
+
     private void getCurrentLer() {
-        leDAO = new LocationExerciseDAO();
+        LocationExerciseDAO leDAO = new LocationExerciseDAO();
         ler = leDAO.loadLocationExerciseRecordById(ler.get_id());
     }
 
     private void getReferencedViews(View view) {
-        tvExerciseLocation = (TextView) view
+        TextView tvExerciseLocation = (TextView) view
                 .findViewById(R.id.activity_detail_tvExerciseLocation);
-        tvExerciseLocation.setText(getString(R.string.exercise_at_location_plus_description,exercise, exrcsLocation, description));
-        View buttonView = (View) view.findViewById(R.id.activity_detail_buttonfooter);
+        tvExerciseLocation.setText(getString(R.string.exercise_at_location_plus_description, exercise, exrcsLocation, description));
+        View buttonView = view.findViewById(R.id.activity_detail_buttonfooter);
         buttonView.setVisibility(View.VISIBLE);
         // stats.add(new String[] {"xxxx", "yyyy"});
         statsArrayAdapter = new StatsArrayAdapter(getActivity(),
@@ -166,7 +175,6 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
                 checkStopRestartButton();
             }
         });
-
     }
 
     //TODO come up with better backup strategy
@@ -175,9 +183,12 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
         BackupScheduler.scheduleBackupJob(getActivity().getApplicationContext(), GlobalValues.BACKUP_TO_LOCAL);
     }
 
+    // Note this is called after onResume() (Seems odd time to call it)
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-            inflater.inflate(R.menu.activity_detail_for_tablet, menu);
+        inflater.inflate(R.menu.activity_logger_camera, menu);
+        inflater.inflate(R.menu.activity_detail_for_tablet, menu);
+        cameraMenuItem = menu.findItem(R.id.activity_logger_camera);
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -186,7 +197,7 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
             case R.id.activity_detail_showMap:
                 if (ler.getStartLatitude() != null) {
                     args.putLong(LocationExercise._ID, ler.get_id());
-                    args.putString(GlobalValues.TITLE, exercise + "@" + exrcsLocation);
+                    args.putString(GlobalValues.TITLE, getString(R.string.exercise_at_location, exercise, exrcsLocation));
                     args.putString(LocationExercise.DESCRIPTION, description);
                     args.putInt(GlobalValues.DISPLAY_TARGET, GlobalValues.DISPLAY_MAP);
                     Toast.makeText(getActivity().getBaseContext(),
@@ -203,41 +214,27 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
                 return true;
             case R.id.activity_detail_showChart:
                 args.putLong(LocationExercise._ID, ler.get_id());
-                args.putString(GlobalValues.TITLE, exercise + "@" + exrcsLocation);
+                args.putString(GlobalValues.TITLE, getString(R.string.exercise_at_location, exercise, exrcsLocation));
                 args.putString(LocationExercise.DESCRIPTION, description);
                 args.putInt(GlobalValues.DISPLAY_TARGET, GlobalValues.DISPLAY_CHART);
                 args.putInt(GlobalValues.BAR_CHART_TYPE, GlobalValues.DISTANCE_VS_ELEVATION);
                 callBacks.onSelectedAction(args);
                 return true;
+
+            case R.id.activity_logger_camera:
+
+                startCameraApp();
+                return true;
+
             default:
                 return false;
         }
     }
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (resultCode != Activity.RESULT_OK)
-            return;
-        if (requestCode == CANCEL_REQUESTCODE) {
-            int buttonPressed = intent.getIntExtra(
-                    ActivityDialogFragment.DIALOG_RESPONSE, -1);
-            if (buttonPressed == DialogInterface.BUTTON_POSITIVE) {
-                gpsLocationManager.stopTrackingLer();
-                GPSLogDAO gpslogDAO = new GPSLogDAO();
-                database.beginTransaction();
-                try {
-                    gpslogDAO.deleteGPSLogbyLerRowId(ler.get_id());
-                    leDAO = new LocationExerciseDAO();
-                    leDAO.deleteLocationExercise(ler);
-                    exerciseDAO = new ExerciseDAO();
-                    exerciseDAO.updateTimesUsed(ler.get_id(), -1);
-                    database.setTransactionSuccessful();
-                } finally {
-                    database.endTransaction();
-                }
-                getActivity().finish();
-            } else if (buttonPressed == DialogInterface.BUTTON_NEGATIVE) {
-                return;
-            }
+
+    private void startCameraApp() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         }
     }
 
@@ -254,9 +251,7 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
                     "Location not yet available. Please wait.", Toast.LENGTH_LONG)
                     .show();
         }
-
         checkStopRestartButton();
-
     }
 
     private void formatLerStarts(LocationExerciseRecord ler) {
@@ -270,25 +265,19 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
         if (started) {
             btnStopRestart.setText(getResources()
                     .getString(R.string.stop));
+            displayCameraMenuIcon(true);
         } else {
             // why does 'continue' for string resource name give an error?
             btnStopRestart.setText(getResources().getString(
                     R.string.continuex));
+            displayCameraMenuIcon(false);
         }
     }
 
-    public void onStart() {
-        super.onStart();
-        getActivity().registerReceiver(updateLerReceiver,
-                new IntentFilter(GPSLocationManager.LER_UPDATE));
+    private void displayCameraMenuIcon(boolean visible) {
+        if (cameraMenuItem != null) {
+            cameraMenuItem.setVisible(visible);
+        }
     }
-
-    public void onStop() {
-        getActivity().unregisterReceiver(updateLerReceiver);
-        super.onStop();
-    }
-
-
-
 
 }

@@ -25,6 +25,7 @@ public class ScreenSlidePageFragment extends Fragment {
         screenSlidePageFragment.uri = uri;
         return  screenSlidePageFragment;
     }
+
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putString(GlobalValues.PHOTO_URI, uri);

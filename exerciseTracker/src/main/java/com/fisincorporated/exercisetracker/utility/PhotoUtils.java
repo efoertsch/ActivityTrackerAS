@@ -1,5 +1,6 @@
 package com.fisincorporated.exercisetracker.utility;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -24,15 +25,15 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
-import com.fisincorporated.exercisetracker.ui.photos.PhotoDetail;
+import com.fisincorporated.exercisetracker.ui.photos.MediaDetail;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import io.reactivex.Single;
 
@@ -41,9 +42,10 @@ public class PhotoUtils {
 
     private static final String TAG = PhotoUtils.class.getSimpleName();
 
+    @SuppressLint("StaticFieldLeak")
     private static Context context;
 
-    public static void init(Context context){
+    public static void init(Context context) {
         PhotoUtils.context = context;
     }
 
@@ -312,40 +314,122 @@ public class PhotoUtils {
         return Resources.getSystem().getDisplayMetrics().heightPixels;
     }
 
-    public static Single<ArrayList<PhotoDetail>> getPhotoDetailListObservable(Context context, Long startTime, Long endTime) {
+    public static Single<ArrayList<MediaDetail>> getPhotoDetailListObservable(Context context, Long startTime, Long endTime) {
         return Single.create(emitter -> {
             emitter.onSuccess(PhotoUtils.getPhotosTaken(context, startTime, endTime));
         });
     }
 
-    public static ArrayList<PhotoDetail> getPhotosTaken(Context context, Long startTime, Long endTime) {
-        ArrayList<PhotoDetail> photosTaken = new ArrayList<>();
-        if (startTime != null && endTime != null){
-            Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+    public static Single<ArrayList<MediaDetail>> getVideoListObservable(Context context, Long startTime, Long endTime) {
+        return Single.create(emitter -> {
+            emitter.onSuccess(PhotoUtils.getVideoTaken(context, startTime, endTime));
+
+        });
+    }
+
+    // Note to self - make sure you import io.reactivex.functions.BiConsumer, rather than java version
+    public static Single<ArrayList<MediaDetail>> getMediaListObservable(final Context context, final Long startTime, final Long endTime) {
+        return Single.concat(PhotoUtils.getPhotoDetailListObservable(context, startTime, endTime)
+                , PhotoUtils.getVideoListObservable(context, startTime, endTime))
+                .collect(ArrayList::new
+                        , (mediaDetails, mediaDetails2) -> {
+                            mediaDetails.addAll(mediaDetails2);
+                            Collections.sort(mediaDetails);
+
+                        });
+    }
+
+    //MimeType null on MotoX 2nd gen
+    public static ArrayList<MediaDetail> getPhotosTaken(Context context, Long startTime, Long
+            endTime) {
+        ArrayList<MediaDetail> photosTaken = new ArrayList<>();
+        if (startTime != null && endTime != null) {
             Cursor cursor;
-            String[] projection = {MediaStore.MediaColumns.DATA,
+            Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+
+            String[] columns = {MediaStore.MediaColumns.DATA,
                     MediaStore.Images.Media.LATITUDE, MediaStore.Images.Media.LONGITUDE, MediaStore.Images.Media.DATE_TAKEN};
             String selection = MediaStore.Images.Media.DATE_TAKEN + " >= ? and " + MediaStore.Images.Media.DATE_TAKEN + " <=  ?";
             String[] selectionArgs = {startTime.toString(), endTime.toString()};
             String orderBy = MediaStore.Images.Media.DATE_TAKEN + " ASC";
 
-            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, orderBy);
+            cursor = context.getContentResolver().query(uri, columns, selection, selectionArgs, orderBy);
 
             int pathIndex = cursor.getColumnIndex(MediaStore.MediaColumns.DATA);
             int latitudeIndex = cursor.getColumnIndex(MediaStore.Images.Media.LATITUDE);
             int longitudeIndex = cursor.getColumnIndex(MediaStore.Images.Media.LONGITUDE);
             int dateTakenIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN);
+            int mimeTypeIndex = cursor.getColumnIndex(MediaStore.Images.Media.MIME_TYPE);
 
             while (cursor.moveToNext()) {
-                PhotoDetail photoDetail = new PhotoDetail().setPhotoPath(cursor.getString(pathIndex))
-                        .setDateTaken(Long.parseLong(cursor.getString(dateTakenIndex)) )
+                MediaDetail mediaDetail = new MediaDetail().setMediaPath(cursor.getString(pathIndex))
+                        .setDateTaken(Long.parseLong(cursor.getString(dateTakenIndex)))
                         .setLatitude(cursor.getString(latitudeIndex))
-                        .setLongitude(cursor.getString(longitudeIndex));
-                photosTaken.add(photoDetail);
-                Log.d(TAG, " Photo:" + photoDetail.getPhotoPath()
-                        + " Time:" + new Timestamp(photoDetail.getDateTaken())
-                        + " At:" + photoDetail.getLatitude() + ":" + photoDetail.getLongitude());
+                        .setLongitude(cursor.getString(longitudeIndex))
+                        .setAsImage();
+                photosTaken.add(mediaDetail);
+//                Log.d(TAG, " Photo:" + mediaDetail.getMediaPath()
+//                        + " Time:" + new Timestamp(mediaDetail.getDateTaken())
+//                        + " At:" + mediaDetail.getLatitude() + ":" + mediaDetail.getLongitude());
 
+            }
+            cursor.close();
+        }
+        return photosTaken;
+    }
+
+    public static ArrayList<MediaDetail> getVideoTaken(Context context, Long startTime, Long
+            endTime) {
+        ArrayList<MediaDetail> photosTaken = new ArrayList<>();
+        if (startTime != null && endTime != null) {
+            Cursor cursor;
+            String[] columns = {MediaStore.Video.VideoColumns.DATA,
+                    MediaStore.Video.VideoColumns.LATITUDE,
+                    MediaStore.Video.VideoColumns.LONGITUDE,
+                    MediaStore.Video.VideoColumns.DATE_TAKEN,
+                    MediaStore.Video.VideoColumns.DATE_ADDED,
+            MediaStore.Video.VideoColumns.MINI_THUMB_MAGIC};
+
+            String selection =MediaStore.Video.VideoColumns.DATE_TAKEN + " >= ? and "
+                    + MediaStore.Video.VideoColumns.DATE_TAKEN + " <=  ? ";
+            final String orderBy =  MediaStore.Video.VideoColumns.DATE_TAKEN + " ASC ";
+            String[] selectionArgs = {startTime.toString(), endTime.toString()};
+
+            Uri queryUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+
+            cursor = context.getContentResolver().query(queryUri, columns, selection, selectionArgs, orderBy);
+            //cursor = context.getContentResolver().query(queryUri, columns, null, null, orderBy);
+
+            int pathIndex = cursor.getColumnIndex(MediaStore.Video.VideoColumns.DATA);
+            int latitudeIndex = cursor.getColumnIndex(MediaStore.Video.VideoColumns.LATITUDE);
+            int longitudeIndex = cursor.getColumnIndex(MediaStore.Video.VideoColumns.LONGITUDE);
+            int dateTakenIndex = cursor.getColumnIndex(MediaStore.Video.VideoColumns.DATE_TAKEN);
+            int dateAddedIndex = cursor.getColumnIndex(MediaStore.Video.VideoColumns.DATE_ADDED);
+
+            String path;
+            String dateTaken;
+            String dateAdded;
+
+
+            while (cursor.moveToNext()) {
+                path = cursor.getString(pathIndex);
+                dateTaken = cursor.getString(dateTakenIndex);
+                dateAdded = cursor.getString(dateAddedIndex);
+
+                if (path != null && dateTaken != null) {
+                    MediaDetail mediaDetail = new MediaDetail().setMediaPath(path)
+                            .setDateTaken(Long.parseLong(dateTaken))
+                            .setLatitude(cursor.getString(latitudeIndex))
+                            .setLongitude(cursor.getString(longitudeIndex))
+                            .setAsVideo();
+                    photosTaken.add(mediaDetail);
+//                    Log.d(TAG, "Video:" + mediaDetail.getMediaPath()
+//                            + " Time Taken long " + mediaDetail.getDateTaken()
+//                            + " Time Taken:" + new Timestamp(mediaDetail.getDateTaken())
+//                            + " Time Added long " + (dateAdded == null ? "missing" : Long.parseLong(dateAdded))
+//                            + " Time Added:" + (dateAdded == null ? "missing" : new Timestamp(Long.parseLong(dateAdded)))
+//                            + " MimeType:" + mediaDetail.getMimeType());
+                }
             }
             cursor.close();
         }

@@ -10,7 +10,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.RequestManager;
 import com.fisincorporated.exercisetracker.R;
-import com.fisincorporated.exercisetracker.ui.photos.PhotoDetail;
+import com.fisincorporated.exercisetracker.ui.photos.MediaDetail;
 import com.fisincorporated.exercisetracker.ui.photos.slideshow.FullscreenPhotoPagerActivity;
 
 import java.io.File;
@@ -24,22 +24,22 @@ public class PhotoGridAdapter extends ArrayAdapter {
     private final RequestManager glide;
     private LayoutInflater inflater;
 
-    private ArrayList<PhotoDetail> photoDetails;
+    private ArrayList<MediaDetail> mediaDetails;
 
-    public PhotoGridAdapter(Context context, RequestManager glide, ArrayList<PhotoDetail> photoDetails) {
-        super(context, R.layout.photo_fragment_gridview_imageview, photoDetails);
+    public PhotoGridAdapter(Context context, RequestManager glide, ArrayList<MediaDetail> mediaDetails) {
+        super(context, R.layout.photo_fragment_gridview_imageview, mediaDetails);
         this.context = context;
         this.glide = glide;
-        this.photoDetails = photoDetails;
+        this.mediaDetails = mediaDetails;
         inflater = LayoutInflater.from(context);
     }
 
     public int getCount() {
-        return photoDetails.size();
+        return mediaDetails.size();
     }
 
-    public PhotoDetail getItem(int position) {
-        return photoDetails.get(position);
+    public MediaDetail getItem(int position) {
+        return mediaDetails.get(position);
     }
 
     public long getItemId(int position) {
@@ -51,12 +51,25 @@ public class PhotoGridAdapter extends ArrayAdapter {
         if (null == convertView) {
             convertView = inflater.inflate(R.layout.photo_fragment_gridview_imageview, parent, false);
         }
-        glide.load(Uri.fromFile(new File(photoDetails.get(position).getPhotoPath())))
-                .into((ImageView) convertView);
+        ImageView glideImageView =  (ImageView) convertView.findViewById(R.id.photo_fragment_gridview_glide_imageview);
+        ImageView VideoIconImageView = (ImageView) convertView.findViewById(R.id.photo_fragment_gridview_video_icon);
+
+        if (mediaDetails.get(position).isVideo()) {
+            glide.load(Uri.fromFile(new File(mediaDetails.get(position).getMediaPath())))
+                    .into(glideImageView);
+            VideoIconImageView.setVisibility(View.VISIBLE);
+        } else {
+            // is photo
+            glide.load(Uri.fromFile(new File(mediaDetails.get(position).getMediaPath())))
+                    .into(glideImageView);
+            VideoIconImageView.setVisibility(View.GONE);
+
+        }
+
         convertView.setTag(position);
         convertView.setOnClickListener(v -> {
             FullscreenPhotoPagerActivity.IntentBuilder intentBuilder = FullscreenPhotoPagerActivity.IntentBuilder.getBuilder(getContext());
-            intentBuilder.setPhotoDetails(photoDetails).setPhotoDetailPosition((int) v.getTag());
+            intentBuilder.setPhotoDetails(mediaDetails).setPhotoDetailPosition((int) v.getTag());
             context.startActivity(intentBuilder.build());
         });
 

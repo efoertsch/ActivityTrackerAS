@@ -10,13 +10,13 @@ import com.bumptech.glide.Glide;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
-import com.fisincorporated.exercisetracker.ui.photos.PhotoDetail;
+import com.fisincorporated.exercisetracker.ui.photos.MediaDetail;
 
 import java.util.ArrayList;
 
 public class PhotoGridFragment extends ExerciseMasterFragment {
 
-    private ArrayList<PhotoDetail> photoDetails;
+    private ArrayList<MediaDetail> mediaDetails;
     private  GridView gridView;
 
     public static PhotoGridFragment newInstance() {
@@ -35,7 +35,7 @@ public class PhotoGridFragment extends ExerciseMasterFragment {
         View view = inflater.inflate(R.layout.photo_fragment_gridview, container, false);
         getReferencedViews(view);
         lookForArguments(savedInstanceState);
-        gridView.setAdapter(new PhotoGridAdapter(getContext(), Glide.with(this),  photoDetails));
+        gridView.setAdapter(new PhotoGridAdapter(getContext(), Glide.with(this), mediaDetails));
 
         return view;
     }
@@ -50,7 +50,7 @@ public class PhotoGridFragment extends ExerciseMasterFragment {
             bundle = getArguments();
         }
         if (bundle != null) {
-            photoDetails = bundle.getParcelableArrayList(GlobalValues.PHOTO_POINTS);
+            mediaDetails = bundle.getParcelableArrayList(GlobalValues.PHOTO_POINTS);
         }
 
     }

@@ -9,7 +9,7 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.ArrayList;
 
 public class PhotoPoint implements Parcelable {
-    private ArrayList<PhotoDetail> photoDetails = new ArrayList<>();
+    private ArrayList<MediaDetail> mediaDetails = new ArrayList<>();
     private LatLng latlng;
     private long time;
 
@@ -22,12 +22,12 @@ public class PhotoPoint implements Parcelable {
         return photoPoint;
     }
 
-    public ArrayList<PhotoDetail> getPhotoDetails() {
-        return photoDetails;
+    public ArrayList<MediaDetail> getMediaDetails() {
+        return mediaDetails;
     }
 
-    public void setPhotoDetails(ArrayList<PhotoDetail> photoDetails) {
-        this.photoDetails = photoDetails;
+    public void setMediaDetails(ArrayList<MediaDetail> mediaDetails) {
+        this.mediaDetails = mediaDetails;
     }
 
     public LatLng getLatlng() {
@@ -46,8 +46,8 @@ public class PhotoPoint implements Parcelable {
         this.time = time;
     }
 
-    public void addPhotoDetail(PhotoDetail photoDetail){
-        photoDetails.add(photoDetail);
+    public void addPhotoDetail(MediaDetail mediaDetail){
+        mediaDetails.add(mediaDetail);
     }
 
 
@@ -58,13 +58,13 @@ public class PhotoPoint implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeTypedList(this.photoDetails);
+        dest.writeTypedList(this.mediaDetails);
         dest.writeParcelable(this.latlng, flags);
         dest.writeLong(this.time);
     }
 
     protected PhotoPoint(Parcel in) {
-        this.photoDetails = in.createTypedArrayList(PhotoDetail.CREATOR);
+        this.mediaDetails = in.createTypedArrayList(MediaDetail.CREATOR);
         this.latlng = in.readParcelable(LatLng.class.getClassLoader());
         this.time = in.readLong();
     }

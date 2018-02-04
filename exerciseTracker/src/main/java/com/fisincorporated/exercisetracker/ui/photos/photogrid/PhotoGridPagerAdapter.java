@@ -29,7 +29,7 @@ public class PhotoGridPagerAdapter <F extends Fragment> extends FragmentStatePag
         F frag;
         try {
             Bundle args = new Bundle();
-            args.putParcelableArrayList(GlobalValues.PHOTO_POINTS, photoPoints.get(position).getPhotoDetails());
+            args.putParcelableArrayList(GlobalValues.PHOTO_POINTS, photoPoints.get(position).getMediaDetails());
             frag = fragmentClass.newInstance();
             frag.setArguments(args);
         } catch (Exception ex) {

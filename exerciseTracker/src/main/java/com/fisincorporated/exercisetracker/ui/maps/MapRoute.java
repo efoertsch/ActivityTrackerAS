@@ -15,7 +15,7 @@ import com.fisincorporated.exercisetracker.database.ExerciseRecord;
 import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.GPSLog;
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
-import com.fisincorporated.exercisetracker.ui.photos.PhotoDetail;
+import com.fisincorporated.exercisetracker.ui.photos.MediaDetail;
 import com.fisincorporated.exercisetracker.ui.photos.PhotoPoint;
 import com.fisincorporated.exercisetracker.ui.photos.photogrid.PhotoGridPagerActivity;
 import com.fisincorporated.exercisetracker.ui.utils.DisplayUnits;
@@ -40,7 +40,7 @@ import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
 
 
-
+//TODO remove callbacks and use RXJava or Bus
 public class MapRoute implements GoogleMap.OnMarkerClickListener {
 
     private static final String TAG = MapRoute.class.getSimpleName();
@@ -74,7 +74,7 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
 
     // TODO set groupTime per exercise - currently 3 minutes
     private int groupTime = 3 * 60 * 1000;
-    private ArrayList<PhotoDetail> photoDetailList = new ArrayList<>();
+    private ArrayList<MediaDetail> mediaDetailList = new ArrayList<>();
     private ArrayList<PhotoPoint> photoPoints = new ArrayList<>();
     private ActivityPhotosCallback activityPhotosCallback;
     private String title;
@@ -86,7 +86,7 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
     }
 
     public interface ActivityPhotosCallback{
-         void photoList(ArrayList<PhotoDetail> photoDetails);
+         void photoList(ArrayList<MediaDetail> mediaDetails);
     }
 
     public static class Builder {
@@ -288,13 +288,13 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
         Log.d(TAG, "Starting at photo " + photoStartIndex  + " latLng:" + atLatLng.toString());
         int photoPointsSize = 0;
         long photoDate;
-        if (photoDetailList.size() == 0 || photoStartIndex > photoDetailList.size() - 1 ) {
+        if (mediaDetailList.size() == 0 || photoStartIndex > mediaDetailList.size() - 1 ) {
             return photoStartIndex;
         }
 
-        for (int i = photoStartIndex; i < photoDetailList.size(); i++) {
+        for (int i = photoStartIndex; i < mediaDetailList.size(); i++) {
             photoPointsSize = photoPoints.size();
-            photoDate = photoDetailList.get(i).getDateTaken();
+            photoDate = mediaDetailList.get(i).getDateTaken();
             Log.d(TAG, " Photo timestamp:" + new Timestamp(photoDate));
             // Photo taken within groupTime and first photo that meets that criteria
             if ((photoPointsSize == 0 && photoDate >= fromTime && photoDate <= (fromTime + groupTime))
@@ -305,9 +305,9 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
                     || (photoDate >= fromTime && photoDate <= (fromTime + groupTime))
                     // or GPS lost signal or stopped tracking and toTime is greater than fromTime + groupTime so add to existing group
                     || (photoDate >= fromTime && photoDate <= toTime)) {
-                addPhotoDetailToPhotoPoint(photoDetailList.get(i), atLatLng, fromTime, toTime, groupTime);
+                addPhotoDetailToPhotoPoint(mediaDetailList.get(i), atLatLng, fromTime, toTime, groupTime);
                 Log.d(TAG, "Adding photo " + i + " photoTime:"
-                        + new Timestamp(photoDetailList.get(i).getDateTaken())
+                        + new Timestamp(mediaDetailList.get(i).getDateTaken())
                         + " group:" + photoPoints.size());
                 ++photoStartIndex;
             }
@@ -315,25 +315,25 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
         return photoStartIndex;
     }
 
-    private void addPhotoDetailToPhotoPoint(PhotoDetail photoDetail, LatLng latLng, long fromTime, long toTime, int groupTime) {
+    private void addPhotoDetailToPhotoPoint(MediaDetail mediaDetail, LatLng latLng, long fromTime, long toTime, int groupTime) {
         if (photoPoints.size() == 0) {
-            addNewPhotoPoint(photoDetail, latLng, fromTime);
+            addNewPhotoPoint(mediaDetail, latLng, fromTime);
         } else {
             PhotoPoint photoPoint = photoPoints.get(photoPoints.size() - 1);
             // see if photo can go into current group or start new group
-            if ((photoDetail.getDateTaken() <= photoPoint.getTime() + groupTime)
-                    || photoDetail.getDateTaken() >= fromTime && photoDetail.getDateTaken() <= toTime) {
-                photoPoint.addPhotoDetail(photoDetail);
+            if ((mediaDetail.getDateTaken() <= photoPoint.getTime() + groupTime)
+                    || mediaDetail.getDateTaken() >= fromTime && mediaDetail.getDateTaken() <= toTime) {
+                photoPoint.addPhotoDetail(mediaDetail);
             } else {
                 // add photo to new group
-                addNewPhotoPoint(photoDetail, latLng, fromTime);
+                addNewPhotoPoint(mediaDetail, latLng, fromTime);
             }
         }
     }
 
-    private void addNewPhotoPoint(PhotoDetail photoDetail, LatLng latLng, long fromTime) {
+    private void addNewPhotoPoint(MediaDetail mediaDetail, LatLng latLng, long fromTime) {
         PhotoPoint photoPoint = PhotoPoint.getInstance(fromTime, latLng);
-        photoPoint.addPhotoDetail(photoDetail);
+        photoPoint.addPhotoDetail(mediaDetail);
         photoPoints.add(photoPoint);
     }
 
@@ -357,7 +357,8 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
     public boolean onMarkerClick(final Marker marker) {
         Intent intent;
         Integer photoPointPosition = (Integer) marker.getTag();
-        if (photoPointPosition != NON_PHOTO_PIN) {
+        // Seems like Maps returns click on a milage marker that is very close to photo pin
+        if (photoPointPosition != null && photoPointPosition != NON_PHOTO_PIN) {
             PhotoPoint photoPoint = photoPoints.get(photoPointPosition);
                 intent = PhotoGridPagerActivity.IntentBuilder.getBuilder(context)
                         .setPhotoPoints(photoPoints)
@@ -384,11 +385,12 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
             currentDistance += distance;
             int displayDistance = Utility.calcDisplayDistance(currentDistance, isImperialDisplay);
             distance = 0;
-            map.addMarker(new MarkerOptions()
+           Marker marker =  map.addMarker(new MarkerOptions()
                     .position(toLatLng)
                     .icon(BitmapDescriptorFactory.fromBitmap(setMarkerDrawable(displayDistance + distanceUnits)))
                     // SET ANCHOR POINT TO MARKER CENTER
                     .anchor(0.5f, 0.5f));
+           marker.setTag(NON_PHOTO_PIN);
         }
     }
 
@@ -450,14 +452,15 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
     }
 
     public void getPhotosTaken(Context context, long startTime, long endTime) {
-        compositeDisposable.add(PhotoUtils.getPhotoDetailListObservable(context, startTime, endTime)
+        //compositeDisposable.add(PhotoUtils.getPhotoDetailListObservable(context, startTime, endTime)
+        compositeDisposable.add(PhotoUtils.getMediaListObservable(context, startTime, endTime)
                 .onErrorReturn(throwable -> {
                             Toast.makeText(context, R.string.error_get_photos_for_activity, Toast.LENGTH_LONG).show();
                             return new ArrayList<>();
                         }
                 )
                 .subscribe(photoList -> {
-                            MapRoute.this.photoDetailList = photoList;
+                            MapRoute.this.mediaDetailList = photoList;
                             startPlotting();
                             callbackPhotoList(photoList);
                         },
@@ -466,7 +469,7 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
                         }));
     }
 
-    private void callbackPhotoList(ArrayList<PhotoDetail> photoList){
+    private void callbackPhotoList(ArrayList<MediaDetail> photoList){
         if (activityPhotosCallback != null) {
             activityPhotosCallback.photoList(photoList);
         }

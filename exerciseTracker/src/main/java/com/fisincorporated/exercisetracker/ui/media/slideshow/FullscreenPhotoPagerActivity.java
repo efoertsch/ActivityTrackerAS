@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker.ui.photos.slideshow;
+package com.fisincorporated.exercisetracker.ui.media.slideshow;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -16,9 +16,8 @@ import android.view.View;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
-import com.fisincorporated.exercisetracker.ui.photos.MediaDetail;
+import com.fisincorporated.exercisetracker.ui.media.MediaDetail;
 import com.fisincorporated.exercisetracker.ui.utils.ZoomOutPageTransformer;
-import com.fisincorporated.exercisetracker.ui.video.VideoPlayerFragment;
 
 import java.util.ArrayList;
 
@@ -167,7 +166,7 @@ public class FullscreenPhotoPagerActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             MediaDetail mediaDetail = mediaDetails.get(position);
             if (mediaDetail.isImage()) {
-                return ScreenSlidePageFragment.getInstance(mediaDetail.getMediaPath());
+                return PhotoDisplayFragment.getInstance(mediaDetail.getMediaPath());
             }
             else {
                 return VideoPlayerFragment.getInstance(mediaDetail.getMediaPath());

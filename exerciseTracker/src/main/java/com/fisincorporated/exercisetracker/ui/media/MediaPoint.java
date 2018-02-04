@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker.ui.photos;
+package com.fisincorporated.exercisetracker.ui.media;
 
 
 import android.os.Parcel;
@@ -8,18 +8,18 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
-public class PhotoPoint implements Parcelable {
+public class MediaPoint implements Parcelable {
     private ArrayList<MediaDetail> mediaDetails = new ArrayList<>();
     private LatLng latlng;
     private long time;
 
-    private PhotoPoint(){}
+    private MediaPoint(){}
 
-    public static PhotoPoint getInstance(long time, LatLng latLng){
-        PhotoPoint photoPoint = new PhotoPoint();
-        photoPoint.setTime(time);
-        photoPoint.setLatlng(latLng);
-        return photoPoint;
+    public static MediaPoint getInstance(long time, LatLng latLng){
+        MediaPoint mediaPoint = new MediaPoint();
+        mediaPoint.setTime(time);
+        mediaPoint.setLatlng(latLng);
+        return mediaPoint;
     }
 
     public ArrayList<MediaDetail> getMediaDetails() {
@@ -63,21 +63,21 @@ public class PhotoPoint implements Parcelable {
         dest.writeLong(this.time);
     }
 
-    protected PhotoPoint(Parcel in) {
+    protected MediaPoint(Parcel in) {
         this.mediaDetails = in.createTypedArrayList(MediaDetail.CREATOR);
         this.latlng = in.readParcelable(LatLng.class.getClassLoader());
         this.time = in.readLong();
     }
 
-    public static final Parcelable.Creator<PhotoPoint> CREATOR = new Parcelable.Creator<PhotoPoint>() {
+    public static final Parcelable.Creator<MediaPoint> CREATOR = new Parcelable.Creator<MediaPoint>() {
         @Override
-        public PhotoPoint createFromParcel(Parcel source) {
-            return new PhotoPoint(source);
+        public MediaPoint createFromParcel(Parcel source) {
+            return new MediaPoint(source);
         }
 
         @Override
-        public PhotoPoint[] newArray(int size) {
-            return new PhotoPoint[size];
+        public MediaPoint[] newArray(int size) {
+            return new MediaPoint[size];
         }
     };
 }

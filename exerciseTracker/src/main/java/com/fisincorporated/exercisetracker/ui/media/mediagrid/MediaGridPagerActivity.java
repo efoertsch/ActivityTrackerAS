@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker.ui.photos.photogrid;
+package com.fisincorporated.exercisetracker.ui.media.mediagrid;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,15 +10,15 @@ import android.widget.FrameLayout;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
-import com.fisincorporated.exercisetracker.ui.photos.PhotoPoint;
+import com.fisincorporated.exercisetracker.ui.media.MediaPoint;
 import com.fisincorporated.exercisetracker.ui.utils.DepthPageTransformer;
 
 import java.util.ArrayList;
 
-public class PhotoGridPagerActivity extends ExerciseMasterFragmentActivity {
+public class MediaGridPagerActivity extends ExerciseMasterFragmentActivity {
 
     private ViewPager viewPager;
-    private ArrayList<PhotoPoint> photoPoints;
+    private ArrayList<MediaPoint> mediaPoints;
     private int photoPointIndex = 0;
     private String title = "";
 
@@ -49,7 +49,7 @@ public class PhotoGridPagerActivity extends ExerciseMasterFragmentActivity {
         frmLayout.addView(viewPager);
         getPhotoPointsFromIntent();
 
-        if (photoPoints == null) {
+        if (mediaPoints == null) {
             finish();
             return;
         }
@@ -61,7 +61,7 @@ public class PhotoGridPagerActivity extends ExerciseMasterFragmentActivity {
     private void getPhotoPointsFromIntent() {
         Intent intent = getIntent();
         photoPointIndex = intent.getIntExtra(GlobalValues.PHOTO_POINT_INDEX, 0);
-        photoPoints = intent.getParcelableArrayListExtra(GlobalValues.PHOTO_POINTS);
+        mediaPoints = intent.getParcelableArrayListExtra(GlobalValues.PHOTO_POINTS);
         title = intent.getStringExtra(GlobalValues.TITLE);
     }
 
@@ -71,9 +71,9 @@ public class PhotoGridPagerActivity extends ExerciseMasterFragmentActivity {
     }
 
     public void setPhotoGrid(int position){
-        viewPager.setAdapter(new PhotoGridPagerAdapter<>(
-                getSupportFragmentManager(),PhotoGridFragment.class,
-                photoPoints));
+        viewPager.setAdapter(new MediaGridPagerAdapter<>(
+                getSupportFragmentManager(),MediaGridFragment.class,
+                mediaPoints));
         viewPager.setCurrentItem(photoPointIndex);
 
     }
@@ -82,11 +82,11 @@ public class PhotoGridPagerActivity extends ExerciseMasterFragmentActivity {
         private Intent intent;
 
         private IntentBuilder(Context context){
-            intent = new Intent(context, PhotoGridPagerActivity.class);
+            intent = new Intent(context, MediaGridPagerActivity.class);
         }
 
         public static IntentBuilder getBuilder(Context context) {
-            return  new PhotoGridPagerActivity.IntentBuilder(context);
+            return  new MediaGridPagerActivity.IntentBuilder(context);
         }
 
         public IntentBuilder setTitle(String title){
@@ -94,8 +94,8 @@ public class PhotoGridPagerActivity extends ExerciseMasterFragmentActivity {
             return this;
         }
 
-        public IntentBuilder setPhotoPoints(ArrayList<PhotoPoint> photoPoints){
-            intent.putExtra(GlobalValues.PHOTO_POINTS, photoPoints);
+        public IntentBuilder setPhotoPoints(ArrayList<MediaPoint> mediaPoints){
+            intent.putExtra(GlobalValues.PHOTO_POINTS, mediaPoints);
             return this;
         }
 

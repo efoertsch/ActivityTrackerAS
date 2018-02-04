@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker.ui.video;
+package com.fisincorporated.exercisetracker.ui.media.slideshow;
 
 import android.content.res.Resources;
 import android.media.MediaPlayer;

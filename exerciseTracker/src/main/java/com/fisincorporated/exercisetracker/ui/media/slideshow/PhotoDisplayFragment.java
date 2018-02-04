@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker.ui.photos.slideshow;
+package com.fisincorporated.exercisetracker.ui.media.slideshow;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,16 +14,16 @@ import com.github.chrisbanes.photoview.PhotoView;
 
 import java.io.File;
 
-public class ScreenSlidePageFragment extends Fragment {
+public class PhotoDisplayFragment extends Fragment {
     private String uri;
     //ChrisBanes Photoview
     private PhotoView photoView;
 
 
-    public static ScreenSlidePageFragment getInstance(String uri) {
-        ScreenSlidePageFragment screenSlidePageFragment = new ScreenSlidePageFragment();
-        screenSlidePageFragment.uri = uri;
-        return  screenSlidePageFragment;
+    public static PhotoDisplayFragment getInstance(String uri) {
+        PhotoDisplayFragment photoDisplayFragment = new PhotoDisplayFragment();
+        photoDisplayFragment.uri = uri;
+        return photoDisplayFragment;
     }
 
     @Override

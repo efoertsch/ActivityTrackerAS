@@ -15,9 +15,9 @@ import com.fisincorporated.exercisetracker.database.ExerciseRecord;
 import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.GPSLog;
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
-import com.fisincorporated.exercisetracker.ui.photos.MediaDetail;
-import com.fisincorporated.exercisetracker.ui.photos.PhotoPoint;
-import com.fisincorporated.exercisetracker.ui.photos.photogrid.PhotoGridPagerActivity;
+import com.fisincorporated.exercisetracker.ui.media.MediaDetail;
+import com.fisincorporated.exercisetracker.ui.media.MediaPoint;
+import com.fisincorporated.exercisetracker.ui.media.mediagrid.MediaGridPagerActivity;
 import com.fisincorporated.exercisetracker.ui.utils.DisplayUnits;
 import com.fisincorporated.exercisetracker.utility.PhotoUtils;
 import com.fisincorporated.exercisetracker.utility.Utility;
@@ -75,7 +75,7 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
     // TODO set groupTime per exercise - currently 3 minutes
     private int groupTime = 3 * 60 * 1000;
     private ArrayList<MediaDetail> mediaDetailList = new ArrayList<>();
-    private ArrayList<PhotoPoint> photoPoints = new ArrayList<>();
+    private ArrayList<MediaPoint> mediaPoints = new ArrayList<>();
     private ActivityPhotosCallback activityPhotosCallback;
     private String title;
 
@@ -243,7 +243,7 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
         int elevationIndex;
         int timestampIndex;
         int photoStartIndex = 0;
-        photoPoints.clear();
+        mediaPoints.clear();
 
         if (csr.getCount() == 0 || csr.getCount() == 1) {
             return;
@@ -293,14 +293,14 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
         }
 
         for (int i = photoStartIndex; i < mediaDetailList.size(); i++) {
-            photoPointsSize = photoPoints.size();
+            photoPointsSize = mediaPoints.size();
             photoDate = mediaDetailList.get(i).getDateTaken();
             Log.d(TAG, " Photo timestamp:" + new Timestamp(photoDate));
             // Photo taken within groupTime and first photo that meets that criteria
             if ((photoPointsSize == 0 && photoDate >= fromTime && photoDate <= (fromTime + groupTime))
                     // or photo taken within the groupTime period
-                    || (photoPointsSize > 0 && photoDate >= photoPoints.get(photoPointsSize - 1).getTime() &&
-                    photoDate <= photoPoints.get(photoPointsSize - 1).getTime() + groupTime)
+                    || (photoPointsSize > 0 && photoDate >= mediaPoints.get(photoPointsSize - 1).getTime() &&
+                    photoDate <= mediaPoints.get(photoPointsSize - 1).getTime() + groupTime)
                     // or photo first in new group
                     || (photoDate >= fromTime && photoDate <= (fromTime + groupTime))
                     // or GPS lost signal or stopped tracking and toTime is greater than fromTime + groupTime so add to existing group
@@ -308,7 +308,7 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
                 addPhotoDetailToPhotoPoint(mediaDetailList.get(i), atLatLng, fromTime, toTime, groupTime);
                 Log.d(TAG, "Adding photo " + i + " photoTime:"
                         + new Timestamp(mediaDetailList.get(i).getDateTaken())
-                        + " group:" + photoPoints.size());
+                        + " group:" + mediaPoints.size());
                 ++photoStartIndex;
             }
         }
@@ -316,14 +316,14 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
     }
 
     private void addPhotoDetailToPhotoPoint(MediaDetail mediaDetail, LatLng latLng, long fromTime, long toTime, int groupTime) {
-        if (photoPoints.size() == 0) {
+        if (mediaPoints.size() == 0) {
             addNewPhotoPoint(mediaDetail, latLng, fromTime);
         } else {
-            PhotoPoint photoPoint = photoPoints.get(photoPoints.size() - 1);
+            MediaPoint mediaPoint = mediaPoints.get(mediaPoints.size() - 1);
             // see if photo can go into current group or start new group
-            if ((mediaDetail.getDateTaken() <= photoPoint.getTime() + groupTime)
+            if ((mediaDetail.getDateTaken() <= mediaPoint.getTime() + groupTime)
                     || mediaDetail.getDateTaken() >= fromTime && mediaDetail.getDateTaken() <= toTime) {
-                photoPoint.addPhotoDetail(mediaDetail);
+                mediaPoint.addPhotoDetail(mediaDetail);
             } else {
                 // add photo to new group
                 addNewPhotoPoint(mediaDetail, latLng, fromTime);
@@ -332,18 +332,18 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
     }
 
     private void addNewPhotoPoint(MediaDetail mediaDetail, LatLng latLng, long fromTime) {
-        PhotoPoint photoPoint = PhotoPoint.getInstance(fromTime, latLng);
-        photoPoint.addPhotoDetail(mediaDetail);
-        photoPoints.add(photoPoint);
+        MediaPoint mediaPoint = MediaPoint.getInstance(fromTime, latLng);
+        mediaPoint.addPhotoDetail(mediaDetail);
+        mediaPoints.add(mediaPoint);
     }
 
     private void placePhotoPoints() {
-        if (photoPoints.size() > 0 ) {
+        if (mediaPoints.size() > 0 ) {
             googleMap.setOnMarkerClickListener(this);
         }
-        for (int i = 0; i < photoPoints.size(); ++i) {
+        for (int i = 0; i < mediaPoints.size(); ++i) {
             Marker marker = googleMap.addMarker(new MarkerOptions()
-                    .position(photoPoints.get(i).getLatlng()));
+                    .position(mediaPoints.get(i).getLatlng()));
                     //.title(i + ""));
             marker.setTag(i);
 
@@ -359,9 +359,9 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
         Integer photoPointPosition = (Integer) marker.getTag();
         // Seems like Maps returns click on a milage marker that is very close to photo pin
         if (photoPointPosition != null && photoPointPosition != NON_PHOTO_PIN) {
-            PhotoPoint photoPoint = photoPoints.get(photoPointPosition);
-                intent = PhotoGridPagerActivity.IntentBuilder.getBuilder(context)
-                        .setPhotoPoints(photoPoints)
+            MediaPoint mediaPoint = mediaPoints.get(photoPointPosition);
+                intent = MediaGridPagerActivity.IntentBuilder.getBuilder(context)
+                        .setPhotoPoints(mediaPoints)
                         .setPhotoPointPosition(photoPointPosition)
                         .setTitle(title).build();
             context.startActivity(intent);

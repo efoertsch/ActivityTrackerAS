@@ -25,7 +25,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
-import com.fisincorporated.exercisetracker.ui.photos.MediaDetail;
+import com.fisincorporated.exercisetracker.ui.media.MediaDetail;
 
 import java.io.File;
 import java.io.FileNotFoundException;

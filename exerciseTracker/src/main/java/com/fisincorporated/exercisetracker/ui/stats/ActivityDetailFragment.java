@@ -25,11 +25,11 @@ import com.fisincorporated.exercisetracker.database.LocationExerciseDAO;
 import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.GPSLog;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
-import com.fisincorporated.exercisetracker.ui.photos.slideshow.FullscreenPhotoPagerActivity;
-import com.fisincorporated.exercisetracker.ui.photos.MediaDetail;
-import com.fisincorporated.exercisetracker.ui.photos.PhotoPoint;
+import com.fisincorporated.exercisetracker.ui.media.slideshow.FullscreenPhotoPagerActivity;
+import com.fisincorporated.exercisetracker.ui.media.MediaDetail;
+import com.fisincorporated.exercisetracker.ui.media.MediaPoint;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
-import com.fisincorporated.exercisetracker.ui.photos.photogrid.PhotoGridPagerActivity;
+import com.fisincorporated.exercisetracker.ui.media.mediagrid.MediaGridPagerActivity;
 import com.fisincorporated.exercisetracker.ui.utils.ActivityDialogFragment;
 import com.fisincorporated.exercisetracker.utility.PhotoUtils;
 import com.fisincorporated.exercisetracker.utility.Utility;
@@ -151,12 +151,12 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
                 intentBuilder.setPhotoDetails(mediaDetails);
                 intent = intentBuilder.build();
             } else {
-                PhotoPoint photoPoint = PhotoPoint.getInstance(0, null);
-                photoPoint.setMediaDetails(mediaDetails);
-                ArrayList<PhotoPoint> photoPoints = new ArrayList<>();
-                photoPoints.add(photoPoint);
-                PhotoGridPagerActivity.IntentBuilder intentBuilder = PhotoGridPagerActivity.IntentBuilder.getBuilder(getContext());
-                intentBuilder.setPhotoPoints(photoPoints).setTitle(title).setPhotoPointPosition(0);
+                MediaPoint mediaPoint = MediaPoint.getInstance(0, null);
+                mediaPoint.setMediaDetails(mediaDetails);
+                ArrayList<MediaPoint> mediaPoints = new ArrayList<>();
+                mediaPoints.add(mediaPoint);
+                MediaGridPagerActivity.IntentBuilder intentBuilder = MediaGridPagerActivity.IntentBuilder.getBuilder(getContext());
+                intentBuilder.setPhotoPoints(mediaPoints).setTitle(title).setPhotoPointPosition(0);
                 intent = intentBuilder.build();
             }
             startActivity(intent);

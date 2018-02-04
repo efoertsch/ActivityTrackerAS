@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker.ui.photos.photogrid;
+package com.fisincorporated.exercisetracker.ui.media.mediagrid;
 
 
 import android.os.Bundle;
@@ -7,20 +7,20 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
-import com.fisincorporated.exercisetracker.ui.photos.PhotoPoint;
+import com.fisincorporated.exercisetracker.ui.media.MediaPoint;
 
 import java.util.ArrayList;
 
-public class PhotoGridPagerAdapter <F extends Fragment> extends FragmentStatePagerAdapter {
+public class MediaGridPagerAdapter<F extends Fragment> extends FragmentStatePagerAdapter {
 
     private final Class<F> fragmentClass;
-    private ArrayList<PhotoPoint> photoPoints;
+    private ArrayList<MediaPoint> mediaPoints;
 
 
-    public PhotoGridPagerAdapter(FragmentManager fm, Class<F> fragmentClass, ArrayList<PhotoPoint> photoPoints) {
+    public MediaGridPagerAdapter(FragmentManager fm, Class<F> fragmentClass, ArrayList<MediaPoint> mediaPoints) {
         super(fm);
         this.fragmentClass = fragmentClass;
-        this.photoPoints = photoPoints;
+        this.mediaPoints = mediaPoints;
 
     }
 
@@ -29,7 +29,7 @@ public class PhotoGridPagerAdapter <F extends Fragment> extends FragmentStatePag
         F frag;
         try {
             Bundle args = new Bundle();
-            args.putParcelableArrayList(GlobalValues.PHOTO_POINTS, photoPoints.get(position).getMediaDetails());
+            args.putParcelableArrayList(GlobalValues.PHOTO_POINTS, mediaPoints.get(position).getMediaDetails());
             frag = fragmentClass.newInstance();
             frag.setArguments(args);
         } catch (Exception ex) {
@@ -41,7 +41,7 @@ public class PhotoGridPagerAdapter <F extends Fragment> extends FragmentStatePag
 
     @Override
     public int getCount() {
-       return photoPoints.size();
+       return mediaPoints.size();
     }
 
 }

@@ -223,7 +223,7 @@
         </activity>
 
         <activity
-            android:name=".ui.photos.photogrid.PhotoGridPagerActivity"
+            android:name=".ui.media.mediagrid.MediaGridPagerActivity"
             android:parentActivityName=".ui.startup.ExerciseDrawerActivity"
             android:uiOptions="splitActionBarWhenNarrow">
 
@@ -237,7 +237,7 @@
         </activity>
 
         <activity
-            android:name=".ui.photos.slideshow.FullscreenPhotoPagerActivity"
+            android:name=".ui.media.slideshow.FullscreenPhotoPagerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/activity_fullscreen_photo"
             android:parentActivityName=".ui.startup.ExerciseDrawerActivity"

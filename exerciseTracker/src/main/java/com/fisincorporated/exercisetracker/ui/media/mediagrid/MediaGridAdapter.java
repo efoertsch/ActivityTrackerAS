@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker.ui.photos.photogrid;
+package com.fisincorporated.exercisetracker.ui.media.mediagrid;
 
 import android.content.Context;
 import android.net.Uri;
@@ -10,15 +10,15 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.RequestManager;
 import com.fisincorporated.exercisetracker.R;
-import com.fisincorporated.exercisetracker.ui.photos.MediaDetail;
-import com.fisincorporated.exercisetracker.ui.photos.slideshow.FullscreenPhotoPagerActivity;
+import com.fisincorporated.exercisetracker.ui.media.MediaDetail;
+import com.fisincorporated.exercisetracker.ui.media.slideshow.FullscreenPhotoPagerActivity;
 
 import java.io.File;
 import java.util.ArrayList;
 
 
 
-public class PhotoGridAdapter extends ArrayAdapter {
+public class MediaGridAdapter extends ArrayAdapter {
 
     private Context context;
     private final RequestManager glide;
@@ -26,7 +26,7 @@ public class PhotoGridAdapter extends ArrayAdapter {
 
     private ArrayList<MediaDetail> mediaDetails;
 
-    public PhotoGridAdapter(Context context, RequestManager glide, ArrayList<MediaDetail> mediaDetails) {
+    public MediaGridAdapter(Context context, RequestManager glide, ArrayList<MediaDetail> mediaDetails) {
         super(context, R.layout.photo_fragment_gridview_imageview, mediaDetails);
         this.context = context;
         this.glide = glide;

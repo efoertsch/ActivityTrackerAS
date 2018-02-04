@@ -16,6 +16,9 @@
         android:name="com.fisincorporated.exercisetracker.permission.MAPS_RECEIVE"
         android:protectionLevel="signature"/>
 
+    <uses-feature android:name="android.hardware.camera"
+                  android:required="true" />
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="com.fisincorporated.ExerciseTracker.permission.MAPS_RECEIVE"/>
@@ -25,6 +28,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.MANAGE_DOCUMENTS"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
 
     <application
         android:name=".application.ActivityTrackerApplication"
@@ -219,7 +223,7 @@
         </activity>
 
         <activity
-            android:name=".ui.photos.photogrid.PhotoGridPagerActivity"
+            android:name=".ui.media.mediagrid.MediaGridPagerActivity"
             android:parentActivityName=".ui.startup.ExerciseDrawerActivity"
             android:uiOptions="splitActionBarWhenNarrow">
 
@@ -233,7 +237,7 @@
         </activity>
 
         <activity
-            android:name=".ui.photos.slideshow.FullscreenPhotoPagerActivity"
+            android:name=".ui.media.slideshow.FullscreenPhotoPagerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/activity_fullscreen_photo"
             android:parentActivityName=".ui.startup.ExerciseDrawerActivity"

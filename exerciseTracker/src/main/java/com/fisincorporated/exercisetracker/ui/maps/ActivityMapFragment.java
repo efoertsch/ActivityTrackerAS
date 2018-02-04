@@ -33,7 +33,7 @@ import com.fisincorporated.exercisetracker.database.TrackerDatabase.GPSLog;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
-import com.fisincorporated.exercisetracker.ui.photos.PhotoDetail;
+import com.fisincorporated.exercisetracker.ui.media.MediaDetail;
 import com.fisincorporated.exercisetracker.ui.utils.ActivityDialogFragment;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -76,7 +76,7 @@ public class ActivityMapFragment extends ExerciseMasterFragment implements Loade
     //private MapFragment mapFragment = null;
     private SupportMapFragment supportMapFragment = null;
     private MapRoute mapRoute;
-    private ArrayList<PhotoDetail> photoDetails;
+    private ArrayList<MediaDetail> mediaDetails;
     // maptype must be GoogleMap.MAP_TYPE_HYBRID, _SATELLITE, ...
     private int mapType;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -294,9 +294,9 @@ public class ActivityMapFragment extends ExerciseMasterFragment implements Loade
 
     // MapRoute.ActivityPhotosCallback
     @Override
-    public void photoList(ArrayList<PhotoDetail> photoDetails) {
-        if (photoDetails != null && photoDetails.size() > 0) {
-            this.photoDetails = photoDetails;
+    public void photoList(ArrayList<MediaDetail> mediaDetails) {
+        if (mediaDetails != null && mediaDetails.size() > 0) {
+            this.mediaDetails = mediaDetails;
         }
     }
 

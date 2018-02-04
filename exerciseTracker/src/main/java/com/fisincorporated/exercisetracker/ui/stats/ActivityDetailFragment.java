@@ -25,11 +25,11 @@ import com.fisincorporated.exercisetracker.database.LocationExerciseDAO;
 import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.GPSLog;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
-import com.fisincorporated.exercisetracker.ui.photos.slideshow.FullscreenPhotoPagerActivity;
-import com.fisincorporated.exercisetracker.ui.photos.PhotoDetail;
-import com.fisincorporated.exercisetracker.ui.photos.PhotoPoint;
+import com.fisincorporated.exercisetracker.ui.media.slideshow.FullscreenPhotoPagerActivity;
+import com.fisincorporated.exercisetracker.ui.media.MediaDetail;
+import com.fisincorporated.exercisetracker.ui.media.MediaPoint;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
-import com.fisincorporated.exercisetracker.ui.photos.photogrid.PhotoGridPagerActivity;
+import com.fisincorporated.exercisetracker.ui.media.mediagrid.MediaGridPagerActivity;
 import com.fisincorporated.exercisetracker.ui.utils.ActivityDialogFragment;
 import com.fisincorporated.exercisetracker.utility.PhotoUtils;
 import com.fisincorporated.exercisetracker.utility.Utility;
@@ -50,7 +50,7 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
     private int deleteDetailType;
     private String description;
 
-    private ArrayList<PhotoDetail> photoDetails = new ArrayList<>();
+    private ArrayList<MediaDetail> mediaDetails = new ArrayList<>();
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private FloatingActionButton mapFab;
     private FloatingActionButton photosFab;
@@ -113,7 +113,7 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
             locationExerciseId = bundle.getLong(LocationExercise._ID, -1);
             title = bundle.getString(GlobalValues.TITLE);
             description = bundle.getString(LocationExercise.DESCRIPTION);
-            photoDetails = bundle.getParcelableArrayList(GlobalValues.PHOTO_DETAIL_LIST);
+            mediaDetails = bundle.getParcelableArrayList(GlobalValues.PHOTO_DETAIL_LIST);
         }
 
     }
@@ -123,7 +123,7 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
         savedInstanceState.putLong(LocationExercise._ID, locationExerciseId);
         savedInstanceState.putString(GlobalValues.TITLE, title);
         savedInstanceState.putString(LocationExercise.DESCRIPTION, description);
-        savedInstanceState.putParcelableArrayList(GlobalValues.PHOTO_DETAIL_LIST, photoDetails);
+        savedInstanceState.putParcelableArrayList(GlobalValues.PHOTO_DETAIL_LIST, mediaDetails);
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -146,17 +146,17 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
         photosFab = (FloatingActionButton) view.findViewById(R.id.activity_detail_photos_fab);
         photosFab.setOnClickListener(v -> {
             Intent intent;
-            if (photoDetails.size() == 1) {
+            if (mediaDetails.size() == 1) {
                 FullscreenPhotoPagerActivity.IntentBuilder intentBuilder = FullscreenPhotoPagerActivity.IntentBuilder.getBuilder(getContext());
-                intentBuilder.setPhotoDetails(photoDetails);
+                intentBuilder.setPhotoDetails(mediaDetails);
                 intent = intentBuilder.build();
             } else {
-                PhotoPoint photoPoint = PhotoPoint.getInstance(0, null);
-                photoPoint.setPhotoDetails(photoDetails);
-                ArrayList<PhotoPoint> photoPoints = new ArrayList<>();
-                photoPoints.add(photoPoint);
-                PhotoGridPagerActivity.IntentBuilder intentBuilder = PhotoGridPagerActivity.IntentBuilder.getBuilder(getContext());
-                intentBuilder.setPhotoPoints(photoPoints).setTitle(title).setPhotoPointPosition(0);
+                MediaPoint mediaPoint = MediaPoint.getInstance(0, null);
+                mediaPoint.setMediaDetails(mediaDetails);
+                ArrayList<MediaPoint> mediaPoints = new ArrayList<>();
+                mediaPoints.add(mediaPoint);
+                MediaGridPagerActivity.IntentBuilder intentBuilder = MediaGridPagerActivity.IntentBuilder.getBuilder(getContext());
+                intentBuilder.setPhotoPoints(mediaPoints).setTitle(title).setPhotoPointPosition(0);
                 intent = intentBuilder.build();
             }
             startActivity(intent);
@@ -358,7 +358,7 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
     }
 
     private void getPhotosTaken(Context context, long startTime, long endTime) {
-        compositeDisposable.add(PhotoUtils.getPhotoDetailListObservable(context, startTime, endTime)
+        compositeDisposable.add(PhotoUtils.getMediaListObservable(context, startTime, endTime)
                 .onErrorReturn(throwable -> {
                             Toast.makeText(context, R.string.error_get_photos_for_activity, Toast.LENGTH_LONG).show();
                             return new ArrayList<>();
@@ -372,9 +372,9 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
                         }));
     }
 
-    private void displayPhotoFab(ArrayList<PhotoDetail> photoList) {
-        photoDetails = photoList;
-        if (photoDetails != null && photoDetails.size() > 0) {
+    private void displayPhotoFab(ArrayList<MediaDetail> photoList) {
+        mediaDetails = photoList;
+        if (mediaDetails != null && mediaDetails.size() > 0) {
             photosFab.setVisibility(View.VISIBLE);
         }
 

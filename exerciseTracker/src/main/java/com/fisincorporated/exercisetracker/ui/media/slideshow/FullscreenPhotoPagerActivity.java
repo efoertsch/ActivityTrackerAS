@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker.ui.photos.slideshow;
+package com.fisincorporated.exercisetracker.ui.media.slideshow;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -16,7 +16,7 @@ import android.view.View;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
-import com.fisincorporated.exercisetracker.ui.photos.PhotoDetail;
+import com.fisincorporated.exercisetracker.ui.media.MediaDetail;
 import com.fisincorporated.exercisetracker.ui.utils.ZoomOutPageTransformer;
 
 import java.util.ArrayList;
@@ -34,6 +34,7 @@ public class FullscreenPhotoPagerActivity extends AppCompatActivity {
      * user interaction before hiding the system UI.
      */
     private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
+    private static final int AUTO_FAST_HIDE_DELAY = 100;
 
     /**
      * Some older devices needs a small delay between UI widget updates
@@ -44,7 +45,7 @@ public class FullscreenPhotoPagerActivity extends AppCompatActivity {
     private View controlsView;
     private boolean visibleControls;
     private ViewPager pager;
-    private ArrayList<PhotoDetail> photoDetails = new ArrayList<>();
+    private ArrayList<MediaDetail> mediaDetails = new ArrayList<>();
     private int currentItem = 0;
 
     private final Runnable hidePart2Runnable = new Runnable() {
@@ -100,11 +101,10 @@ public class FullscreenPhotoPagerActivity extends AppCompatActivity {
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
-        //findViewById(R.id.dummy_button).setOnTouchListener(delayHideTouchListener);
 
         if (getPhotoDetailList()) {
             // Instantiate a ViewPager and a PagerAdapter.
-            pager = (ViewPager) findViewById(R.id.pager);
+            pager = (ViewPager) findViewById(R.id.fullscreen_photo_pager);
             PagerAdapter pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
             pager.setAdapter(pagerAdapter);
             pager.setPageTransformer(true, new ZoomOutPageTransformer());
@@ -125,26 +125,31 @@ public class FullscreenPhotoPagerActivity extends AppCompatActivity {
         // Trigger the initial hide() shortly after the activity has been
         // created, to briefly hint to the user that UI controls
         // are available.
-        delayedHide(100);
+        delayedHide(AUTO_FAST_HIDE_DELAY);
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putParcelableArrayList(GlobalValues.PHOTO_DETAIL_LIST, photoDetails);
+        savedInstanceState.putParcelableArrayList(GlobalValues.PHOTO_DETAIL_LIST, mediaDetails);
         super.onSaveInstanceState(savedInstanceState);
     }
-
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        photoDetails = savedInstanceState.getParcelableArrayList(GlobalValues.PHOTO_DETAIL_LIST);
+        mediaDetails = savedInstanceState.getParcelableArrayList(GlobalValues.PHOTO_DETAIL_LIST);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        delayedHide(AUTO_FAST_HIDE_DELAY);
+
     }
 
     private boolean getPhotoDetailList() {
         Intent intent = getIntent();
-        photoDetails = intent.getParcelableArrayListExtra(GlobalValues.PHOTO_DETAIL_LIST);
-        if (photoDetails == null || photoDetails.size() == 0) {
+        mediaDetails = intent.getParcelableArrayListExtra(GlobalValues.PHOTO_DETAIL_LIST);
+        if (mediaDetails == null || mediaDetails.size() == 0) {
             finish();
             return false;
         }
@@ -159,15 +164,21 @@ public class FullscreenPhotoPagerActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            return ScreenSlidePageFragment.getInstance(photoDetails.get(position).getPhotoPath());
+            MediaDetail mediaDetail = mediaDetails.get(position);
+            if (mediaDetail.isImage()) {
+                return PhotoDisplayFragment.getInstance(mediaDetail.getMediaPath());
+            }
+            else {
+                return VideoPlayerFragment.getInstance(mediaDetail.getMediaPath());
+            }
         }
 
         @Override
         public int getCount() {
-            if (photoDetails == null) {
+            if (mediaDetails == null) {
                 return 0;
             }
-            return photoDetails.size();
+            return mediaDetails.size();
         }
     }
 
@@ -225,8 +236,8 @@ public class FullscreenPhotoPagerActivity extends AppCompatActivity {
             return  new IntentBuilder(context);
         }
 
-        public IntentBuilder setPhotoDetails(ArrayList<PhotoDetail> photoDetails){
-            intent.putExtra(GlobalValues.PHOTO_DETAIL_LIST, photoDetails);
+        public IntentBuilder setPhotoDetails(ArrayList<MediaDetail> mediaDetails){
+            intent.putExtra(GlobalValues.PHOTO_DETAIL_LIST, mediaDetails);
             return this;
         }
 

@@ -30,6 +30,8 @@ import com.fisincorporated.exercisetracker.utility.Utility;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 //Removed service logic and updated to location logic from Android Programming - The Big Nerd Ranch Guide
 
 public class ActivityLoggerFragment extends ExerciseMasterFragment {
@@ -52,6 +54,10 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
     private MenuItem cameraMenuItem;
 
     private GPSLocationManager gpsLocationManager = null;
+
+    @Inject
+    Utility utility;
+
     private UpdateLerReceiver updateLerReceiver = new UpdateLerReceiver() {
         @Override
         protected void onLerUpdate(LocationExerciseRecord ler) {
@@ -255,7 +261,7 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
     }
 
     private void formatLerStarts(LocationExerciseRecord ler) {
-        Utility.formatActivityStats(getActivity(), stats, ler);
+        utility.formatActivityStats(getActivity(), stats, ler);
     }
 
     private void checkStopRestartButton() {

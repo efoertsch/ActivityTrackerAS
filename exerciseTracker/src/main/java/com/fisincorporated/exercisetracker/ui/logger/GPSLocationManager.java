@@ -32,6 +32,8 @@ import com.fisincorporated.exercisetracker.utility.Utility;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 // Adapted from Android Programming - The Big Nerd Ranch Guide. Modified to retrofit into existing system
 public class GPSLocationManager {
     private static final String TAG = "GPSLocationManager";
@@ -77,6 +79,9 @@ public class GPSLocationManager {
     private static String sExrcsLocation;
     private static ArrayList<String[]> sStats = new ArrayList<String[]>();
     private static NotificationManager sNotificationManager;
+
+    @Inject
+    Utility utility;
 
     // referenced in manifest
 //	private BroadcastReceiver LocationReceiver = new LocationReceiver() {
@@ -358,7 +363,7 @@ public class GPSLocationManager {
             return;
         }
         sLastNotificationTime = System.currentTimeMillis();
-        Utility.formatActivityStats(sActivity, sStats, sLer);
+        utility.formatActivityStats(sActivity, sStats, sLer);
         String notificationText = sExercise + "@" + sExrcsLocation +'\n';
 
         NotificationCompat.Builder builder =

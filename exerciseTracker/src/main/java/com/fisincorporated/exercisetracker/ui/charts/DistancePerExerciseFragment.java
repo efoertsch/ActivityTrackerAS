@@ -38,6 +38,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import javax.inject.Inject;
+
 public class DistancePerExerciseFragment extends ExerciseMasterFragment {
     private ArrayList<String> exerciseSelections = new ArrayList<>();
     private ArrayList<String> locationSelections = new ArrayList<>();
@@ -58,7 +60,7 @@ public class DistancePerExerciseFragment extends ExerciseMasterFragment {
             Color.MAGENTA, Color.YELLOW, Color.CYAN};
     private int[] exerciseGraphColors;
 
-    Calendar calendar = Calendar.getInstance();
+    private Calendar calendar = Calendar.getInstance();
 
     private String chartTitle;
 
@@ -69,6 +71,12 @@ public class DistancePerExerciseFragment extends ExerciseMasterFragment {
     private Resources resources;
     private View graphLayoutView;
     private View progressBar;
+
+    @Inject
+    DisplayUnits displayUnits;
+
+    @Inject
+    Utility utility;
 
     public static DistancePerExerciseFragment newInstance(Bundle bundle) {
         // is this easier/better than copying values?
@@ -182,7 +190,7 @@ public class DistancePerExerciseFragment extends ExerciseMasterFragment {
     }
 
     private void getChartTitle(@StringRes int stringRes) {
-        chartTitle = resources.getString(stringRes, DisplayUnits.isImperialDisplay() ? resources.getString(R.string.chart_miles) : resources.getString(R.string.chart_kilometers));
+        chartTitle = resources.getString(stringRes, displayUnits.isImperialDisplay() ? resources.getString(R.string.chart_miles) : resources.getString(R.string.chart_kilometers));
     }
 
 
@@ -225,7 +233,7 @@ public class DistancePerExerciseFragment extends ExerciseMasterFragment {
         // ++numberOfTimeUnits ;
         // 2. Create date array sized on number of weeks from the min date found
         // set dates to week end date not week beging
-        activityDates = constructConsecutiveDates(Utility.addDays(minDate, 6),
+        activityDates = constructConsecutiveDates(utility.addDays(minDate, 6),
                 numberOfTimeUnits, Calendar.DATE, 7);
         totalDistanceValues = createZeroArrary(numberOfTimeUnits);
         // 3.Get the exercises, days, distances
@@ -288,7 +296,7 @@ public class DistancePerExerciseFragment extends ExerciseMasterFragment {
 
     private int getMinDateAndNumberTimeUnits(String query) {
         numberOfTimeUnits = 0;
-        csrUtility = database.rawQuery(query.toString(), null);
+        csrUtility = database.rawQuery(query, null);
         if (csrUtility.getCount() == 0) {
             displayToastOnUIThread(R.string.no_activities_to_chart);
             getFragmentManager().popBackStack();
@@ -316,14 +324,9 @@ public class DistancePerExerciseFragment extends ExerciseMasterFragment {
     }
 
     private void displayToastOnUIThread(final int stringRes) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getActivity(),
-                        getResources().getString(stringRes),
-                        Toast.LENGTH_LONG).show();
-            }
-        });
+        getActivity().runOnUiThread(() -> Toast.makeText(getActivity(),
+                getResources().getString(stringRes),
+                Toast.LENGTH_LONG).show());
     }
 
     // dates will be used for x axis labels
@@ -364,8 +367,8 @@ public class DistancePerExerciseFragment extends ExerciseMasterFragment {
             // round to 1 decimal place
             origDistance = csrUtility.getInt(csrUtility
                     .getColumnIndex(LocationExercise.DISTANCE));
-            if (DisplayUnits.isImperialDisplay()) {
-                distance = Utility.metersToMiles((float) origDistance);
+            if (displayUnits.isImperialDisplay()) {
+                distance =utility.metersToMiles((float) origDistance);
             } else {
                 distance = origDistance / 1000d;
             }
@@ -506,7 +509,7 @@ public class DistancePerExerciseFragment extends ExerciseMasterFragment {
         leftAxis.setDrawGridLines(true);
         leftAxis.setSpaceTop(35f);
         leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
-        leftAxis.setAxisMaximum(Utility.calcMaxYGraphValue(dataMaxY));
+        leftAxis.setAxisMaximum(utility.calcMaxYGraphValue(dataMaxY));
         graphView.getAxisRight().setEnabled(false);  // TODO revisit later
 
         // Set graph title - note separate TextView that is not part of graph

@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
@@ -21,10 +20,11 @@ import com.fisincorporated.exercisetracker.ui.maintenance.ExerciseMaintenanceLis
 import com.fisincorporated.exercisetracker.ui.settings.SettingsActivity;
 import com.fisincorporated.exercisetracker.ui.startactivity.StartExercise;
 
-public class ExerciseDrawerActivity  extends AppCompatActivity  {
+import dagger.android.support.DaggerAppCompatActivity;
+
+public class ExerciseDrawerActivity  extends DaggerAppCompatActivity  {
 
     private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
     private Toolbar toolbar;
     private ActionBarDrawerToggle drawerToggle;
 
@@ -43,7 +43,7 @@ public class ExerciseDrawerActivity  extends AppCompatActivity  {
         drawerToggle.syncState();
         drawerLayout.addDrawerListener(drawerToggle);
 
-        navigationView = (NavigationView) findViewById(R.id.app_navigation_drawer);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.app_navigation_drawer);
         setupDrawerContent(navigationView);
         displayPhotoFragment();
     }
@@ -83,12 +83,9 @@ public class ExerciseDrawerActivity  extends AppCompatActivity  {
 
     private void setupDrawerContent(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        selectDrawerItem(menuItem);
-                        return true;
-                    }
+                menuItem -> {
+                    selectDrawerItem(menuItem);
+                    return true;
                 });
     }
 

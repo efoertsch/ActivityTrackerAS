@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
@@ -24,7 +23,10 @@ import com.fisincorporated.exercisetracker.ui.maps.ActivityMapFragment;
 import com.fisincorporated.exercisetracker.ui.stats.ActivityDetailFragment;
 import com.fisincorporated.exercisetracker.ui.stats.ActivityPager;
 
-abstract public class ExerciseMasterActivity extends AppCompatActivity implements IHandleSelectedAction {
+import dagger.android.AndroidInjection;
+import dagger.android.support.DaggerAppCompatActivity;
+
+abstract public class ExerciseMasterActivity extends DaggerAppCompatActivity implements IHandleSelectedAction {
 	protected TrackerDatabaseHelper databaseHelper = null;
 	protected SQLiteDatabase database = null;
 	protected Cursor csrUtility;
@@ -34,6 +36,7 @@ abstract public class ExerciseMasterActivity extends AppCompatActivity implement
 
 
 	public void onCreate(Bundle savedInstanceState) {
+		AndroidInjection.inject(this);
 		super.onCreate(savedInstanceState);
 		getDatabaseSetup();
 	}

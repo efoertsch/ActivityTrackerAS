@@ -40,6 +40,8 @@ import com.fisincorporated.exercisetracker.utility.Utility;
 import java.text.DecimalFormat;
 import java.util.Locale;
 
+import javax.inject.Inject;
+
 public class ExerciseMaintenanceDetailFragment extends ExerciseMasterFragment {
 
     private long exerciseRowId = -1;
@@ -63,6 +65,12 @@ public class ExerciseMaintenanceDetailFragment extends ExerciseMasterFragment {
     private ExerciseRecord exerciseRecord = null;
     private int mapPinMileage = 0;
     private int[] mapPinDistances;
+
+    @Inject
+    DisplayUnits displayUnits;
+
+    @Inject
+    Utility utility;
 
 
     public ExerciseMaintenanceDetailFragment() {
@@ -131,7 +139,7 @@ public class ExerciseMaintenanceDetailFragment extends ExerciseMasterFragment {
         tvMinDistToTravel = (TextView) view.findViewById(R.id.exercise_maintenance_lblMinDistToTravel);
         etMinDistToTravel = (EditText) view
                 .findViewById(R.id.exercise_maintenance_etMinDistToTravel);
-        etMinDistToTravel.setText(getString(R.string.minimum_distance_to_travel_to_log_gps_points, DisplayUnits.getFeetMeters()));
+        etMinDistToTravel.setText(getString(R.string.minimum_distance_to_travel_to_log_gps_points, displayUnits.getFeetMeters()));
         chkbxElevationInCalcs = (CheckBox) view
                 .findViewById(R.id.exercise_maintenance_chkbxElevationInCalcs);
         etLogInterval.setFilters(new InputFilter[]{new InputFilterMinMax("1",
@@ -299,13 +307,13 @@ public class ExerciseMaintenanceDetailFragment extends ExerciseMasterFragment {
             exerciseRecord.setLogInterval(ExerciseRecord.LOG_INTERVAL);
         }
         try {
-            if (!DisplayUnits.isImperialDisplay()) {
+            if (!displayUnits.isImperialDisplay()) {
                 exerciseRecord.setMinDistanceToLog(Float
                         .parseFloat(etMinDistToTravel.getText().toString()));
             } else {
-                exerciseRecord.setMinDistanceToLog(Utility.feetToMeters(Float
+                exerciseRecord.setMinDistanceToLog(utility.feetToMeters(Float
                         .parseFloat(etMinDistToTravel.getText().toString())));
-                etMinDistToTravel.setText(new DecimalFormat("#####").format(Utility
+                etMinDistToTravel.setText(new DecimalFormat("#####").format(utility
                         .metersToFeet(exerciseRecord.getMinDistanceToLog())));
             }
         } catch (NumberFormatException nfe) {
@@ -442,18 +450,18 @@ public class ExerciseMaintenanceDetailFragment extends ExerciseMasterFragment {
         //chkbxLogDetail.setChecked(exerciseRecord.getLogDetail() == 1 ? true : false);
         etLogInterval.setText("" + exerciseRecord.getLogInterval());
         etDefaultLogInterval.setText("" + exerciseRecord.getDefaultLogInterval());
-        tvMinDistToTravel.setText(getString(R.string.minimum_distance_to_travel_to_log_gps_points,DisplayUnits.getFeetMeters()));
-        if (!DisplayUnits.isImperialDisplay()) {
+        tvMinDistToTravel.setText(getString(R.string.minimum_distance_to_travel_to_log_gps_points,displayUnits.getFeetMeters()));
+        if (!displayUnits.isImperialDisplay()) {
             etMinDistToTravel.setText(new DecimalFormat("#####")
                     .format(exerciseRecord.getMinDistanceToLog()));
         } else
-            etMinDistToTravel.setText(new DecimalFormat("#####").format(Utility
+            etMinDistToTravel.setText(new DecimalFormat("#####").format(utility
                     .metersToFeet(exerciseRecord.getMinDistanceToLog())));
         chkbxElevationInCalcs
                 .setChecked(exerciseRecord.getElevationInDistCalcs() == 1 );
         etLogInterval.requestFocus();
         etLogInterval.setCursorVisible(true);
-        spinnerLabel.setText(getString(R.string.map_pin_display_mileage_at, DisplayUnits.getMilesKm()));
+        spinnerLabel.setText(getString(R.string.map_pin_display_mileage_at, displayUnits.getMilesKm()));
         setMapPinSpinnerValue();
     }
 

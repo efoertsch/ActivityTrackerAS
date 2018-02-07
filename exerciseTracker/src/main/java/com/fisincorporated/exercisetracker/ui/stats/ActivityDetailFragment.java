@@ -37,6 +37,8 @@ import com.fisincorporated.exercisetracker.utility.Utility;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 import io.reactivex.disposables.CompositeDisposable;
 
 public class ActivityDetailFragment extends ExerciseMasterFragment {
@@ -54,6 +56,11 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private FloatingActionButton mapFab;
     private FloatingActionButton photosFab;
+
+    public PhotoUtils photoUtils;
+
+    @Inject
+    Utility utility;
 
     /**
      * Pass in the arguments needed by this fragment
@@ -292,7 +299,7 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
     }
 
     public void formatActivityStats() {
-        Utility.formatActivityStats(getActivity(), stats, ler);
+        utility.formatActivityStats(getActivity(), stats, ler);
     }
 
     public float calcMaxSpeedToPoint(Long lerId) {
@@ -358,7 +365,7 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
     }
 
     private void getPhotosTaken(Context context, long startTime, long endTime) {
-        compositeDisposable.add(PhotoUtils.getMediaListObservable(context, startTime, endTime)
+        compositeDisposable.add(photoUtils.getMediaListObservable(context, startTime, endTime)
                 .onErrorReturn(throwable -> {
                             Toast.makeText(context, R.string.error_get_photos_for_activity, Toast.LENGTH_LONG).show();
                             return new ArrayList<>();

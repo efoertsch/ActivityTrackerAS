@@ -27,6 +27,8 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 /**
  * Create a kml (keyhole markup language) file
  */
@@ -49,6 +51,9 @@ public class KmlWriter {
     private String title = "";
     private String description = "";
     private Cursor cursor;
+
+    @Inject
+    Utility utility;
 
     private KmlWriter() {
     }
@@ -109,7 +114,7 @@ public class KmlWriter {
         String appName = context.getString(R.string.app_name);
         kmlFileCleanup();
         // Any changes to file format requires change to kmlFileCleanup
-        kmlFileName = Utility.makeFileNameReady(appName
+        kmlFileName = utility.makeFileNameReady(appName
                 + "."
                 + er.getExercise()
                 + "@"
@@ -139,10 +144,10 @@ public class KmlWriter {
             writer = new BufferedWriter(new OutputStreamWriter(
                     new FileOutputStream(kmlFile.getAbsoluteFile())));
             writer.write(GlobalValues.KML_ROUTE_HEADER + newline);
-            writer.write(" <Placemark><name>" + Utility.removeLtGt(activityTitle)
+            writer.write(" <Placemark><name>" + utility.removeLtGt(activityTitle)
                     + "</name>" + newline);
             writer.write("<description>"
-                    + Utility.removeLtGt(ler.getDescription()) + "</description>"
+                    + utility.removeLtGt(ler.getDescription()) + "</description>"
                     + newline);
             writer.write("<LineString><coordinates>" + newline);
             if (csr.getCount() > 0) {
@@ -207,7 +212,7 @@ public class KmlWriter {
         StringBuilder sb = new StringBuilder();
         sb.append(context.getString(R.string.my_activity_statistics, title) + newline + newline);
 
-        Utility.formatActivityStats(context, stats, ler);
+        utility.formatActivityStats(context, stats, ler);
         for (int i = 0; i < stats.size(); ++i) {
             sb.append(stats.get(i)[0] + ":\t" + stats.get(i)[1] + newline);
         }

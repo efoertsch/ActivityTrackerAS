@@ -29,6 +29,8 @@ import com.github.mikephil.charting.formatter.LargeValueFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class AltitudeVsDistanceGraphFragment extends ExerciseMasterFragment {
     private long locationExerciseId;
     private String title;
@@ -41,6 +43,12 @@ public class AltitudeVsDistanceGraphFragment extends ExerciseMasterFragment {
     private View graphLayoutView;
     private View progressBar;
     private LineData lineData;
+
+    @Inject
+    DisplayUnits displayUnits;
+
+    @Inject
+    Utility utility;
 
     public static AltitudeVsDistanceGraphFragment newInstance(Bundle bundle) {
         AltitudeVsDistanceGraphFragment fragment = new AltitudeVsDistanceGraphFragment();
@@ -85,8 +93,8 @@ public class AltitudeVsDistanceGraphFragment extends ExerciseMasterFragment {
 
     private void setUpChart() {
         graphView.clear();
-        chartTitle = resources.getString(R.string.chart_title_elevation_vs_distance, DisplayUnits.getFeetMeters()
-                , DisplayUnits.getMilesKm(), title, description);
+        chartTitle = resources.getString(R.string.chart_title_elevation_vs_distance, displayUnits.getFeetMeters()
+                , displayUnits.getMilesKm(), title, description);
     }
 
     public void getAltVsDistSeries() {
@@ -116,10 +124,10 @@ public class AltitudeVsDistanceGraphFragment extends ExerciseMasterFragment {
         } else {
             csr.moveToFirst();
             while (!csr.isAfterLast()) {
-                totalDistance += (double) (DisplayUnits.isImperialDisplay() ? Utility
+                totalDistance += (double) (displayUnits.isImperialDisplay() ? utility
                         .metersToMiles((float) csr.getDouble(0)) : ((float) csr
                         .getDouble(0)) / 1000);
-                elevation =  (DisplayUnits.isImperialDisplay() ? Utility
+                elevation =  (displayUnits.isImperialDisplay() ? utility
                         .metersToFeet((float) csr.getDouble(1)) : ((float) csr
                         .getDouble(1)) / 1000);
                 // elevation can be very noisy so just trying to smooth it out

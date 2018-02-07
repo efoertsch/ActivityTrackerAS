@@ -35,6 +35,8 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
@@ -45,6 +47,15 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
 
     private static final String TAG = MapRoute.class.getSimpleName();
     private static final int NON_PHOTO_PIN = -1;
+
+    @Inject
+    public DisplayUnits displayUnits;
+
+    @Inject
+    public PhotoUtils photoUtils;
+
+    @Inject
+    public Utility utility;
 
     private SupportMapFragment supportMapFragment;
     private Context context;
@@ -153,7 +164,7 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
     private void setupMapPinInfo() {
         currentDistance = 0;
         distance = 0;
-        distanceUnits = (DisplayUnits.isImperialDisplay() ?
+        distanceUnits = (displayUnits.isImperialDisplay() ?
                 context.getString(R.string.map_pin_miles) : context.getString(R.string.map_pin_kilometers));
     }
 
@@ -378,12 +389,12 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
         if (pinEveryX <= 0) {
             return;
         }
-        boolean isImperialDisplay = DisplayUnits.isImperialDisplay();
+        boolean isImperialDisplay = displayUnits.isImperialDisplay();
         Location.distanceBetween(fromLatLng.latitude, fromLatLng.longitude, toLatLng.latitude, toLatLng.longitude, distanceBetweenPoints);
         distance += distanceBetweenPoints[0];
-        if (Utility.coveredDistanceForMarker(distance, isImperialDisplay, pinEveryX)) {
+        if (utility.coveredDistanceForMarker(distance, isImperialDisplay, pinEveryX)) {
             currentDistance += distance;
-            int displayDistance = Utility.calcDisplayDistance(currentDistance, isImperialDisplay);
+            int displayDistance = utility.calcDisplayDistance(currentDistance, isImperialDisplay);
             distance = 0;
            Marker marker =  map.addMarker(new MarkerOptions()
                     .position(toLatLng)
@@ -452,8 +463,8 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
     }
 
     public void getPhotosTaken(Context context, long startTime, long endTime) {
-        //compositeDisposable.add(PhotoUtils.getPhotoDetailListObservable(context, startTime, endTime)
-        compositeDisposable.add(PhotoUtils.getMediaListObservable(context, startTime, endTime)
+        //compositeDisposable.add(photoUtils.getPhotoDetailListObservable(context, startTime, endTime)
+        compositeDisposable.add(photoUtils.getMediaListObservable(context, startTime, endTime)
                 .onErrorReturn(throwable -> {
                             Toast.makeText(context, R.string.error_get_photos_for_activity, Toast.LENGTH_LONG).show();
                             return new ArrayList<>();

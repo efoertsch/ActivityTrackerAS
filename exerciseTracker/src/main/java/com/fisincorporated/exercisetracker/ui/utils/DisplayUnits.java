@@ -7,6 +7,8 @@ import android.preference.PreferenceManager;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 
+import javax.inject.Inject;
+
 public class DisplayUnits {
 
     private static DisplayUnits displayUnits;
@@ -16,19 +18,18 @@ public class DisplayUnits {
     private static String feetMeters;
     private static String milesKm;
     private static String mphKph;
-     
-    private DisplayUnits() {
-    }
 
-    private DisplayUnits(Context context) {
-        DisplayUnits.context = context;
+    @Inject
+    public DisplayUnits(Context context) {
+        this.context = context;
+        initialize(context);
     }
 
     /**
      * Initialize at app startup
      * @param context
      */
-    public static void initialize(Context context) {
+    public  void initialize(Context context) {
         if (displayUnits == null) {
             displayUnits = new DisplayUnits(context);
             imperial = context.getString(R.string.imperial);
@@ -63,27 +64,27 @@ public class DisplayUnits {
         }
     }
 
-    public static String getImperial() {
+    public  String getImperial() {
         return imperial;
     }
 
-    public static String getImperialMetric() {
+    public  String getImperialMetric() {
         return imperialMetric;
     }
 
-    public static String getFeetMeters() {
+    public  String getFeetMeters() {
         return feetMeters;
     }
 
-    public static String getMilesKm() {
+    public  String getMilesKm() {
         return milesKm;
     }
 
-    public static String getMphKph() {
+    public  String getMphKph() {
         return mphKph;
     }
 
-    public static boolean isImperialDisplay(){
+    public  boolean isImperialDisplay(){
         return (imperialMetric.equalsIgnoreCase(context.getString(R.string.imperial)));
     }
 }

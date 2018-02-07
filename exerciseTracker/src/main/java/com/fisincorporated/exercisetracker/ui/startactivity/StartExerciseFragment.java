@@ -40,6 +40,7 @@ import java.util.Locale;
 
 public class StartExerciseFragment extends ExerciseMasterFragment {
     private static final String TAG = "StartExerciseFragment";
+
     protected Cursor csrLocationAutoComplete;
     protected Cursor csrExerciseAutoComplete;
     private long exerciseRowId = -1;

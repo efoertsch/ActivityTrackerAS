@@ -25,7 +25,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 import javax.inject.Inject;
 
-import dagger.android.AndroidInjection;
+import dagger.android.support.AndroidSupportInjection;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -44,8 +44,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     }
 
     @Override
-    public void onAttach(Context context){
-        AndroidInjection.inject(this);
+    public void onAttach(Context context) {
+        // Note: AndroidSupportInjection not AndroidInjection
+        AndroidSupportInjection.inject(this);
         super.onAttach(context);
 
     }
@@ -252,4 +253,5 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         dialog.setCancelable(false);
         dialog.show();
     }
+
 }

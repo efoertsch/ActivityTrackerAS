@@ -21,4 +21,5 @@ public class SettingsActivity extends ExerciseMasterFragmentActivity {
         return settingsFragment;
     }
 
+
 }

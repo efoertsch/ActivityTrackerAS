@@ -26,8 +26,7 @@ import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
-import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
-import com.fisincorporated.exercisetracker.utility.Utility;
+import com.fisincorporated.exercisetracker.utility.StatsUtil;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -81,7 +80,7 @@ public class GPSLocationManager {
     private static NotificationManager sNotificationManager;
 
     @Inject
-    Utility utility;
+    StatsUtil statsUtil;
 
     // referenced in manifest
 //	private BroadcastReceiver LocationReceiver = new LocationReceiver() {
@@ -363,7 +362,7 @@ public class GPSLocationManager {
             return;
         }
         sLastNotificationTime = System.currentTimeMillis();
-        utility.formatActivityStats(sActivity, sStats, sLer);
+        statsUtil.formatActivityStats(sStats, sLer);
         String notificationText = sExercise + "@" + sExrcsLocation +'\n';
 
         NotificationCompat.Builder builder =

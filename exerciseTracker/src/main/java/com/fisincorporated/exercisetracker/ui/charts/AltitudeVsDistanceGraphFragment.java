@@ -17,7 +17,7 @@ import com.fisincorporated.exercisetracker.database.TrackerDatabase.GPSLog;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
 import com.fisincorporated.exercisetracker.ui.utils.DisplayUnits;
-import com.fisincorporated.exercisetracker.utility.Utility;
+import com.fisincorporated.exercisetracker.utility.StatsUtil;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -48,7 +48,7 @@ public class AltitudeVsDistanceGraphFragment extends ExerciseMasterFragment {
     DisplayUnits displayUnits;
 
     @Inject
-    Utility utility;
+    StatsUtil statsUtil;
 
     public static AltitudeVsDistanceGraphFragment newInstance(Bundle bundle) {
         AltitudeVsDistanceGraphFragment fragment = new AltitudeVsDistanceGraphFragment();
@@ -124,10 +124,10 @@ public class AltitudeVsDistanceGraphFragment extends ExerciseMasterFragment {
         } else {
             csr.moveToFirst();
             while (!csr.isAfterLast()) {
-                totalDistance += (double) (displayUnits.isImperialDisplay() ? utility
+                totalDistance += (double) (displayUnits.isImperialDisplay() ? statsUtil
                         .metersToMiles((float) csr.getDouble(0)) : ((float) csr
                         .getDouble(0)) / 1000);
-                elevation =  (displayUnits.isImperialDisplay() ? utility
+                elevation =  (displayUnits.isImperialDisplay() ? statsUtil
                         .metersToFeet((float) csr.getDouble(1)) : ((float) csr
                         .getDouble(1)) / 1000);
                 // elevation can be very noisy so just trying to smooth it out

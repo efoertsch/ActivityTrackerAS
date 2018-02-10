@@ -26,7 +26,7 @@ import com.fisincorporated.exercisetracker.database.TrackerDatabase.ExrcsLocatio
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
 import com.fisincorporated.exercisetracker.ui.stats.StatsArrayAdapter;
-import com.fisincorporated.exercisetracker.utility.Utility;
+import com.fisincorporated.exercisetracker.utility.StatsUtil;
 
 import java.util.ArrayList;
 
@@ -56,7 +56,7 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
     private GPSLocationManager gpsLocationManager = null;
 
     @Inject
-    Utility utility;
+    StatsUtil statsUtil;
 
     private UpdateLerReceiver updateLerReceiver = new UpdateLerReceiver() {
         @Override
@@ -261,7 +261,7 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
     }
 
     private void formatLerStarts(LocationExerciseRecord ler) {
-        utility.formatActivityStats(getActivity(), stats, ler);
+        statsUtil.formatActivityStats(stats, ler);
     }
 
     private void checkStopRestartButton() {

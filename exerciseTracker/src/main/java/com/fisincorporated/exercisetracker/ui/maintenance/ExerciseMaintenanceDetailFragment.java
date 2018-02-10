@@ -35,7 +35,7 @@ import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExer
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
 import com.fisincorporated.exercisetracker.ui.utils.ActivityDialogFragment;
 import com.fisincorporated.exercisetracker.ui.utils.DisplayUnits;
-import com.fisincorporated.exercisetracker.utility.Utility;
+import com.fisincorporated.exercisetracker.utility.StatsUtil;
 
 import java.text.DecimalFormat;
 import java.util.Locale;
@@ -70,7 +70,7 @@ public class ExerciseMaintenanceDetailFragment extends ExerciseMasterFragment {
     DisplayUnits displayUnits;
 
     @Inject
-    Utility utility;
+    StatsUtil statsUtil;
 
 
     public ExerciseMaintenanceDetailFragment() {
@@ -311,9 +311,9 @@ public class ExerciseMaintenanceDetailFragment extends ExerciseMasterFragment {
                 exerciseRecord.setMinDistanceToLog(Float
                         .parseFloat(etMinDistToTravel.getText().toString()));
             } else {
-                exerciseRecord.setMinDistanceToLog(utility.feetToMeters(Float
+                exerciseRecord.setMinDistanceToLog(statsUtil.feetToMeters(Float
                         .parseFloat(etMinDistToTravel.getText().toString())));
-                etMinDistToTravel.setText(new DecimalFormat("#####").format(utility
+                etMinDistToTravel.setText(new DecimalFormat("#####").format(statsUtil
                         .metersToFeet(exerciseRecord.getMinDistanceToLog())));
             }
         } catch (NumberFormatException nfe) {
@@ -455,7 +455,7 @@ public class ExerciseMaintenanceDetailFragment extends ExerciseMasterFragment {
             etMinDistToTravel.setText(new DecimalFormat("#####")
                     .format(exerciseRecord.getMinDistanceToLog()));
         } else
-            etMinDistToTravel.setText(new DecimalFormat("#####").format(utility
+            etMinDistToTravel.setText(new DecimalFormat("#####").format(statsUtil
                     .metersToFeet(exerciseRecord.getMinDistanceToLog())));
         chkbxElevationInCalcs
                 .setChecked(exerciseRecord.getElevationInDistCalcs() == 1 );

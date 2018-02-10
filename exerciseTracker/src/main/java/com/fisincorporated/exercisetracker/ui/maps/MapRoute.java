@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
+import com.fisincorporated.exercisetracker.dagger.ui.MapRouteComponent;
 import com.fisincorporated.exercisetracker.database.ExerciseRecord;
 import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.GPSLog;
@@ -20,7 +21,7 @@ import com.fisincorporated.exercisetracker.ui.media.MediaPoint;
 import com.fisincorporated.exercisetracker.ui.media.mediagrid.MediaGridPagerActivity;
 import com.fisincorporated.exercisetracker.ui.utils.DisplayUnits;
 import com.fisincorporated.exercisetracker.utility.PhotoUtils;
-import com.fisincorporated.exercisetracker.utility.Utility;
+import com.fisincorporated.exercisetracker.utility.StatsUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -55,7 +56,7 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
     public PhotoUtils photoUtils;
 
     @Inject
-    public Utility utility;
+    public StatsUtil statsUtil;
 
     private SupportMapFragment supportMapFragment;
     private Context context;
@@ -93,7 +94,8 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public MapRoute() {
-        this.supportMapFragment = supportMapFragment;
+        MapRouteComponent component = DaggerMapRouteComponent.builder().build();
+        component.inject(this);
     }
 
     public interface ActivityPhotosCallback{
@@ -109,8 +111,13 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
         ActivityPhotosCallback activityPhotosCallback;
         String title;
 
-        public Builder(SupportMapFragment supportMapFragment) {
+        @Inject
+        public Builder() {
+        }
+
+        public Builder setSupportMapFragment(SupportMapFragment supportMapFragment){
             this.supportMapFragment = supportMapFragment;
+            return this;
         }
 
         public Builder setLocationExerciseRecord(LocationExerciseRecord ler) {
@@ -392,9 +399,9 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
         boolean isImperialDisplay = displayUnits.isImperialDisplay();
         Location.distanceBetween(fromLatLng.latitude, fromLatLng.longitude, toLatLng.latitude, toLatLng.longitude, distanceBetweenPoints);
         distance += distanceBetweenPoints[0];
-        if (utility.coveredDistanceForMarker(distance, isImperialDisplay, pinEveryX)) {
+        if (statsUtil.coveredDistanceForMarker(distance, isImperialDisplay, pinEveryX)) {
             currentDistance += distance;
-            int displayDistance = utility.calcDisplayDistance(currentDistance, isImperialDisplay);
+            int displayDistance = statsUtil.calcDisplayDistance(currentDistance, isImperialDisplay);
             distance = 0;
            Marker marker =  map.addMarker(new MarkerOptions()
                     .position(toLatLng)

@@ -6,11 +6,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 
-public class ExerciseMasterFragment extends Fragment {
+import dagger.android.support.DaggerFragment;
+
+public class ExerciseMasterFragment extends DaggerFragment {
 	protected TrackerDatabaseHelper databaseHelper = null;
 	protected SQLiteDatabase database = null;
 	protected Cursor csrUtility;
@@ -45,22 +46,5 @@ public class ExerciseMasterFragment extends Fragment {
 			database = databaseHelper.getWritableDatabase();
 		}
 	}
-	
-	public void onDestroy() {
-//		if (database != null) {
-//			if (database.isOpen())
-//				database.close();
-//			database = null;
-//		}
-		super.onDestroy();
-	}
 
-//	@Override
-//	public void finalize() {
-//		if (database != null) {
-//			if (database.isOpen())
-//					database.close();
-//			database = null;
-//		}
-//	}
 }

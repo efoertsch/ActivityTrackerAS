@@ -32,7 +32,7 @@ import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
 import com.fisincorporated.exercisetracker.ui.media.mediagrid.MediaGridPagerActivity;
 import com.fisincorporated.exercisetracker.ui.utils.ActivityDialogFragment;
 import com.fisincorporated.exercisetracker.utility.PhotoUtils;
-import com.fisincorporated.exercisetracker.utility.Utility;
+import com.fisincorporated.exercisetracker.utility.StatsUtil;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -60,7 +60,7 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
     public PhotoUtils photoUtils;
 
     @Inject
-    Utility utility;
+    StatsUtil statsUtil;
 
     /**
      * Pass in the arguments needed by this fragment
@@ -216,7 +216,7 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
 //			args.putString(GlobalValues.TITLE,title);
 //			args.putString(LocationExercise.DESCRIPTION, description) ;
 //			StringBuilder activityStatsSB = new StringBuilder();
-//			Utility.formatActivityStatsForFacebook(getActivity(), activityStatsSB,
+//			StatsUtil.formatActivityStatsForFacebook(getActivity(), activityStatsSB,
 //					 ler,  imperialMetric, imperial,   feetMeters , milesKm,  mphKph) ;
 //			args.putString(GlobalValues.ACTIVITY_STATS, activityStatsSB.toString());
 //			args.putInt(GlobalValues.DISPLAY_TARGET, GlobalValues.DISPLAY_FACEBOOK_TO_POST);
@@ -299,7 +299,7 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
     }
 
     public void formatActivityStats() {
-        utility.formatActivityStats(getActivity(), stats, ler);
+        statsUtil.formatActivityStats(stats, ler);
     }
 
     public float calcMaxSpeedToPoint(Long lerId) {

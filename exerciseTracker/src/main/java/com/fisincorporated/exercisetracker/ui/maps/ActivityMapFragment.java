@@ -43,6 +43,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
@@ -81,6 +83,12 @@ public class ActivityMapFragment extends ExerciseMasterFragment implements Loade
     private int mapType;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private Cursor cursor;
+
+    @Inject
+    MapRoute.Builder mapRouteBuilder;
+
+    @Inject
+    KmlWriter.Builder kmlWriterBuilder;
 
 
     public static ActivityMapFragment newInstance(Bundle bundle) {
@@ -345,8 +353,9 @@ public class ActivityMapFragment extends ExerciseMasterFragment implements Loade
     }
 
     private void plotRouteForMap(Cursor csr){
-        MapRoute.Builder builder = new MapRoute.Builder(supportMapFragment);
-        builder.setLocationExerciseRecord(ler)
+        MapRoute.Builder builder = new MapRoute.Builder();
+        builder.setSupportMapFragment(supportMapFragment)
+                .setLocationExerciseRecord(ler)
                 .setMapType(mapType)
                 .setUseCurrentLocationLabel(useCurrentLocationLabel)
                 .setCursor(csr)
@@ -357,8 +366,9 @@ public class ActivityMapFragment extends ExerciseMasterFragment implements Loade
     }
 
     private void createKmlEmail(Cursor cursor){
-        KmlWriter.Builder builder = new KmlWriter.Builder(getContext());
-        builder.setLocationExerciseRecord(ler)
+        KmlWriter.Builder builder = new KmlWriter.Builder();
+        builder.setContext(getContext())
+                .setLocationExerciseRecord(ler)
                 .setTitle(title)
                 .setDescription(description)
                 .setCursor(cursor);

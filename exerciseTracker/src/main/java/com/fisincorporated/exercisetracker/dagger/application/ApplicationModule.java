@@ -7,6 +7,7 @@ import com.fisincorporated.exercisetracker.application.ActivityTrackerApplicatio
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 import com.fisincorporated.exercisetracker.ui.utils.DisplayUnits;
 import com.fisincorporated.exercisetracker.utility.PhotoUtils;
+import com.fisincorporated.exercisetracker.utility.StatsUtil;
 
 import javax.inject.Singleton;
 
@@ -28,7 +29,6 @@ public class ApplicationModule {
     }
 
     @Provides
-    @Singleton
     PhotoUtils providePhotoUtils(Context context){
         return new PhotoUtils(context);
     }
@@ -37,6 +37,12 @@ public class ApplicationModule {
     @Singleton
     DisplayUnits provideDisplayUnits(Context context){
         return new DisplayUnits(context);
+    }
+
+    @Provides
+    @Singleton
+    StatsUtil provideStatsUtil(DisplayUnits displayUnits){
+        return new StatsUtil(displayUnits);
     }
 
 

@@ -34,6 +34,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import javax.inject.Inject;
+
 import io.reactivex.Single;
 
 
@@ -43,7 +45,8 @@ public class PhotoUtils {
 
     private Context context;
 
-    public PhotoUtils(Context context) {
+    @Inject
+    public PhotoUtils(Context context){
         this.context = context;
     }
 

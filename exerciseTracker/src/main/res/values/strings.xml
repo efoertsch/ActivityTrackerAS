@@ -309,6 +309,9 @@
     <string name="delete_activity_n">Delete(%1$d)</string>
 
     <string name="error_playing_media_file">Error playing media file %1$s.</string>
+    <string name="hours_and_minutes">%d %s  %.1f %S</string>
+    <string name="hrs">Hrs</string>
+    <string name="mins">mins</string>
 
 
 </resources>

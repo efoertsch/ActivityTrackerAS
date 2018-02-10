@@ -39,9 +39,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
-//TODO show activities to be deleted if previous selected then went to detail/chart and returned
-//TODO - any changes to filter will reset any delete activities back to original state
-//TODO - fix size of delete checkmark and make red
 //TODO replace CursorLoader
 //TODO convert to DataBinding
 
@@ -55,6 +52,7 @@ public class ActivityFragmentHistory extends ExerciseMasterFragment implements I
     private static final int CONFIRM_DELETE_REQUESTCODE = 4;
     protected static int sortOrder = 6;
     private static int defaultSortOrder = sortOrder;
+
     protected ArrayList<String> exerciseSelections = new ArrayList<>();
     protected ArrayList<String> locationSelections = new ArrayList<>();
     protected static boolean doRefresh = false;
@@ -67,7 +65,6 @@ public class ActivityFragmentHistory extends ExerciseMasterFragment implements I
     //dateFormat used in subclasses
     protected SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-
     // Delete stuff
     private LocationExerciseDAO leDAO = null;
     private GPSLogDAO gpslrDAO = null;
@@ -75,35 +72,27 @@ public class ActivityFragmentHistory extends ExerciseMasterFragment implements I
     private int deleteDetailType = 0;
 
     // TODO convert callbacks to RxJava or use Bus
-    private IHandleSelectedAction handleSelectedAction;
-    private IChangeToolbar changeToolbar;
-
+    private IHandleSelectedAction handleSelectedActionImpl;
+    private IChangeToolbar changeToolbarImpl;
 
     private HashMap<Long, Long> deleteList = new HashMap<>();
     private HashSet<Long> deleteSet = new HashSet<>();
 
     private MenuItem trashcan;
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        //TODO check/throw exception
-        if (activity instanceof IHandleSelectedAction) {
-            handleSelectedAction = (IHandleSelectedAction) activity;
-        } else {
+    public void setHandleSelectedActionImpl(IHandleSelectedAction handleSelectedActionImpl){
+        this.handleSelectedActionImpl = handleSelectedActionImpl;
+    }
 
-        }
-        if (activity instanceof  IChangeToolbar) {
-            changeToolbar = (IChangeToolbar) activity;
-        }
-
+    public void setChangeToolbarImpl(IChangeToolbar changeToolbarImpl){
+        this.changeToolbarImpl = changeToolbarImpl;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        handleSelectedAction = null;
-        changeToolbar = null;
+        handleSelectedActionImpl = null;
+        changeToolbarImpl = null;
     }
 
     @Override
@@ -341,12 +330,12 @@ public class ActivityFragmentHistory extends ExerciseMasterFragment implements I
 
         if (deleteSet.size() > 0) {
             trashcan.setVisible(true);
-            changeToolbar.setToolbarColor(getResources().getColor(R.color.check_circle_blue_grey));
-            changeToolbar.setToolbarTitle(getString(R.string.delete_activity_n, deleteSet.size()));
+            changeToolbarImpl.setToolbarColor(getResources().getColor(R.color.check_circle_blue_grey));
+            changeToolbarImpl.setToolbarTitle(getString(R.string.delete_activity_n, deleteSet.size()));
         } else {
            trashcan.setVisible(false);
-           changeToolbar.resetToolbarColorToDefault();
-           changeToolbar.resetToolbarTitleToDefault();
+           changeToolbarImpl.resetToolbarColorToDefault();
+           changeToolbarImpl.resetToolbarTitleToDefault();
         }
     }
 
@@ -504,7 +493,7 @@ public class ActivityFragmentHistory extends ExerciseMasterFragment implements I
         args.putString(GlobalValues.TITLE, activityHistorySummary.createActivityTitle());
         args.putInt(GlobalValues.DISPLAY_TARGET, GlobalValues.DISPLAY_MAP);
         args.putString(TrackerDatabase.LocationExercise.DESCRIPTION, activityHistorySummary.getDescription());
-        handleSelectedAction.onSelectedAction(args);
+        handleSelectedActionImpl.onSelectedAction(args);
     }
 
     public void displayStats(ActivityHistorySummary activityHistorySummary, int position) {
@@ -517,7 +506,7 @@ public class ActivityFragmentHistory extends ExerciseMasterFragment implements I
         args.putStringArrayList(GlobalValues.LOCATION_FILTER_PHRASE, locationSelections);
         args.putInt(GlobalValues.CURSOR_POSITION, position);
         args.putInt(GlobalValues.DISPLAY_TARGET, GlobalValues.DISPLAY_STATS);
-        handleSelectedAction.onSelectedAction(args);
+        handleSelectedActionImpl.onSelectedAction(args);
 
     }
     //end IHistoryCallbacks

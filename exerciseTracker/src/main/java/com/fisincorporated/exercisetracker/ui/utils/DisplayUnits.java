@@ -11,13 +11,13 @@ import javax.inject.Inject;
 
 public class DisplayUnits {
 
-    private static DisplayUnits displayUnits;
-    private static Context context;
-    private static String imperialMetric;
-    private static String imperial;
-    private static String feetMeters;
-    private static String milesKm;
-    private static String mphKph;
+    private DisplayUnits displayUnits;
+    private Context context;
+    private String imperialMetric;
+    private String imperial;
+    private String feetMeters;
+    private String milesKm;
+    private String mphKph;
 
     @Inject
     public DisplayUnits(Context context) {
@@ -29,7 +29,7 @@ public class DisplayUnits {
      * Initialize at app startup
      * @param context
      */
-    public  void initialize(Context context) {
+    private void initialize(Context context) {
         if (displayUnits == null) {
             displayUnits = new DisplayUnits(context);
             imperial = context.getString(R.string.imperial);

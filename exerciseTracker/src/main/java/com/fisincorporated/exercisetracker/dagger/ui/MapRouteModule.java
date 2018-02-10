@@ -4,7 +4,6 @@ package com.fisincorporated.exercisetracker.dagger.ui;
 import dagger.Module;
 
 @Module
-public class StartupPhotoFragmentModule {
-
+public class MapRouteModule {
 
 }

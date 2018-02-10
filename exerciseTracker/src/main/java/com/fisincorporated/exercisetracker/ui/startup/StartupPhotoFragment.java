@@ -18,13 +18,17 @@ import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.ui.startactivity.StartExercise;
 import com.fisincorporated.exercisetracker.utility.PhotoUtils;
 
+import javax.inject.Inject;
+
 import dagger.android.support.DaggerFragment;
 
 public class StartupPhotoFragment extends DaggerFragment {
 
     private static final String TAG = StartupPhotoFragment.class.getSimpleName();
 
-    private PhotoUtils photoUtils;
+    @Inject
+    PhotoUtils photoUtils;
+
     private ImageView imageView;
     private String photoPath;
     private FloatingActionButton startFab;
@@ -45,7 +49,6 @@ public class StartupPhotoFragment extends DaggerFragment {
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.startup_photo, container, false);
         getReferencedViews(view);
         return view;
@@ -65,10 +68,6 @@ public class StartupPhotoFragment extends DaggerFragment {
         valueAnimator.end();
     }
 
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
-    }
 
     private void getReferencedViews(View view) {
         imageView = (ImageView) view.findViewById(R.id.startup_photo_view);

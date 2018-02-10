@@ -19,7 +19,7 @@ import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExer
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
 import com.fisincorporated.exercisetracker.ui.utils.DisplayUnits;
-import com.fisincorporated.exercisetracker.utility.Utility;
+import com.fisincorporated.exercisetracker.utility.StatsUtil;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
@@ -76,7 +76,7 @@ public class DistancePerExerciseFragment extends ExerciseMasterFragment {
     DisplayUnits displayUnits;
 
     @Inject
-    Utility utility;
+    StatsUtil statsUtil;
 
     public static DistancePerExerciseFragment newInstance(Bundle bundle) {
         // is this easier/better than copying values?
@@ -233,7 +233,7 @@ public class DistancePerExerciseFragment extends ExerciseMasterFragment {
         // ++numberOfTimeUnits ;
         // 2. Create date array sized on number of weeks from the min date found
         // set dates to week end date not week beging
-        activityDates = constructConsecutiveDates(utility.addDays(minDate, 6),
+        activityDates = constructConsecutiveDates(statsUtil.addDays(minDate, 6),
                 numberOfTimeUnits, Calendar.DATE, 7);
         totalDistanceValues = createZeroArrary(numberOfTimeUnits);
         // 3.Get the exercises, days, distances
@@ -368,7 +368,7 @@ public class DistancePerExerciseFragment extends ExerciseMasterFragment {
             origDistance = csrUtility.getInt(csrUtility
                     .getColumnIndex(LocationExercise.DISTANCE));
             if (displayUnits.isImperialDisplay()) {
-                distance =utility.metersToMiles((float) origDistance);
+                distance = statsUtil.metersToMiles((float) origDistance);
             } else {
                 distance = origDistance / 1000d;
             }
@@ -509,7 +509,7 @@ public class DistancePerExerciseFragment extends ExerciseMasterFragment {
         leftAxis.setDrawGridLines(true);
         leftAxis.setSpaceTop(35f);
         leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
-        leftAxis.setAxisMaximum(utility.calcMaxYGraphValue(dataMaxY));
+        leftAxis.setAxisMaximum(statsUtil.calcMaxYGraphValue(dataMaxY));
         graphView.getAxisRight().setEnabled(false);  // TODO revisit later
 
         // Set graph title - note separate TextView that is not part of graph

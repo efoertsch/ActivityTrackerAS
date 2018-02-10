@@ -1,7 +1,7 @@
 package com.fisincorporated.exercisetracker.utility;
 
 import android.content.Context;
-import android.support.v4.app.FragmentActivity;
+import android.content.res.Resources;
 import android.widget.Toast;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
@@ -19,26 +19,28 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import javax.inject.Inject;
+public class StatsUtil {
 
-public class Utility {
+   private DisplayUnits displayUnits;
 
-    @Inject
-    public DisplayUnits displayUnits;
+    public StatsUtil(DisplayUnits displayUnits){
+        this.displayUnits = displayUnits;
+    }
 
-    public void formatActivityStats(Context activity, ArrayList<String[]> stats,
+    public void formatActivityStats(ArrayList<String[]> stats,
                                            LocationExerciseRecord ler) {
         boolean isImperialDisplay = displayUnits.isImperialDisplay();
         String feetMeters = displayUnits.getFeetMeters();
         String milesKm = displayUnits.getMilesKm();
         String mphKph = displayUnits.getMphKph();
+        Resources res = Resources.getSystem();
 
         stats.clear();
 
         float distance = (isImperialDisplay ? metersToMiles((float) ler.getDistance()) : ((float) ler
                 .getDistance()) / 1000f);
         stats.add(new String[]{
-                activity.getResources().getString(R.string.distance_traveled),
+                res.getString(R.string.distance_traveled),
                 String.format("%.2f " + milesKm, distance)});
 
         long elapsed = ler.getEndTimestamp().getTime()
@@ -48,8 +50,8 @@ public class Utility {
         float diffMinutes = (elapsed - (diffHours * GlobalValues.TIME_TO_FRACTION_HOURS))
                 / GlobalValues.TIME_TO_MINUTES;
         stats.add(new String[]{
-                activity.getResources().getString(R.string.time_on_activity),
-                String.format("%d Hrs  %.1f Mins", diffHours, diffMinutes)});
+                res.getString(R.string.time_on_activity),
+                res.getString(R.string.hours_and_minutes, diffHours, res.getString(R.string.hrs), diffMinutes, res.getString(R.string.mins))});
 
         // speeds in kph or mph per distance calc above
         float averageSpeed = 0;
@@ -58,11 +60,11 @@ public class Utility {
                     / (elapsed / GlobalValues.TIME_TO_FRACTION_HOURS);
         }
         stats.add(new String[]{
-                activity.getResources().getString(R.string.average_speed),
+                res.getString(R.string.average_speed),
                 String.format("%.2f " + mphKph, averageSpeed)});
 
         stats.add(new String[]{
-                activity.getResources().getString(R.string.max_speed),
+                res.getString(R.string.max_speed),
                 String.format(
                         "%.2f " + mphKph,
                         isImperialDisplay ? kilometersToMiles(ler.getMaxSpeedToPoint())
@@ -70,35 +72,37 @@ public class Utility {
 
         int altitude = (int) (isImperialDisplay ? (int)metersToFeet(ler.getAltitudeGained()) : ler.getAltitudeGained());
         stats.add(new String[]{
-                activity.getResources().getString(R.string.altitude_gained),
+                res.getString(R.string.altitude_gained),
                 String.format("%d " + feetMeters, altitude)});
 
         altitude = (int) (isImperialDisplay ? (int)metersToFeet(ler.getAltitudeLost()) : ler.getAltitudeLost());
         stats.add(new String[]{
-                activity.getResources().getString(R.string.altitude_lost),
+                res.getString(R.string.altitude_lost),
                 String.format("%d " + feetMeters, altitude)});
 
         altitude = (int) (isImperialDisplay ? (int)metersToFeet(ler.getAltitudeGained() - ler.getAltitudeLost())
                 : ler.getAltitudeGained() - ler.getAltitudeLost());
         stats.add(new String[]{
-                activity.getResources().getString(R.string.overall_altitude_change),
+                res.getString(R.string.overall_altitude_change),
                 String.format("%d " + feetMeters, altitude)});
 
     }
 
-    public void formatActivityStatsForFacebook(FragmentActivity activity, StringBuilder sb,
+    public void formatActivityStatsForFacebook(StringBuilder sb,
                                                       LocationExerciseRecord ler) {
         boolean isImperialDisplay = displayUnits.isImperialDisplay();
         String feetMeters = displayUnits.getFeetMeters();
         String milesKm = displayUnits.getMilesKm();
         String mphKph = displayUnits.getMphKph();
 
+        Resources res = Resources.getSystem();
+
         sb.setLength(0);
         String lineSeparator = System.getProperty("line.separator");
 
         float distance = (isImperialDisplay ?metersToMiles((float) ler.getDistance()) : ((float) ler
                 .getDistance()) / 1000f);
-        sb.append(activity.getResources().getString(R.string.distance_traveled) + " : " +
+        sb.append(res.getString(R.string.distance_traveled) + " : " +
                 String.format("%.2f " + milesKm, distance) + lineSeparator);
 
         long elapsed = ler.getEndTimestamp().getTime()
@@ -107,8 +111,8 @@ public class Utility {
         // find remaining minutes
         float diffMinutes = (elapsed - (diffHours * GlobalValues.TIME_TO_FRACTION_HOURS))
                 / GlobalValues.TIME_TO_MINUTES;
-        sb.append(activity.getResources().getString(R.string.time_on_activity) + " : " +
-                String.format("%d Hrs  %.1f Mins", diffHours, diffMinutes) + lineSeparator);
+        sb.append(res.getString(R.string.time_on_activity) + " : " +
+                res.getString(R.string.hours_and_minutes, diffHours, res.getString(R.string.hrs), diffMinutes, res.getString(R.string.mins)));
 
         // speeds in kph or mph per distance calc above
         float averageSpeed = 0;
@@ -116,10 +120,10 @@ public class Utility {
             averageSpeed = (distance)
                     / (elapsed / GlobalValues.TIME_TO_FRACTION_HOURS);
         }
-        sb.append(activity.getResources().getString(R.string.average_speed) + " : " +
+        sb.append(res.getString(R.string.average_speed) + " : " +
                 String.format("%.2f " + mphKph, averageSpeed) + lineSeparator);
 
-        sb.append(activity.getResources().getString(R.string.max_speed) + " : " +
+        sb.append(res.getString(R.string.max_speed) + " : " +
                 String.format(
                         "%.2f " + mphKph,
                         isImperialDisplay ? kilometersToMiles(ler.getMaxSpeedToPoint())
@@ -127,17 +131,17 @@ public class Utility {
 
         int altitude = (int) (isImperialDisplay ? (int)metersToFeet(ler.getAltitudeGained()) : ler.getAltitudeGained());
         sb.append(
-                activity.getResources().getString(R.string.altitude_gained) + " : " +
+                res.getString(R.string.altitude_gained) + " : " +
                         String.format("%d " + feetMeters, altitude) + lineSeparator);
 
         altitude = (int) (isImperialDisplay ? (int)metersToFeet(ler.getAltitudeLost()) : ler.getAltitudeLost());
         sb.append(
-                activity.getResources().getString(R.string.altitude_lost) + " : " +
+                res.getString(R.string.altitude_lost) + " : " +
                         String.format("%d " + feetMeters, altitude) + lineSeparator);
 
         altitude = (int) (isImperialDisplay ? (int)metersToFeet(ler.getAltitudeGained() - ler.getAltitudeLost())
                 : ler.getAltitudeGained() - ler.getAltitudeLost());
-        sb.append(activity.getResources().getString(R.string.overall_altitude_change) + " : " +
+        sb.append(res.getString(R.string.overall_altitude_change) + " : " +
                 String.format("%d " + feetMeters, altitude) + lineSeparator);
 
     }
@@ -261,7 +265,7 @@ public class Utility {
 
     /**
      *
-     * @param metersTraveled
+     * @param metersTraveled meters traveled between two points
      * @param imperialDisplay true convert metersTraveled to miles and compare to distancePerMarker,
      *                       false leave metersTraveled as is
      * @param distancePerMarker distance to cover for placing a marker

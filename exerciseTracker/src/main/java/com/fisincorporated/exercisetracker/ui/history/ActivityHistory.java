@@ -2,7 +2,6 @@ package com.fisincorporated.exercisetracker.ui.history;
 
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -21,7 +20,6 @@ import com.fisincorporated.exercisetracker.ui.master.IChangeToolbar;
 public class ActivityHistory extends ExerciseMasterFragmentActivity implements IChangeToolbar {
     ActivityFragmentHistory alf = null;
     Menu myMenu = null;
-    Drawable actionBarDrawable = null;
     String originalTitle = "";
 
     @Override
@@ -33,9 +31,25 @@ public class ActivityHistory extends ExerciseMasterFragmentActivity implements I
 
     @Override
     protected Fragment createFragment() {
-        return alf = new ActivityFragmentHistory();
+         alf = new ActivityFragmentHistory();
+
+         return alf;
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        alf.setHandleSelectedActionImpl(this);
+        alf.setChangeToolbarImpl(this);
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        alf.setChangeToolbarImpl(null);
+        alf.setHandleSelectedActionImpl(null);
+
+    }
     // added for tablet
     @Override
     protected int getLayoutResId() {

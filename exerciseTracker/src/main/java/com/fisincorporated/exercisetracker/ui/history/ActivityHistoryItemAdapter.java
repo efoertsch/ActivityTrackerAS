@@ -25,8 +25,6 @@ public class ActivityHistoryItemAdapter extends RecyclerViewCursorAdapter<Activi
     private Context context;
     private WeakReference<IHistoryListCallbacks> callbacks;
 
-
-
     public ActivityHistoryItemAdapter(Context context, WeakReference<IHistoryListCallbacks> historyListCallbacks) {
         super(null);
         this.context = context;

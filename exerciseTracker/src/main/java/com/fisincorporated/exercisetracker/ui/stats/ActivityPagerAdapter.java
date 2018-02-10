@@ -10,7 +10,7 @@ import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.ExrcsLocation;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
-import com.fisincorporated.exercisetracker.utility.Utility;
+import com.fisincorporated.exercisetracker.utility.StatsUtil;
 
 import java.text.SimpleDateFormat;
 
@@ -27,7 +27,7 @@ public class ActivityPagerAdapter<F extends Fragment> extends FragmentStatePager
     private Cursor cursor;
 
     @Inject
-    public Utility utility;
+    public StatsUtil statsUtil;
 
     public ActivityPagerAdapter(FragmentManager fm, Class<F> fragmentClass, Cursor cursor) {
         super(fm);
@@ -48,7 +48,7 @@ public class ActivityPagerAdapter<F extends Fragment> extends FragmentStatePager
             args.putString(GlobalValues.TITLE,
                     cursor.getString(cursor.getColumnIndex(Exercise.EXERCISE))
                             + "@" + cursor.getString(cursor.getColumnIndex(ExrcsLocation.LOCATION))
-                            + " " + utility.formatDate(dateFormat, cursor.getString(cursor.getColumnIndex(GlobalValues.START_DATE))));
+                            + " " + statsUtil.formatDate(dateFormat, cursor.getString(cursor.getColumnIndex(GlobalValues.START_DATE))));
             args.putString(LocationExercise.DESCRIPTION, cursor.getString(cursor.getColumnIndex(LocationExercise.DESCRIPTION)));
             frag = fragmentClass.newInstance();
             frag.setArguments(args);

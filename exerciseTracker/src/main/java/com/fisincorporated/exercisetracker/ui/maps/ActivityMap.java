@@ -6,9 +6,9 @@ import android.support.v4.app.Fragment;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
-import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterActivity;
 
-public class ActivityMap extends ExerciseMasterFragmentActivity {
+public class ActivityMap extends ExerciseMasterActivity {
 	
 	public ActivityMap() {
 		// TODO Auto-generated constructor stub

@@ -4,9 +4,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.fisincorporated.exercisetracker.R;
-import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerActivity;
 
-public class SettingsActivity extends ExerciseMasterFragmentActivity {
+public class SettingsActivity extends ExerciseDaggerActivity {
 
 
     @Override

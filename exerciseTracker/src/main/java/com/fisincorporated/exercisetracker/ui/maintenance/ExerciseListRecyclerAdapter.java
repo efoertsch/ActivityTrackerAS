@@ -12,25 +12,24 @@ import android.widget.TextView;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase;
 import com.fisincorporated.exercisetracker.ui.utils.RecyclerViewCursorAdapter;
-
-import java.lang.ref.WeakReference;
+import com.jakewharton.rxrelay2.PublishRelay;
 
 
 public class ExerciseListRecyclerAdapter extends RecyclerViewCursorAdapter<ExerciseListRecyclerAdapter.ItemHolder> {
 
     private Context context;
-    private WeakReference<IExerciseCallbacks> callbacks;
+    private PublishRelay<Object> publishRelay;
 
-    public ExerciseListRecyclerAdapter(Context context, WeakReference<IExerciseCallbacks> callbacks) {
+    public ExerciseListRecyclerAdapter(Context context, PublishRelay<Object> publishRelay) {
         super(null);
         this.context = context;
-        this.callbacks = callbacks;
+        this.publishRelay = publishRelay;
     }
 
     @Override
     public ExerciseListRecyclerAdapter.ItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.exercise_recycler_row, parent, false);
-        return new ExerciseListRecyclerAdapter.ItemHolder(view, callbacks);
+        return new ExerciseListRecyclerAdapter.ItemHolder(view);
     }
 
     @Override
@@ -41,12 +40,10 @@ public class ExerciseListRecyclerAdapter extends RecyclerViewCursorAdapter<Exerc
 
     public class ItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private WeakReference<IExerciseCallbacks> viewCallbacks;
         private TextView tvExercise;
 
-        public ItemHolder(View itemView, WeakReference<IExerciseCallbacks> callbacks) {
+        public ItemHolder(View itemView) {
             super(itemView);
-            viewCallbacks = callbacks;
             tvExercise = (TextView) itemView.findViewById(R.id.exercise_recycler_row_exercise);
 
         }
@@ -61,7 +58,8 @@ public class ExerciseListRecyclerAdapter extends RecyclerViewCursorAdapter<Exerc
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.exercise_recycler_row_exercise:
-                    viewCallbacks.get().onExerciseSelected((Integer) v.getTag(),getAdapterPosition());
+                    publishRelay.accept(new ExerciseSelectedMsg((Integer) v.getTag(), getAdapterPosition()));
+
                     break;
             }
         }

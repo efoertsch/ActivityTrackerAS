@@ -1,6 +1,5 @@
 package com.fisincorporated.exercisetracker.ui.maintenance;
 
-import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -16,28 +15,21 @@ import android.widget.TextView;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.SQLiteCursorLoader;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
-import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerFragment;
+import com.jakewharton.rxrelay2.PublishRelay;
 
 import java.lang.ref.WeakReference;
 
-public class ExerciseMaintenanceListFragment extends ExerciseMasterFragment implements LoaderManager.LoaderCallbacks<Cursor>, IExerciseCallbacks{
+import javax.inject.Inject;
+
+public class ExerciseMaintenanceListFragment extends ExerciseDaggerFragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     protected RecyclerView recyclerView;
-
-    protected IExerciseCallbacks callBacks;
-
     private ExerciseListRecyclerAdapter recyclerAdapter;
 
-    @Override
-    public void onExerciseSelected(int exerciseId, int position) {
-        callBacks.onExerciseSelected(exerciseId, position);
-    }
+    @Inject
+    PublishRelay<Object> publishRelay;
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        callBacks = (IExerciseCallbacks) activity;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,12 +50,10 @@ public class ExerciseMaintenanceListFragment extends ExerciseMasterFragment impl
 				// Go to the exercise maintenance activity to add new exercise
 				// mod for tablets, return selected (new) exercise to acivity and it will determine
 				// if for detail fragment or call activity to display exercise fragment
-				 callBacks.onExerciseSelected(-1, 0);
+                publishRelay.accept(new ExerciseSelectedMsg(-1,0));
 			}
 		});
-
         return view;
-
     }
 
     public void onResume() {
@@ -113,7 +103,7 @@ public class ExerciseMaintenanceListFragment extends ExerciseMasterFragment impl
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         if (recyclerAdapter == null) {
-            recyclerAdapter = new ExerciseListRecyclerAdapter(getContext(),new WeakReference<IExerciseCallbacks>(this));
+            recyclerAdapter = new ExerciseListRecyclerAdapter(getContext(), publishRelay);
             recyclerView.setAdapter(recyclerAdapter);
         }
         recyclerAdapter.swapCursor(cursor);
@@ -125,11 +115,6 @@ public class ExerciseMaintenanceListFragment extends ExerciseMasterFragment impl
         // stop using the cursor (via the adapter)
         recyclerAdapter.swapCursor(null);
     }
-
-//    public void finalize(){
-//        Log.e(GlobalValues.LOG_TAG,"ExerciseMaintenanceDetailActivity.finalize. Calling super.finalize to close db");
-//        super.finalize();
-//    }
 
 
 }

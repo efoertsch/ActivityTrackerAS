@@ -7,9 +7,9 @@ import android.support.v4.app.Fragment;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.ExrcsLocation;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
-import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterActivity;
 
-public class ActivityLoggerActivity extends ExerciseMasterFragmentActivity {
+public class ActivityLoggerActivity extends ExerciseMasterActivity {
 
 	@Override
 	protected Fragment createFragment() {

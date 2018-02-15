@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +21,6 @@ import com.fisincorporated.exercisetracker.backupandrestore.GoogleDriveUtil;
 import com.fisincorporated.exercisetracker.backupandrestore.LocalBackupUtils;
 import com.fisincorporated.exercisetracker.ui.drive.DriveSignOnActivity;
 import com.fisincorporated.exercisetracker.ui.history.ActivityHistory;
-import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
 import com.fisincorporated.exercisetracker.ui.utils.ActivityDialogFragment;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -31,7 +31,7 @@ import io.reactivex.disposables.CompositeDisposable;
 
 // code from http://stackoverflow.com/questions/6540906/android-simple-export-and-import-of-sqlite-com.fisincorporated.database
 // with slight modifications
-public class RestoreFragment extends ExerciseMasterFragment {
+public class RestoreFragment extends Fragment {
 
     private static final String TAG = RestoreFragment.class.getSimpleName();
 

@@ -9,6 +9,7 @@ public abstract class BaseDAO {
 	protected static TrackerDatabaseHelper dbHelper = null;
 	protected static boolean dbIsOpen = false;
 
+	//TODO set up Dagger injection
 	protected BaseDAO() {
 		if(dbHelper == null) {
 			dbHelper = TrackerDatabaseHelper.getTrackerDatabaseHelper();
@@ -20,23 +21,5 @@ public abstract class BaseDAO {
 			dbIsOpen = true;
 		}
 	}
- 
-//	public void close() {
-//		try {
-//			dbHelper.close();
-//			dbIsOpen = false;
-//		} catch (SQLException sqle) {
-//			Log.e(GlobalValues.LOG_TAG, "LocationExerciseDAO.close SQL exception:"
-//					+ sqle.toString());
-//		} catch (Exception e) {
-//			Log.e(GlobalValues.LOG_TAG, "LocationExerciseDAO.close exception: "
-//					+ e.toString());
-//		}
-//	}
-//	public void finalize(){
-//		if (database != null){
-//			database.close();
-//		}
-//	}
 
 }

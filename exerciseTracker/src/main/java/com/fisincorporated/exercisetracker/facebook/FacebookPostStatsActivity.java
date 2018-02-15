@@ -8,10 +8,10 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
-import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerActivity;
 
 //http://stackoverflow.com/questions/21634138/working-example-of-latest-android-facebook-sdk-login
-public class FacebookPostStatsActivity extends ExerciseMasterFragmentActivity {
+public class FacebookPostStatsActivity extends ExerciseDaggerActivity {
 	 
 	private static final String TAG = "FacebookPostStatsActivity";
 	

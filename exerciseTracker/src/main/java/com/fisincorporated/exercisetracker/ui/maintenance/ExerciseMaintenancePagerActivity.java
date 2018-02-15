@@ -14,10 +14,10 @@ import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.SQLiteCursorLoader;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
-import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerActivity;
 import com.fisincorporated.exercisetracker.ui.utils.DepthPageTransformer;
 
-public class ExerciseMaintenancePagerActivity extends ExerciseMasterFragmentActivity implements LoaderCallbacks<Cursor> {
+public class ExerciseMaintenancePagerActivity extends ExerciseDaggerActivity implements LoaderCallbacks<Cursor> {
 
 	private int cursorPosition = 0;
 	private ViewPager viewPager;

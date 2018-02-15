@@ -9,10 +9,14 @@ import android.os.Bundle;
 
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 
+import javax.inject.Inject;
+
 import dagger.android.support.DaggerFragment;
 
-public class ExerciseMasterFragment extends DaggerFragment {
+public abstract class ExerciseDaggerFragment extends DaggerFragment {
+	@Inject
 	protected TrackerDatabaseHelper databaseHelper = null;
+
 	protected SQLiteDatabase database = null;
 	protected Cursor csrUtility;
 	protected IHandleSelectedAction callBacks;
@@ -35,13 +39,9 @@ public class ExerciseMasterFragment extends DaggerFragment {
 
 	//TODO user Dagger injection
 	public void getDatabaseSetup() {
-		if (databaseHelper == null) {
-			databaseHelper = TrackerDatabaseHelper.getTrackerDatabaseHelper();
-		}
 		if (database == null) {
 			database = databaseHelper.getDatabase();
 		}
-
 		if (!database.isOpen()) {
 			database = databaseHelper.getWritableDatabase();
 		}

@@ -1,4 +1,4 @@
-package com.fisincorporated.exercisetracker.ui.maps;
+package com.fisincorporated.exercisetracker.ui.utils;
 
 import android.content.Context;
 import android.content.res.Resources;

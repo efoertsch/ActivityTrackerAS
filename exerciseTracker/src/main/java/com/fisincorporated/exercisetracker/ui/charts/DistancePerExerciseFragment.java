@@ -17,7 +17,7 @@ import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
-import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerFragment;
 import com.fisincorporated.exercisetracker.ui.utils.DisplayUnits;
 import com.fisincorporated.exercisetracker.utility.StatsUtil;
 import com.github.mikephil.charting.charts.LineChart;
@@ -40,7 +40,7 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
-public class DistancePerExerciseFragment extends ExerciseMasterFragment {
+public class DistancePerExerciseFragment extends ExerciseDaggerFragment {
     private ArrayList<String> exerciseSelections = new ArrayList<>();
     private ArrayList<String> locationSelections = new ArrayList<>();
     private int chartType = GlobalValues.BAR_CHART_LAST_MONTH;

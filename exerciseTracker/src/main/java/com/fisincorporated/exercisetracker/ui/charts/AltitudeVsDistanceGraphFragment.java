@@ -15,7 +15,7 @@ import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.GPSLog;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
-import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerFragment;
 import com.fisincorporated.exercisetracker.ui.utils.DisplayUnits;
 import com.fisincorporated.exercisetracker.utility.StatsUtil;
 import com.github.mikephil.charting.charts.LineChart;
@@ -31,7 +31,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class AltitudeVsDistanceGraphFragment extends ExerciseMasterFragment {
+public class AltitudeVsDistanceGraphFragment extends ExerciseDaggerFragment {
     private long locationExerciseId;
     private String title;
     private String description;

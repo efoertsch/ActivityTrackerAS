@@ -25,10 +25,10 @@ import com.fisincorporated.exercisetracker.database.LocationExerciseDAO;
 import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.GPSLog;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerFragment;
 import com.fisincorporated.exercisetracker.ui.media.slideshow.FullscreenPhotoPagerActivity;
 import com.fisincorporated.exercisetracker.ui.media.MediaDetail;
 import com.fisincorporated.exercisetracker.ui.media.MediaPoint;
-import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
 import com.fisincorporated.exercisetracker.ui.media.mediagrid.MediaGridPagerActivity;
 import com.fisincorporated.exercisetracker.ui.utils.ActivityDialogFragment;
 import com.fisincorporated.exercisetracker.utility.PhotoUtils;
@@ -41,7 +41,7 @@ import javax.inject.Inject;
 
 import io.reactivex.disposables.CompositeDisposable;
 
-public class ActivityDetailFragment extends ExerciseMasterFragment {
+public class ActivityDetailFragment extends ExerciseDaggerFragment {
     private static final int DELETE_REQUESTCODE = 1;
     private TextView tvExerciseLocation = null;
     private LocationExerciseRecord ler = null;
@@ -194,16 +194,6 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
         ActivityDialogFragment dialog;
         Bundle args = new Bundle();
         switch (item.getItemId()) {
-//            case R.id.activity_detail_showMap:
-//                args.putLong(LocationExercise._ID, locationExerciseId);
-//                args.putString(GlobalValues.TITLE, title);
-//                args.putString(LocationExercise.DESCRIPTION, description);
-//                args.putInt(GlobalValues.DISPLAY_TARGET, GlobalValues.DISPLAY_MAP);
-//                Toast.makeText(getActivity().getBaseContext(),
-//                        getActivity().getResources().getString(R.string.displaying_the_map_may_take_a_moment), Toast.LENGTH_SHORT)
-//                        .show();
-//                callBacks.onSelectedAction(args);
-//                return true;
             case R.id.activity_detail_showChart:
                 args.putLong(LocationExercise._ID, locationExerciseId);
                 args.putString(GlobalValues.TITLE, title);

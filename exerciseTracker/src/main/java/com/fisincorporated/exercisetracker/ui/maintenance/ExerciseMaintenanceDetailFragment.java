@@ -32,7 +32,7 @@ import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.ExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
-import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerFragment;
 import com.fisincorporated.exercisetracker.ui.utils.ActivityDialogFragment;
 import com.fisincorporated.exercisetracker.ui.utils.DisplayUnits;
 import com.fisincorporated.exercisetracker.utility.StatsUtil;
@@ -42,7 +42,8 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
-public class ExerciseMaintenanceDetailFragment extends ExerciseMasterFragment {
+//TODO consolidate SQL logic
+public class ExerciseMaintenanceDetailFragment extends ExerciseDaggerFragment {
 
     private long exerciseRowId = -1;
     private long exerciseLocationRowId = -1;

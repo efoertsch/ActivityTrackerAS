@@ -27,7 +27,7 @@ import com.fisincorporated.exercisetracker.database.TrackerDatabase;
 import com.fisincorporated.exercisetracker.ui.filters.ExerciseFilterDialog;
 import com.fisincorporated.exercisetracker.ui.filters.LocationFilterDialog;
 import com.fisincorporated.exercisetracker.ui.logger.GPSLocationManager;
-import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerFragment;
 import com.fisincorporated.exercisetracker.ui.master.IChangeToolbar;
 import com.fisincorporated.exercisetracker.ui.master.IHandleSelectedAction;
 import com.fisincorporated.exercisetracker.ui.utils.ActivityDialogFragment;
@@ -39,10 +39,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import javax.inject.Inject;
+
 //TODO replace CursorLoader
 //TODO convert to DataBinding
 
-public class ActivityFragmentHistory extends ExerciseMasterFragment implements IHistoryListCallbacks, LoaderManager.LoaderCallbacks<Cursor> {
+public class ActivityFragmentHistory extends ExerciseDaggerFragment implements IHistoryListCallbacks, LoaderManager.LoaderCallbacks<Cursor> {
 
     protected static final String EXERCISE_FILTER_DIALOG = "exercise_filter_dialog";
     protected static final String LOCATION_FILTER_DIALOG = "location_filter_dialog";
@@ -79,6 +81,9 @@ public class ActivityFragmentHistory extends ExerciseMasterFragment implements I
     private HashSet<Long> deleteSet = new HashSet<>();
 
     private MenuItem trashcan;
+
+    @Inject
+    GPSLocationManager gpsLocationManager;
 
     public void setHandleSelectedActionImpl(IHandleSelectedAction handleSelectedActionImpl){
         this.handleSelectedActionImpl = handleSelectedActionImpl;
@@ -388,10 +393,10 @@ public class ActivityFragmentHistory extends ExerciseMasterFragment implements I
                 GlobalValues.DELETE_ACTIVITY_LIST_LOADER, null, this);
     }
 
+    //TODO move sql transaction to database helper
     private void deleteActivitiesFromDatabase() {
         Long key;
         // May want to delete activity that is currently running
-        GPSLocationManager gpsLocationManager = GPSLocationManager.get(getActivity());
         long currentLerId = gpsLocationManager.getCurrentLer();
         if (leDAO == null) {
             leDAO = new LocationExerciseDAO();

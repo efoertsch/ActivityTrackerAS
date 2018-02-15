@@ -21,12 +21,9 @@ import java.io.InputStreamReader;
 
 
 public class AboutFragment extends Fragment {
-    private TextView tvAbout;
 
     public AboutFragment() {
-        // Required empty public constructor
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,8 +33,8 @@ public class AboutFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view =  inflater.inflate(R.layout.about_activity_tracker, container, false);
-        tvAbout = (TextView) view.findViewById(R.id.about_activity_tracker_tvAbout);
+        View view = inflater.inflate(R.layout.about_activity_tracker, container, false);
+        TextView tvAbout = (TextView) view.findViewById(R.id.about_activity_tracker_tvAbout);
         tvAbout.setMovementMethod(LinkMovementMethod.getInstance());
         tvAbout.setText(Html.fromHtml(loadAboutText()));
         return view;
@@ -46,15 +43,14 @@ public class AboutFragment extends Fragment {
 
     // Keep just in case
     private String loadAboutText() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         AssetManager assetManager = getResources().getAssets();
-        InputStream inputStream = null;
-
+        InputStream inputStream;
         try {
             inputStream = assetManager.open("about.txt");
             BufferedReader br = new BufferedReader(new InputStreamReader(
                     inputStream));
-            String line = null;
+            String line;
             while ((line = br.readLine()) != null) {
                 sb.append(line);
             }
@@ -65,11 +61,8 @@ public class AboutFragment extends Fragment {
             Toast.makeText(getActivity().getApplicationContext(),
                     "Oops. Error reading About file" + e.toString(),
                     Toast.LENGTH_LONG).show();
-            ;
-        } finally {
-            return sb.toString();
         }
-
+        return sb.toString();
 
     }
 }

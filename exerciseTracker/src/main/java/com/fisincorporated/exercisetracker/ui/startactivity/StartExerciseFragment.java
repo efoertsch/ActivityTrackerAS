@@ -34,11 +34,11 @@ import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.ExrcsLocation;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
-import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerFragment;
 
 import java.util.Locale;
 
-public class StartExerciseFragment extends ExerciseMasterFragment {
+public class StartExerciseFragment extends ExerciseDaggerFragment {
     private static final String TAG = "StartExerciseFragment";
 
     protected Cursor csrLocationAutoComplete;

@@ -14,10 +14,10 @@ import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.ui.charts.DistancePerExerciseFragment;
 import com.fisincorporated.exercisetracker.ui.charts.GraphActivity;
-import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterActivity;
 import com.fisincorporated.exercisetracker.ui.master.IChangeToolbar;
 
-public class ActivityHistory extends ExerciseMasterFragmentActivity implements IChangeToolbar {
+public class ActivityHistory extends ExerciseMasterActivity implements IChangeToolbar {
     ActivityFragmentHistory alf = null;
     Menu myMenu = null;
     String originalTitle = "";

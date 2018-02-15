@@ -125,8 +125,6 @@ public class ActivityHistoryItemAdapter extends RecyclerViewCursorAdapter<Activi
             }
             return false;
         }
-
-
     }
 
     private void crossFade(View outView, @AnimRes int outAnimation, View inView, @AnimRes int inAnimation) {
@@ -148,7 +146,6 @@ public class ActivityHistoryItemAdapter extends RecyclerViewCursorAdapter<Activi
         });
         outView.setAlpha(1.0f);
         outView.setAnimation(fadeOutAnimation);
-
 
         Animation fadeInAnimation = AnimationUtils.loadAnimation(inView.getContext(), inAnimation);
         fadeInAnimation.setAnimationListener(new AnimationListener() {

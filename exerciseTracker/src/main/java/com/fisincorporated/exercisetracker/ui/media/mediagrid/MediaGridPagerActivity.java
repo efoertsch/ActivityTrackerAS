@@ -9,13 +9,13 @@ import android.widget.FrameLayout;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
-import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerActivity;
 import com.fisincorporated.exercisetracker.ui.media.MediaPoint;
 import com.fisincorporated.exercisetracker.ui.utils.DepthPageTransformer;
 
 import java.util.ArrayList;
 
-public class MediaGridPagerActivity extends ExerciseMasterFragmentActivity {
+public class MediaGridPagerActivity extends ExerciseDaggerActivity {
 
     private ViewPager viewPager;
     private ArrayList<MediaPoint> mediaPoints;

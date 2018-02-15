@@ -32,7 +32,7 @@ import com.fisincorporated.exercisetracker.database.SQLiteCursorLoader;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.GPSLog;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
-import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerFragment;
 import com.fisincorporated.exercisetracker.ui.media.MediaDetail;
 import com.fisincorporated.exercisetracker.ui.utils.ActivityDialogFragment;
 import com.google.android.gms.common.ConnectionResult;
@@ -51,7 +51,7 @@ import io.reactivex.observers.DisposableSingleObserver;
 
 
 //TODO replace CursorLoader
-public class ActivityMapFragment extends ExerciseMasterFragment implements LoaderCallbacks<Cursor>,
+public class ActivityMapFragment extends ExerciseDaggerFragment implements LoaderCallbacks<Cursor>,
         MapRoute.ActivityPhotosCallback {
     public static final String USE_CURRENT_LOCATION_LABEL = "ActivityMapFragment.CURRENT_LOCATION_LABEL";
     private static final int DELETE_REQUESTCODE = 1;
@@ -59,7 +59,6 @@ public class ActivityMapFragment extends ExerciseMasterFragment implements Loade
     private LocationExerciseDAO leDAO = null;
     private ExerciseRecord er = null;
     private ExerciseDAO eDAO = null;
-    private ExrcsLocationRecord elr = null;
     private ExrcsLocationDAO elDAO = null;
     private long locationExerciseId;
     private String activityTitle = GlobalValues.UNDEFINED;
@@ -274,7 +273,7 @@ public class ActivityMapFragment extends ExerciseMasterFragment implements Loade
             er = eDAO.loadExerciseRecordById(ler.getExerciseId());
             // Get the location of the exercise
             elDAO = new ExrcsLocationDAO();
-            elr = elDAO.loadExrcsLocationRecordById(ler.getLocationId());
+            ExrcsLocationRecord elr = elDAO.loadExrcsLocationRecordById(ler.getLocationId());
         } else {
             Toast.makeText(
                     getActivity(),

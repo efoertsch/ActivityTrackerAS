@@ -3,7 +3,10 @@ package com.fisincorporated.exercisetracker.dagger.application;
 
 
 import com.fisincorporated.exercisetracker.application.ActivityTrackerApplication;
+import com.fisincorporated.exercisetracker.broadcastreceiver.LocationReceiver;
 import com.fisincorporated.exercisetracker.dagger.ui.UIBuildersModule;
+import com.fisincorporated.exercisetracker.ui.history.ActivityFragmentHistory;
+import com.fisincorporated.exercisetracker.ui.logger.ActivityLoggerFragment;
 import com.fisincorporated.exercisetracker.ui.settings.SettingsFragment;
 import com.fisincorporated.exercisetracker.ui.startup.StartupPhotoFragment;
 
@@ -33,6 +36,11 @@ public interface ApplicationComponent extends
 
     void inject(SettingsFragment settingsFragment);
 
+    void inject(ActivityLoggerFragment activityLoggerFragment);
+
+    void inject(LocationReceiver locationReceiver);
+
+    void inject(ActivityFragmentHistory activityFragmentHistory);
 
 }
 

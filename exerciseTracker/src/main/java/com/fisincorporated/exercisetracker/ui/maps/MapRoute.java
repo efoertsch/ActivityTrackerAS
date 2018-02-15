@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
-import com.fisincorporated.exercisetracker.dagger.ui.MapRouteComponent;
+import com.fisincorporated.exercisetracker.dagger.ui.MapRouteSubcomponent;
 import com.fisincorporated.exercisetracker.database.ExerciseRecord;
 import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.GPSLog;
@@ -19,6 +19,7 @@ import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 import com.fisincorporated.exercisetracker.ui.media.MediaDetail;
 import com.fisincorporated.exercisetracker.ui.media.MediaPoint;
 import com.fisincorporated.exercisetracker.ui.media.mediagrid.MediaGridPagerActivity;
+import com.fisincorporated.exercisetracker.ui.utils.BitmapUtils;
 import com.fisincorporated.exercisetracker.ui.utils.DisplayUnits;
 import com.fisincorporated.exercisetracker.utility.PhotoUtils;
 import com.fisincorporated.exercisetracker.utility.StatsUtil;
@@ -94,7 +95,8 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public MapRoute() {
-        MapRouteComponent component = DaggerMapRouteComponent.builder().build();
+        // Use subcomponent builder
+        MapRouteSubcomponent component = DaggerMapRouteSubComponent.builder().build();
         component.inject(this);
     }
 
@@ -470,7 +472,6 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
     }
 
     public void getPhotosTaken(Context context, long startTime, long endTime) {
-        //compositeDisposable.add(photoUtils.getPhotoDetailListObservable(context, startTime, endTime)
         compositeDisposable.add(photoUtils.getMediaListObservable(context, startTime, endTime)
                 .onErrorReturn(throwable -> {
                             Toast.makeText(context, R.string.error_get_photos_for_activity, Toast.LENGTH_LONG).show();

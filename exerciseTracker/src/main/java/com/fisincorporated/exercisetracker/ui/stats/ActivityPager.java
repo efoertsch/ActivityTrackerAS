@@ -15,12 +15,12 @@ import android.widget.FrameLayout;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.SQLiteCursorLoader;
-import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerActivity;
 import com.fisincorporated.exercisetracker.ui.utils.DepthPageTransformer;
 
 import java.util.ArrayList;
 
-public class ActivityPager extends ExerciseMasterFragmentActivity implements
+public class ActivityPager extends ExerciseDaggerActivity implements
 		LoaderCallbacks<Cursor>   {
 	private ViewPager viewPager;
 	 

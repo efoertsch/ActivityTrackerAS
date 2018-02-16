@@ -15,7 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.fisincorporated.exercisetracker.R;
-import com.fisincorporated.exercisetracker.ui.startactivity.StartExercise;
+import com.fisincorporated.exercisetracker.ui.startactivity.StartExerciseActivity;
 import com.fisincorporated.exercisetracker.utility.PhotoUtils;
 
 import javax.inject.Inject;
@@ -75,7 +75,7 @@ public class StartupPhotoFragment extends DaggerFragment {
         progressBar = (ProgressBar) view.findViewById(R.id.change_startup_photo_progressBar);
         startFab = (FloatingActionButton) view.findViewById(R.id.startup_photo_fab);
         startFab.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), StartExercise.class);
+            Intent intent = new Intent(getActivity(), StartExerciseActivity.class);
             startActivity(intent);
         });
         checkForStartupPhoto();

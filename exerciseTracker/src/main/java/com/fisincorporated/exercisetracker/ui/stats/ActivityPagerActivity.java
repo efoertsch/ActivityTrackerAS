@@ -17,10 +17,13 @@ import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.SQLiteCursorLoader;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerActivity;
 import com.fisincorporated.exercisetracker.ui.utils.DepthPageTransformer;
+import com.fisincorporated.exercisetracker.utility.StatsUtil;
 
 import java.util.ArrayList;
 
-public class ActivityPager extends ExerciseDaggerActivity implements
+import javax.inject.Inject;
+
+public class ActivityPagerActivity extends ExerciseDaggerActivity implements
 		LoaderCallbacks<Cursor>   {
 	private ViewPager viewPager;
 	 
@@ -30,6 +33,8 @@ public class ActivityPager extends ExerciseDaggerActivity implements
 	protected ArrayList<String> exerciseSelections = new ArrayList<String>();
 	protected ArrayList<String> locationSelections = new ArrayList<String>();
 
+	@Inject
+	StatsUtil statsUtil;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -51,7 +56,7 @@ public class ActivityPager extends ExerciseDaggerActivity implements
 			@Override
 			public void onPageSelected(int position) {
 				cursorPosition = position; 
-				Log.i(GlobalValues.LOG_TAG, "ActivityPager. position:" + position);
+				Log.i(GlobalValues.LOG_TAG, "ActivityPagerActivity. position:" + position);
 			}
 	 
 		});
@@ -88,9 +93,9 @@ public class ActivityPager extends ExerciseDaggerActivity implements
 	}
 
 	private static class ListCursorLoader extends SQLiteCursorLoader {
-		ActivityPager ap;
+		ActivityPagerActivity ap;
 
-		public ListCursorLoader(Context context, ActivityPager ap) {
+		public ListCursorLoader(Context context, ActivityPagerActivity ap) {
 			super(context);
 			this.ap = ap;
 		}
@@ -122,9 +127,9 @@ public class ActivityPager extends ExerciseDaggerActivity implements
 	// #2
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-		viewPager.setAdapter(new ActivityPagerAdapter<ActivityDetailFragment>(
+		viewPager.setAdapter(new ActivityPagerAdapter<>(
 				getSupportFragmentManager(), ActivityDetailFragment.class,
-				cursor));
+				cursor, statsUtil));
 		viewPager.setCurrentItem(cursorPosition);
 		}
 
@@ -133,7 +138,7 @@ public class ActivityPager extends ExerciseDaggerActivity implements
 	public void onLoaderReset(Loader<Cursor> loader) {
 		// stop using the cursor (via the adapter)
 		// setting to null gives error stating fragment is not in the fragment manager
-		// this methond is being called on exit from ActivityPager
+		// this methond is being called on exit from ActivityPagerActivity
 		//viewPager.setAdapter(null);
 		((ActivityPagerAdapter)viewPager.getAdapter()).swapCursor(null);
 	}

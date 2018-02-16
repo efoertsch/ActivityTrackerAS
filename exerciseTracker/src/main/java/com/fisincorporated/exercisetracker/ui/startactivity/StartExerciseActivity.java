@@ -16,8 +16,8 @@ import com.fisincorporated.exercisetracker.ui.logger.ActivityLoggerActivity;
 import com.fisincorporated.exercisetracker.ui.logger.GPSLocationManager;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerActivity;
 
-public class StartExercise extends ExerciseDaggerActivity {
-	private static final String TAG = "StartExercise";
+public class StartExerciseActivity extends ExerciseDaggerActivity {
+	private static final String TAG = "StartExerciseActivity";
 	private LocationExerciseDAO leDAO = null;
 	private LocationExerciseRecord ler = null;
 	private ExerciseDAO eDAO = null;

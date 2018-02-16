@@ -437,7 +437,7 @@ public class StartExerciseFragment extends ExerciseDaggerFragment {
 
         } catch (SQLException sqle) {
             Log.e(GlobalValues.LOG_TAG,
-                    "StartExercise.checkForSameToday:" + sqle.toString());
+                    "StartExerciseActivity.checkForSameToday:" + sqle.toString());
 
         } finally {
             if (csr != null) {

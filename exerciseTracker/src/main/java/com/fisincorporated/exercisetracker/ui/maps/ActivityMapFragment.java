@@ -24,7 +24,6 @@ import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.ExerciseDAO;
 import com.fisincorporated.exercisetracker.database.ExerciseRecord;
 import com.fisincorporated.exercisetracker.database.ExrcsLocationDAO;
-import com.fisincorporated.exercisetracker.database.ExrcsLocationRecord;
 import com.fisincorporated.exercisetracker.database.GPSLogDAO;
 import com.fisincorporated.exercisetracker.database.LocationExerciseDAO;
 import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
@@ -262,32 +261,6 @@ public class ActivityMapFragment extends ExerciseDaggerFragment implements Loade
                 getFragmentManager().popBackStack();
             }
         }));
-    }
-
-    private void loadExerciseInfo() {
-        leDAO = new LocationExerciseDAO();
-        ler = leDAO.loadLocationExerciseRecordById(locationExerciseId);
-        if (ler.get_id() > 0) {
-            // Get detail on the type of exercise
-            eDAO = new ExerciseDAO();
-            er = eDAO.loadExerciseRecordById(ler.getExerciseId());
-            // Get the location of the exercise
-            elDAO = new ExrcsLocationDAO();
-            ExrcsLocationRecord elr = elDAO.loadExrcsLocationRecordById(ler.getLocationId());
-        } else {
-            Toast.makeText(
-                    getActivity(),
-                    "Valid activity record not found with id =" + locationExerciseId,
-                    Toast.LENGTH_LONG).show();
-            getFragmentManager().popBackStack();
-        }
-
-        if (ler.getStartTimestamp() == null) {
-            Toast.makeText(getActivity(),
-                    "Invalid activity record. Insufficient information to map.",
-                    Toast.LENGTH_LONG).show();
-            getFragmentManager().popBackStack();
-        }
     }
 
     private void getReferencedViews(View view) {

@@ -60,7 +60,7 @@
                 android:value="splitActionBarWhenNarrow"/>
         </activity>
         <activity
-            android:name=".ui.startactivity.StartExercise"
+            android:name=".ui.startactivity.StartExerciseActivity"
             android:parentActivityName=".ui.startup.ExerciseDrawerActivity"
             android:uiOptions="splitActionBarWhenNarrow">
 
@@ -86,7 +86,7 @@
                 android:value="splitActionBarWhenNarrow"/>
         </activity>
         <activity
-            android:name=".ui.stats.ActivityPager"
+            android:name=".ui.stats.ActivityPagerActivity"
             android:parentActivityName=".ui.startup.ExerciseDrawerActivity"
             android:uiOptions="splitActionBarWhenNarrow">
 

@@ -14,8 +14,6 @@ import com.fisincorporated.exercisetracker.utility.StatsUtil;
 
 import java.text.SimpleDateFormat;
 
-import javax.inject.Inject;
-
 // From http://tumble.mlcastle.net/post/25875136857/bridging-cursorloaders-and-viewpagers-on-android
 // note the original example used a more generic method of getting the args values from the cursor and
 // passing them to the  fragment newInstance call. Not using here as fragment and other code already set
@@ -26,13 +24,13 @@ public class ActivityPagerAdapter<F extends Fragment> extends FragmentStatePager
     private final Class<F> fragmentClass;
     private Cursor cursor;
 
-    @Inject
-    public StatsUtil statsUtil;
+    private StatsUtil statsUtil;
 
-    public ActivityPagerAdapter(FragmentManager fm, Class<F> fragmentClass, Cursor cursor) {
+    public ActivityPagerAdapter(FragmentManager fm, Class<F> fragmentClass, Cursor cursor, StatsUtil statsUtil) {
         super(fm);
         this.fragmentClass = fragmentClass;
         this.cursor = cursor;
+        this.statsUtil = statsUtil;
     }
 
     @Override

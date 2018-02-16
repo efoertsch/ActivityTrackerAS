@@ -11,7 +11,8 @@ import android.widget.Toast;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
-import com.fisincorporated.exercisetracker.dagger.ui.MapRouteSubcomponent;
+import com.fisincorporated.exercisetracker.application.ActivityTrackerApplication;
+import com.fisincorporated.exercisetracker.dagger.MapRouteSubComponent;
 import com.fisincorporated.exercisetracker.database.ExerciseRecord;
 import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.GPSLog;
@@ -95,9 +96,8 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public MapRoute() {
-        // Use subcomponent builder
-        MapRouteSubcomponent component = DaggerMapRouteSubComponent.builder().build();
-        component.inject(this);
+        ((MapRouteSubComponent.Builder) ActivityTrackerApplication.getDaggerApplicationComponent().subcomponentBuilders().
+                get((MapRouteSubComponent.Builder.class)).get()).build().inject(this);
     }
 
     public interface ActivityPhotosCallback{

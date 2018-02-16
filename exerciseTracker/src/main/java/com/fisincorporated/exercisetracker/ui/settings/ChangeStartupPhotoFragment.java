@@ -2,7 +2,6 @@ package com.fisincorporated.exercisetracker.ui.settings;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,13 +11,14 @@ import android.widget.ProgressBar;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerFragment;
 import com.fisincorporated.exercisetracker.utility.PhotoUtils;
 
 import javax.inject.Inject;
 
 import static android.app.Activity.RESULT_OK;
 
-public class ChangeStartupPhotoFragment extends Fragment {
+public class ChangeStartupPhotoFragment extends ExerciseDaggerFragment {
 
     private ImageView imageView;
     private ProgressBar progressBar;

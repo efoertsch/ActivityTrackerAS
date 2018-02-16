@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
@@ -18,11 +19,9 @@ import com.fisincorporated.exercisetracker.ui.backuprestore.RestoreActivity;
 import com.fisincorporated.exercisetracker.ui.history.ActivityHistory;
 import com.fisincorporated.exercisetracker.ui.maintenance.ExerciseMaintenanceListActivity;
 import com.fisincorporated.exercisetracker.ui.settings.SettingsActivity;
-import com.fisincorporated.exercisetracker.ui.startactivity.StartExercise;
+import com.fisincorporated.exercisetracker.ui.startactivity.StartExerciseActivity;
 
-import dagger.android.support.DaggerAppCompatActivity;
-
-public class ExerciseDrawerActivity  extends DaggerAppCompatActivity  {
+public class ExerciseDrawerActivity  extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
@@ -129,7 +128,7 @@ public class ExerciseDrawerActivity  extends DaggerAppCompatActivity  {
     }
 
     private void displayStartActivity() {
-        Intent intent = new Intent(this, StartExercise.class);
+        Intent intent = new Intent(this, StartExerciseActivity.class);
         startActivity(intent);
     }
 

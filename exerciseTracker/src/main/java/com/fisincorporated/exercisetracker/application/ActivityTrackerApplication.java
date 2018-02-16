@@ -17,6 +17,7 @@ import dagger.android.support.DaggerApplication;
 public class ActivityTrackerApplication extends DaggerApplication {
 
     private SQLiteDatabase database = null;
+    private static ApplicationComponent appComponent;
 
     @Inject
     TrackerDatabaseHelper trackerDatabaseHelper;
@@ -41,7 +42,7 @@ public class ActivityTrackerApplication extends DaggerApplication {
 
     @Override
     protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
-        ApplicationComponent appComponent = DaggerApplicationComponent.builder().application(this).build();
+        appComponent = DaggerApplicationComponent.builder().application(this).build();
         appComponent.inject(this);
         return appComponent;
     }
@@ -56,6 +57,10 @@ public class ActivityTrackerApplication extends DaggerApplication {
             database.close();
         }
         super.onTerminate();
+    }
+
+    public static ApplicationComponent getDaggerApplicationComponent(){
+        return appComponent;
     }
 
 }

@@ -20,7 +20,7 @@ import com.fisincorporated.exercisetracker.ui.charts.GraphActivity;
 import com.fisincorporated.exercisetracker.ui.maps.ActivityMap;
 import com.fisincorporated.exercisetracker.ui.maps.ActivityMapFragment;
 import com.fisincorporated.exercisetracker.ui.stats.ActivityDetailFragment;
-import com.fisincorporated.exercisetracker.ui.stats.ActivityPager;
+import com.fisincorporated.exercisetracker.ui.stats.ActivityPagerActivity;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 
 abstract public class ExerciseMasterActivity extends AppCompatActivity implements  IHandleSelectedAction {
@@ -83,7 +83,7 @@ abstract public class ExerciseMasterActivity extends AppCompatActivity implement
 		Fragment newDetail = null;
 		if (findViewById(R.id.detailFragmentContainer) == null) {
 			// start info from bundle to load to intent and start instance of
-			// ActivityPager
+			// ActivityPagerActivity
 			switch (args.getInt(GlobalValues.DISPLAY_TARGET)) {
 				case GlobalValues.DISPLAY_STATS:
 					startViewPager(args);
@@ -148,7 +148,7 @@ abstract public class ExerciseMasterActivity extends AppCompatActivity implement
 	}
 
 	private void startViewPager(Bundle args) {
-		Intent intent = new Intent(this, ActivityPager.class);
+		Intent intent = new Intent(this, ActivityPagerActivity.class);
 		xferBundleToIntent(intent, args);
 		startActivity(intent);
 	}

@@ -14,8 +14,11 @@ import com.fisincorporated.exercisetracker.ui.maintenance.ExerciseMaintenanceLis
 import com.fisincorporated.exercisetracker.ui.maps.ActivityMap;
 import com.fisincorporated.exercisetracker.ui.maps.ActivityMapFragment;
 import com.fisincorporated.exercisetracker.ui.settings.SettingsFragment;
-import com.fisincorporated.exercisetracker.ui.startup.ExerciseDrawerActivity;
+import com.fisincorporated.exercisetracker.ui.startactivity.StartExerciseActivity;
+import com.fisincorporated.exercisetracker.ui.startactivity.StartExerciseFragment;
 import com.fisincorporated.exercisetracker.ui.startup.StartupPhotoFragment;
+import com.fisincorporated.exercisetracker.ui.stats.ActivityDetailFragment;
+import com.fisincorporated.exercisetracker.ui.stats.ActivityPagerActivity;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
@@ -44,14 +47,24 @@ public abstract class UIBuildersModule {
     @ContributesAndroidInjector(modules = { })
     abstract ActivityLoggerFragment bindActivityLoggerFragment();
 
-    @ContributesAndroidInjector
-    abstract ExerciseDrawerActivity bindExerciseDrawerActivity();
+
+    @ContributesAndroidInjector(modules = { })
+    abstract SettingsFragment bindSettingsFragment();
+
+    @ContributesAndroidInjector(modules = { })
+    abstract StartExerciseActivity bindStartExerciseActivity();
+
+    @ContributesAndroidInjector(modules = { })
+    abstract StartExerciseFragment bindStartExerciseFragment();
 
     @ContributesAndroidInjector(modules = {})
     abstract StartupPhotoFragment bindStartupPhotoFragment();
 
-    @ContributesAndroidInjector(modules = { })
-    abstract SettingsFragment bindSettingsFragment();
+    @ContributesAndroidInjector(modules = {})
+    abstract ActivityPagerActivity bindActivityPagerActivity();
+
+    @ContributesAndroidInjector(modules = {})
+    abstract ActivityDetailFragment bindActivityDetailFragment();
 
     @ContributesAndroidInjector(modules = { })
     abstract ExerciseMaintenanceListActivity bindExerciseMaintenanceListActivity();

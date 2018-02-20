@@ -36,6 +36,7 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
 
     private Context context;
     private static TrackerDatabaseHelper trackerDatabaseHelper = null;
+    private SQLiteDatabase database = null;
 
 
     private TrackerDatabaseHelper(Context context) {
@@ -65,7 +66,10 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public SQLiteDatabase getDatabase(){
-        return trackerDatabaseHelper.getWritableDatabase();
+        if (database == null) {
+            database = trackerDatabaseHelper.getWritableDatabase();
+        }
+        return database;
     }
 
     @SuppressLint("Override")

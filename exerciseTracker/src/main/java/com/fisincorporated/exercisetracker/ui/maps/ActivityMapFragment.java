@@ -1,9 +1,6 @@
 package com.fisincorporated.exercisetracker.ui.maps;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -21,26 +18,21 @@ import android.widget.Toast;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
-import com.fisincorporated.exercisetracker.database.ExerciseDAO;
-import com.fisincorporated.exercisetracker.database.ExerciseRecord;
-import com.fisincorporated.exercisetracker.database.ExrcsLocationDAO;
-import com.fisincorporated.exercisetracker.database.GPSLogDAO;
-import com.fisincorporated.exercisetracker.database.LocationExerciseDAO;
 import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
 import com.fisincorporated.exercisetracker.database.SQLiteCursorLoader;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.GPSLog;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerFragment;
-import com.fisincorporated.exercisetracker.ui.media.MediaDetail;
-import com.fisincorporated.exercisetracker.ui.utils.ActivityDialogFragment;
+import com.fisincorporated.exercisetracker.ui.utils.DisplayUnits;
+import com.fisincorporated.exercisetracker.utility.PhotoUtils;
+import com.fisincorporated.exercisetracker.utility.StatsUtil;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -50,15 +42,12 @@ import io.reactivex.observers.DisposableSingleObserver;
 
 
 //TODO replace CursorLoader
-public class ActivityMapFragment extends ExerciseDaggerFragment implements LoaderCallbacks<Cursor>,
-        MapRoute.ActivityPhotosCallback {
+public class ActivityMapFragment extends ExerciseDaggerFragment implements LoaderCallbacks<Cursor> {
+    private static final String TAG = ActivityMapFragment.class.getSimpleName();
+
     public static final String USE_CURRENT_LOCATION_LABEL = "ActivityMapFragment.CURRENT_LOCATION_LABEL";
-    private static final int DELETE_REQUESTCODE = 1;
+
     private LocationExerciseRecord ler = null;
-    private LocationExerciseDAO leDAO = null;
-    private ExerciseRecord er = null;
-    private ExerciseDAO eDAO = null;
-    private ExrcsLocationDAO elDAO = null;
     private long locationExerciseId;
     private String activityTitle = GlobalValues.UNDEFINED;
     private String title = "";
@@ -66,27 +55,28 @@ public class ActivityMapFragment extends ExerciseDaggerFragment implements Loade
 
     private boolean useCurrentLocationLabel = false;
 
-    private int deleteDetailType;
     private static final int FOR_MAP_PLOT = 1;
     private static final int FOR_KML_FILE = 2;
     private int logicPath;
 
     private TextView tvInfo;
-    private GoogleMap map;
     //private MapFragment mapFragment = null;
     private SupportMapFragment supportMapFragment = null;
     private MapRoute mapRoute;
-    private ArrayList<MediaDetail> mediaDetails;
+
     // maptype must be GoogleMap.MAP_TYPE_HYBRID, _SATELLITE, ...
     private int mapType;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private Cursor cursor;
 
     @Inject
-    MapRoute.Builder mapRouteBuilder;
+    DisplayUnits displayUnits;
 
     @Inject
-    KmlWriter.Builder kmlWriterBuilder;
+    PhotoUtils photoUtils;
+
+    @Inject
+    StatsUtil statsUtil;
 
 
     public static ActivityMapFragment newInstance(Bundle bundle) {
@@ -204,33 +194,6 @@ public class ActivityMapFragment extends ExerciseDaggerFragment implements Loade
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (resultCode != Activity.RESULT_OK)
-            return;
-        if (requestCode == DELETE_REQUESTCODE) {
-            int buttonPressed = intent.getIntExtra(
-                    ActivityDialogFragment.DIALOG_RESPONSE, -1);
-            if (buttonPressed == DialogInterface.BUTTON_POSITIVE) {
-                doPositiveCancelClick();
-            }
-        }
-    }
-
-    public void doPositiveCancelClick() {
-        GPSLogDAO gpslogDAO = new GPSLogDAO();
-        gpslogDAO.deleteGPSLogbyLerRowId(ler.get_id());
-        Toast.makeText(getActivity(), "GPS log detail deleted.",
-                Toast.LENGTH_SHORT).show();
-        if (deleteDetailType == 1) {
-            leDAO = new LocationExerciseDAO();
-            leDAO.deleteLocationExercise(ler);
-            Toast.makeText(getActivity(), "Activity deleted.", Toast.LENGTH_SHORT)
-                    .show();
-            getFragmentManager().popBackStack();
-        }
-    }
-
     private void checkForGooglePlayServices() {
         int GooglePlayAvailableCode;
         GooglePlayAvailableCode = GooglePlayServicesUtil
@@ -270,14 +233,6 @@ public class ActivityMapFragment extends ExerciseDaggerFragment implements Loade
 
     private void restartCursorLoader() {
         getLoaderManager().restartLoader(GlobalValues.MAP_LOADER, null, this);
-    }
-
-    // MapRoute.ActivityPhotosCallback
-    @Override
-    public void photoList(ArrayList<MediaDetail> mediaDetails) {
-        if (mediaDetails != null && mediaDetails.size() > 0) {
-            this.mediaDetails = mediaDetails;
-        }
     }
 
     private static class GPSPointsCursorLoader extends SQLiteCursorLoader {
@@ -325,26 +280,23 @@ public class ActivityMapFragment extends ExerciseDaggerFragment implements Loade
     }
 
     private void plotRouteForMap(Cursor csr){
-        MapRoute.Builder builder = new MapRoute.Builder();
-        builder.setSupportMapFragment(supportMapFragment)
+        mapRoute = new MapRoute(displayUnits, photoUtils, statsUtil );
+        mapRoute.setSupportMapFragment(supportMapFragment)
                 .setLocationExerciseRecord(ler)
                 .setMapType(mapType)
                 .setUseCurrentLocationLabel(useCurrentLocationLabel)
                 .setCursor(csr)
-                .setTitle(activityTitle)
-                .setActivityPhotosCallback(this);
-        mapRoute = builder.build();
+                .setTitle(activityTitle);
         mapRoute.plotGpsRoute();
     }
 
     private void createKmlEmail(Cursor cursor){
-        KmlWriter.Builder builder = new KmlWriter.Builder();
-        builder.setContext(getContext())
+        KmlWriter kmlWriter = new KmlWriter(statsUtil);
+        kmlWriter.setContext(getContext())
                 .setLocationExerciseRecord(ler)
                 .setTitle(title)
                 .setDescription(description)
                 .setCursor(cursor);
-        KmlWriter kmlWriter = builder.build();
         kmlWriter.createKmlFileForEmailing();
     }
 

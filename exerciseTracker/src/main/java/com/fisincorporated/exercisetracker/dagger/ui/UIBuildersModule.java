@@ -11,6 +11,7 @@ import com.fisincorporated.exercisetracker.ui.logger.ActivityLoggerFragment;
 import com.fisincorporated.exercisetracker.ui.maintenance.ExerciseMaintenanceDetailFragment;
 import com.fisincorporated.exercisetracker.ui.maintenance.ExerciseMaintenanceListActivity;
 import com.fisincorporated.exercisetracker.ui.maintenance.ExerciseMaintenanceListFragment;
+import com.fisincorporated.exercisetracker.ui.maintenance.ExerciseMaintenancePagerActivity;
 import com.fisincorporated.exercisetracker.ui.maps.ActivityMap;
 import com.fisincorporated.exercisetracker.ui.maps.ActivityMapFragment;
 import com.fisincorporated.exercisetracker.ui.settings.SettingsFragment;
@@ -23,11 +24,8 @@ import com.fisincorporated.exercisetracker.ui.stats.ActivityPagerActivity;
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
 
-@Module(subcomponents = { })
+@Module(subcomponents = {})
 public abstract class UIBuildersModule {
-
-    // TODO where possible add all activities and fragments as extending DaggerActivity and DaggerFragment
-
 
     @ContributesAndroidInjector(modules = {})
     abstract DistancePerExerciseFragment bindDistancePerExerciseFragment();
@@ -46,7 +44,6 @@ public abstract class UIBuildersModule {
 
     @ContributesAndroidInjector(modules = { })
     abstract ActivityLoggerFragment bindActivityLoggerFragment();
-
 
     @ContributesAndroidInjector(modules = { })
     abstract SettingsFragment bindSettingsFragment();
@@ -84,6 +81,8 @@ public abstract class UIBuildersModule {
     @ContributesAndroidInjector(modules = {})
     abstract LocationReceiver bindLocationReceiver();
 
+    @ContributesAndroidInjector(modules = {})
+    abstract ExerciseMaintenancePagerActivity bindExerciseMaintenancePagerActivity();
 
 
     // Add more bindings here for other sub components

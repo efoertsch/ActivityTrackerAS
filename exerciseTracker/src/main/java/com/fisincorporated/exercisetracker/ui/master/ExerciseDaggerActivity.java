@@ -27,6 +27,7 @@ public abstract class ExerciseDaggerActivity extends ExerciseMasterActivity
     @Override
     public void onCreate(Bundle savedInstanceState) {
         AndroidInjection.inject(this);
+        database = databaseHelper.getDatabase();
         super.onCreate(savedInstanceState);
 
     }

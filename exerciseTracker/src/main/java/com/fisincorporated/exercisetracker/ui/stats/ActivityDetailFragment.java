@@ -57,7 +57,9 @@ public class ActivityDetailFragment extends ExerciseDaggerFragment {
     private FloatingActionButton mapFab;
     private FloatingActionButton photosFab;
 
-    public PhotoUtils photoUtils;
+
+    @Inject
+    PhotoUtils photoUtils;
 
     @Inject
     StatsUtil statsUtil;

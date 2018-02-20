@@ -2,6 +2,7 @@ package com.fisincorporated.exercisetracker.ui.logger;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -73,6 +74,9 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
 
     @Inject
     PublishRelay<Object> publishRelay;
+
+    @Inject
+    SharedPreferences sharedPreferences;
 
 
     private Observer<Object> publishRelayObserver = new Observer<Object>() {
@@ -216,8 +220,12 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
     }
 
     private void startBackups() {
-        BackupScheduler.scheduleBackupJob(getActivity().getApplicationContext(), GlobalValues.BACKUP_TO_DRIVE);
-        BackupScheduler.scheduleBackupJob(getActivity().getApplicationContext(), GlobalValues.BACKUP_TO_LOCAL);
+        if (sharedPreferences.getBoolean(getString(R.string.drive_backup), false)) {
+            BackupScheduler.scheduleBackupJob(getActivity().getApplicationContext(), GlobalValues.BACKUP_TO_DRIVE);
+        }
+        if (sharedPreferences.getBoolean(getString(R.string.local_backup), false)) {
+            BackupScheduler.scheduleBackupJob(getActivity().getApplicationContext(), GlobalValues.BACKUP_TO_LOCAL);
+        }
     }
 
     // Note this is called after onResume() (Seems odd time to call it)

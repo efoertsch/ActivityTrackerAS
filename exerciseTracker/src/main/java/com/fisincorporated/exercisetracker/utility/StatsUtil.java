@@ -22,9 +22,11 @@ import java.util.Date;
 public class StatsUtil {
 
    private DisplayUnits displayUnits;
+   private Resources res;
 
-    public StatsUtil(DisplayUnits displayUnits){
+    public StatsUtil(DisplayUnits displayUnits, Context context){
         this.displayUnits = displayUnits;
+        res = context.getResources();
     }
 
     public void formatActivityStats(ArrayList<String[]> stats,
@@ -33,7 +35,6 @@ public class StatsUtil {
         String feetMeters = displayUnits.getFeetMeters();
         String milesKm = displayUnits.getMilesKm();
         String mphKph = displayUnits.getMphKph();
-        Resources res = Resources.getSystem();
 
         stats.clear();
 

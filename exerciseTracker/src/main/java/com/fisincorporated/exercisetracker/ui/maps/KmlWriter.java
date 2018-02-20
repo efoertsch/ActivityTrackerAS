@@ -13,21 +13,15 @@ import android.widget.Toast;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
-import com.fisincorporated.exercisetracker.database.ExerciseRecord;
-import com.fisincorporated.exercisetracker.database.ExrcsLocationRecord;
 import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
 import com.fisincorporated.exercisetracker.utility.StatsUtil;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.OutputStreamWriter;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
-import javax.inject.Inject;
 
 /**
  * Create a kml (keyhole markup language) file
@@ -39,92 +33,65 @@ public class KmlWriter {
     private static String newline = System.getProperty("line.separator");
 
     private Context context;
-    private ExerciseRecord er;
-    private ExrcsLocationRecord elr;
     private LocationExerciseRecord ler;
     private String kmlFileName = null;
 
     private File kmlPath = null;
     private File kmlFile = null;
-    private Timestamp timestamp;
+
     private String activityTitle = "";
     private String title = "";
     private String description = "";
     private Cursor cursor;
 
-    @Inject
     StatsUtil statsUtil;
 
-    private KmlWriter() {
+    public KmlWriter(StatsUtil statsUtil) {
+        this.statsUtil = statsUtil;
     }
 
-    public static class Builder {
-        Context context;
-        LocationExerciseRecord ler;
-        Cursor cursor;
-        String title = "";
-        String description = "";
-
-        @Inject
-        public Builder(){
-        }
-
-        public Builder setContext(Context context){
-            this.context = context;
-            return this;
-        }
-
-        public Builder setLocationExerciseRecord(LocationExerciseRecord ler) {
-            this.ler = ler;
-            return this;
-        }
-
-        public Builder setTitle(String title) {
-            this.title = title;
-            return this;
-        }
-
-        public Builder setDescription(String description) {
-            this.description = description;
-            return this;
-        }
-
-        public Builder setCursor(Cursor cursor) {
-            this.cursor = cursor;
-            return this;
-        }
-
-        public KmlWriter build(){
-            KmlWriter kmlWriter = new KmlWriter();
-            kmlWriter.context = context;
-            kmlWriter.ler = ler;
-            kmlWriter.activityTitle = title + "  " + description;
-            kmlWriter.title = title;
-            kmlWriter.cursor = cursor;
-            return kmlWriter;
-        }
+    public KmlWriter setContext(Context context) {
+        this.context = context;
+        return this;
     }
 
-    public void createKmlFileForEmailing() {
+    public KmlWriter setLocationExerciseRecord(LocationExerciseRecord ler) {
+        this.ler = ler;
+        return this;
+    }
 
+    public KmlWriter setTitle(String title) {
+        this.title = title;
+        return this;
+    }
+
+    public KmlWriter setDescription(String description) {
+        this.description = description;
+        return this;
+    }
+
+    public KmlWriter setCursor(Cursor cursor) {
+        this.cursor = cursor;
+        return this;
+    }
+
+    void createKmlFileForEmailing() {
         if (createKMLFile()) {
+            activityTitle = title + "  " + description;
             writeToKMLFile(cursor);
             emailKMLFile();
         }
     }
 
     private boolean createKMLFile() {
-        boolean success = true;
         String appName = context.getString(R.string.app_name);
         kmlFileCleanup();
         // Any changes to file format requires change to kmlFileCleanup
         kmlFileName = statsUtil.makeFileNameReady(appName
                 + "."
-                + er.getExercise()
-                + "@"
-                + elr.getLocation()
+                + title
                 + "_"
-                + new SimpleDateFormat("yyyy-MM-dd HH:mm").format(ler
+                +  new SimpleDateFormat("yyyy-MM-dd HH:mm").format(ler
                 .getStartTimestamp()) + ".kml");
         kmlPath = Environment
                 .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
@@ -138,11 +105,11 @@ public class KmlWriter {
             return false;
         }
 
-        return success;
+        return true;
     }
 
     // Note that coordinates for kml file are longitude/latitude
-    private void writeToKMLFile(Cursor csr)  {
+    private void writeToKMLFile(Cursor csr) {
         BufferedWriter writer = null;
         try {
             writer = new BufferedWriter(new OutputStreamWriter(
@@ -183,7 +150,7 @@ public class KmlWriter {
      * path/filename can be had from kmlPath and kmlFileName
      */
     private void emailKMLFile() {
-        String summaryStats = "";
+        String summaryStats;
         if (!kmlFile.exists() || !kmlFile.canRead()) {
             Toast.makeText(context,
                     "Can't find or read the created logfile: " + kmlFile.getName(),
@@ -211,14 +178,14 @@ public class KmlWriter {
 
 
     private String getStatsForEmail() {
-        ArrayList<String[]> stats = new ArrayList<String[]>();
+        ArrayList<String[]> stats = new ArrayList<>();
 
         StringBuilder sb = new StringBuilder();
-        sb.append(context.getString(R.string.my_activity_statistics, title) + newline + newline);
+        sb.append(context.getString(R.string.my_activity_statistics, title)).append(newline).append(newline);
 
         statsUtil.formatActivityStats(stats, ler);
         for (int i = 0; i < stats.size(); ++i) {
-            sb.append(stats.get(i)[0] + ":\t" + stats.get(i)[1] + newline);
+            sb.append(stats.get(i)[0]).append(":\t").append(stats.get(i)[1]).append(newline);
         }
         sb.append(newline);
         return sb.toString();
@@ -227,12 +194,7 @@ public class KmlWriter {
     private void kmlFileCleanup() {
         final String appName = context.getString(R.string.app_name);
         File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        File[] files = folder.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(final File dir, final String name) {
-                return name.matches(appName + ".*.@.*_*.kml");
-            }
-        });
+        File[] files = folder.listFiles((dir, name) -> name.matches(appName + ".*.@.*_*.kml"));
         for (final File file : files) {
             if (!file.delete()) {
                 Log.e(GlobalValues.LOG_TAG,

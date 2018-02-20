@@ -318,7 +318,6 @@ public class PhotoUtils {
                         , (mediaDetails, mediaDetails2) -> {
                             mediaDetails.addAll(mediaDetails2);
                             Collections.sort(mediaDetails);
-
                         });
     }
 

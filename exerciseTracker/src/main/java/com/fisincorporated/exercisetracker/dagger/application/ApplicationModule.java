@@ -2,6 +2,8 @@ package com.fisincorporated.exercisetracker.dagger.application;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.support.v7.preference.PreferenceManager;
 
 import com.fisincorporated.exercisetracker.application.ActivityTrackerApplication;
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
@@ -20,44 +22,51 @@ import dagger.Provides;
 public class ApplicationModule {
 
     @Provides
+    @Singleton
     Context provideContext(ActivityTrackerApplication application) {
         return application.getApplicationContext();
     }
 
     @Provides
     @Singleton
-    TrackerDatabaseHelper provideTrackerDatabaseHelper(ActivityTrackerApplication application){
+    TrackerDatabaseHelper provideTrackerDatabaseHelper(ActivityTrackerApplication application) {
         return TrackerDatabaseHelper.getTrackerDatabaseHelper(application);
     }
 
     @Provides
-    PhotoUtils providePhotoUtils(Context context){
+    PhotoUtils providePhotoUtils(Context context) {
         return new PhotoUtils(context);
     }
 
     @Provides
     @Singleton
-    DisplayUnits provideDisplayUnits(Context context){
-        return new DisplayUnits(context);
+    DisplayUnits provideDisplayUnits(SharedPreferences sharedPreferences, Context context) {
+        return new DisplayUnits(sharedPreferences, context);
     }
 
     @Provides
     @Singleton
-    StatsUtil provideStatsUtil(DisplayUnits displayUnits){
-        return new StatsUtil(displayUnits);
+    StatsUtil provideStatsUtil(DisplayUnits displayUnits, Context context) {
+        return new StatsUtil(displayUnits, context);
     }
 
     @Provides
     @Singleton
-    GPSLocationManager provideGpsLocationManager(Context context, StatsUtil statsUtil, PublishRelay<Object> publishRelay){
+    GPSLocationManager provideGpsLocationManager(Context context, StatsUtil statsUtil, PublishRelay<Object> publishRelay) {
         return new GPSLocationManager(context, statsUtil, publishRelay);
     }
 
+    // RxJava Bus to replace callback interfaces
     @Provides
     @Singleton
     PublishRelay<Object> providePublishRelay() {
         return PublishRelay.create();
     }
 
+    @Provides
+    @Singleton
+    SharedPreferences providesSharedPreferences(Context appContext) {
+        return PreferenceManager.getDefaultSharedPreferences(appContext);
+    }
 
 }

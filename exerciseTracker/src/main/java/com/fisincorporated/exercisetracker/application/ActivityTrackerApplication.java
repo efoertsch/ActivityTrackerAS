@@ -1,49 +1,45 @@
 package com.fisincorporated.exercisetracker.application;
 
-import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.bumptech.glide.request.target.ViewTarget;
 import com.fisincorporated.exercisetracker.R;
+import com.fisincorporated.exercisetracker.dagger.application.ApplicationComponent;
+import com.fisincorporated.exercisetracker.dagger.application.DaggerApplicationComponent;
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
-import com.fisincorporated.exercisetracker.ui.utils.DisplayUnits;
-import com.fisincorporated.exercisetracker.utility.PhotoUtils;
+
+import javax.inject.Inject;
+
+import dagger.android.AndroidInjector;
+import dagger.android.support.DaggerApplication;
 
 
-public class ActivityTrackerApplication extends Application {
+public class ActivityTrackerApplication extends DaggerApplication {
 
-    private static final String GPS_LOGGING = "GPS_LOGGING";
-    static private ActivityTrackerApplication activityTrackerApplication;
-    private TrackerDatabaseHelper databaseHelper = null;
     private SQLiteDatabase database = null;
+    private static ApplicationComponent appComponent;
 
+    @Inject
+    TrackerDatabaseHelper trackerDatabaseHelper;
 
     @Override
     public void onCreate() {
+        // Note call to super will end up calling AndroidInjector
         super.onCreate();
-        getDatabaseSetup();
-        setupDisplayUnits();
-        activityTrackerApplication = this;
-        initializePhotoUtils();
-
+        opendDatabase();
         // To be able to use setTag with Glide
         ViewTarget.setTagId(R.id.glide_tag);
     }
 
-    private void setupDisplayUnits() {
-        DisplayUnits.initialize(this);
+    @Override
+    protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
+        appComponent = DaggerApplicationComponent.builder().application(this).build();
+        appComponent.inject(this);
+        return appComponent;
     }
 
-    // TODO use Dagger injection
-    public void getDatabaseSetup() {
-        databaseHelper = TrackerDatabaseHelper
-                .getTrackerDatabaseHelper(this);
-        // do this to fire any table changes
-        database = databaseHelper.getReadableDatabase();
-    }
-
-    private void initializePhotoUtils(){
-        PhotoUtils.init(this);
+    public void opendDatabase() {
+        database = trackerDatabaseHelper.getDatabase();
     }
 
     @Override
@@ -52,6 +48,10 @@ public class ActivityTrackerApplication extends Application {
             database.close();
         }
         super.onTerminate();
+    }
+
+    public static ApplicationComponent getDaggerApplicationComponent(){
+        return appComponent;
     }
 
 }

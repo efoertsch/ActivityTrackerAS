@@ -1,21 +1,28 @@
 package com.fisincorporated.exercisetracker.broadcastreceiver;
 
-import com.fisincorporated.exercisetracker.ui.logger.GPSLocationManager;
-
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
 
-public class LocationReceiver extends BroadcastReceiver {
+import com.fisincorporated.exercisetracker.ui.logger.GPSLocationManager;
+
+import javax.inject.Inject;
+
+import dagger.android.DaggerBroadcastReceiver;
+
+public class LocationReceiver extends DaggerBroadcastReceiver {
 
     private static final String TAG = "LocationReceiver";
 
+    @Inject
+    GPSLocationManager gpsLocationManager;
+
     @Override
     public void onReceive(Context context, Intent intent) {
-        Location location = (Location)intent.getParcelableExtra(LocationManager.KEY_LOCATION_CHANGED);
+        super.onReceive(context, intent);
+        Location location = intent.getParcelableExtra(LocationManager.KEY_LOCATION_CHANGED);
         if (location != null) {
             onLocationReceived(context, location);
             return;
@@ -26,12 +33,12 @@ public class LocationReceiver extends BroadcastReceiver {
             onProviderEnabledChanged(enabled);
         }
     }
-    
+
     protected void onLocationReceived(Context context, Location location) {
         Log.d(TAG, this + " Got location from " + location.getProvider() + ": " + location.getLatitude() + ", " + location.getLongitude());
-        GPSLocationManager.get(context).updateLer(location);
+        gpsLocationManager.updateLer(location);
     }
-    
+
     protected void onProviderEnabledChanged(boolean enabled) {
         Log.d(TAG, "Provider " + (enabled ? "enabled" : "disabled"));
     }

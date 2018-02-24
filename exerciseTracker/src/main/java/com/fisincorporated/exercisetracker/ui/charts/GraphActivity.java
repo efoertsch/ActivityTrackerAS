@@ -5,14 +5,13 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
-import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterActivity;
 
-public class GraphActivity extends ExerciseMasterFragmentActivity {
+public class GraphActivity extends ExerciseMasterActivity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override

@@ -24,6 +24,7 @@ import android.widget.FilterQueryProvider;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 import com.fisincorporated.exercisetracker.ui.utils.ActivityDialogFragment;
 import com.fisincorporated.exercisetracker.ui.logger.ActivityLoggerActivity;
 import com.fisincorporated.exercisetracker.GlobalValues;
@@ -34,12 +35,15 @@ import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.ExrcsLocation;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
-import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerFragment;
 
 import java.util.Locale;
 
-public class StartExerciseFragment extends ExerciseMasterFragment {
+import javax.inject.Inject;
+
+public class StartExerciseFragment extends ExerciseDaggerFragment {
     private static final String TAG = "StartExerciseFragment";
+
     protected Cursor csrLocationAutoComplete;
     protected Cursor csrExerciseAutoComplete;
     private long exerciseRowId = -1;
@@ -63,6 +67,9 @@ public class StartExerciseFragment extends ExerciseMasterFragment {
     private boolean startPressed = false;
     private ActivityDialogFragment activityDialog = null;
     private OnFocusChangeListener locationOnFocusChangeListener;
+
+    @Inject
+    TrackerDatabaseHelper trackerDatabaseHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -166,7 +173,7 @@ public class StartExerciseFragment extends ExerciseMasterFragment {
     }
 
     public void setUpAutoCompletes() {
-        leDAO = new LocationExerciseDAO();
+        leDAO = trackerDatabaseHelper.getLocationExerciseDAO();
         fillExerciseAutoComplete();
         fillLocationAutoComplete();
     }
@@ -436,7 +443,7 @@ public class StartExerciseFragment extends ExerciseMasterFragment {
 
         } catch (SQLException sqle) {
             Log.e(GlobalValues.LOG_TAG,
-                    "StartExercise.checkForSameToday:" + sqle.toString());
+                    "StartExerciseActivity.checkForSameToday:" + sqle.toString());
 
         } finally {
             if (csr != null) {
@@ -459,7 +466,7 @@ public class StartExerciseFragment extends ExerciseMasterFragment {
         database.beginTransaction();
         try {
             leDAO.createLocationExercise(ler);
-            exerciseDAO = new ExerciseDAO();
+            exerciseDAO = trackerDatabaseHelper.getExerciseDAO();
             exerciseDAO.updateTimesUsed(exerciseRowId, 1);
             database.setTransactionSuccessful();
         } finally {

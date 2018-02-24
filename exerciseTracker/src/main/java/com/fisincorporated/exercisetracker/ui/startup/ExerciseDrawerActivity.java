@@ -19,12 +19,11 @@ import com.fisincorporated.exercisetracker.ui.backuprestore.RestoreActivity;
 import com.fisincorporated.exercisetracker.ui.history.ActivityHistory;
 import com.fisincorporated.exercisetracker.ui.maintenance.ExerciseMaintenanceListActivity;
 import com.fisincorporated.exercisetracker.ui.settings.SettingsActivity;
-import com.fisincorporated.exercisetracker.ui.startactivity.StartExercise;
+import com.fisincorporated.exercisetracker.ui.startactivity.StartExerciseActivity;
 
-public class ExerciseDrawerActivity  extends AppCompatActivity  {
+public class ExerciseDrawerActivity  extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
     private Toolbar toolbar;
     private ActionBarDrawerToggle drawerToggle;
 
@@ -43,7 +42,7 @@ public class ExerciseDrawerActivity  extends AppCompatActivity  {
         drawerToggle.syncState();
         drawerLayout.addDrawerListener(drawerToggle);
 
-        navigationView = (NavigationView) findViewById(R.id.app_navigation_drawer);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.app_navigation_drawer);
         setupDrawerContent(navigationView);
         displayPhotoFragment();
     }
@@ -83,12 +82,9 @@ public class ExerciseDrawerActivity  extends AppCompatActivity  {
 
     private void setupDrawerContent(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        selectDrawerItem(menuItem);
-                        return true;
-                    }
+                menuItem -> {
+                    selectDrawerItem(menuItem);
+                    return true;
                 });
     }
 
@@ -132,7 +128,7 @@ public class ExerciseDrawerActivity  extends AppCompatActivity  {
     }
 
     private void displayStartActivity() {
-        Intent intent = new Intent(this, StartExercise.class);
+        Intent intent = new Intent(this, StartExerciseActivity.class);
         startActivity(intent);
     }
 

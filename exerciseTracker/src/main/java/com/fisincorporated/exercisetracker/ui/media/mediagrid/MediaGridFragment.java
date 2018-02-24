@@ -1,6 +1,7 @@
 package com.fisincorporated.exercisetracker.ui.media.mediagrid;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,12 +10,11 @@ import android.widget.GridView;
 import com.bumptech.glide.Glide;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
-import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
 import com.fisincorporated.exercisetracker.ui.media.MediaDetail;
 
 import java.util.ArrayList;
 
-public class MediaGridFragment extends ExerciseMasterFragment {
+public class MediaGridFragment extends Fragment {
 
     private ArrayList<MediaDetail> mediaDetails;
     private  GridView gridView;

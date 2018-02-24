@@ -18,9 +18,10 @@ import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 import com.fisincorporated.exercisetracker.ui.media.MediaDetail;
 import com.fisincorporated.exercisetracker.ui.media.MediaPoint;
 import com.fisincorporated.exercisetracker.ui.media.mediagrid.MediaGridPagerActivity;
+import com.fisincorporated.exercisetracker.ui.utils.BitmapUtils;
 import com.fisincorporated.exercisetracker.ui.utils.DisplayUnits;
 import com.fisincorporated.exercisetracker.utility.PhotoUtils;
-import com.fisincorporated.exercisetracker.utility.Utility;
+import com.fisincorporated.exercisetracker.utility.StatsUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -35,6 +36,8 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
@@ -45,6 +48,11 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
 
     private static final String TAG = MapRoute.class.getSimpleName();
     private static final int NON_PHOTO_PIN = -1;
+
+    private DisplayUnits displayUnits;
+    private PhotoUtils photoUtils;
+    private StatsUtil statsUtil;
+    private TrackerDatabaseHelper trackerDatabaseHelper;
 
     private SupportMapFragment supportMapFragment;
     private Context context;
@@ -60,7 +68,6 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
      * Use to center GPS trace in googleMap frame
      */
     private LatLng southwest = null;
-    private LatLng northeast = null;
     private double swLat = 0;
     private double swLong = 0;
     private double neLat = 0;
@@ -76,75 +83,44 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
     private int groupTime = 3 * 60 * 1000;
     private ArrayList<MediaDetail> mediaDetailList = new ArrayList<>();
     private ArrayList<MediaPoint> mediaPoints = new ArrayList<>();
-    private ActivityPhotosCallback activityPhotosCallback;
     private String title;
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    public MapRoute() {
+    @Inject
+    public MapRoute(DisplayUnits displayUnits, PhotoUtils photoUtils, StatsUtil statsUtil, TrackerDatabaseHelper trackerDatabaseHelper) {
+        this.displayUnits = displayUnits;
+        this.photoUtils = photoUtils;
+        this.statsUtil = statsUtil;
+        this.trackerDatabaseHelper = trackerDatabaseHelper;
+    }
+
+    public MapRoute setSupportMapFragment(SupportMapFragment supportMapFragment) {
         this.supportMapFragment = supportMapFragment;
+        this.context = supportMapFragment.getContext();
+        return this;
     }
 
-    public interface ActivityPhotosCallback{
-         void photoList(ArrayList<MediaDetail> mediaDetails);
+    public MapRoute setLocationExerciseRecord(LocationExerciseRecord ler) {
+        this.ler = ler;
+        return this;
     }
 
-    public static class Builder {
-        SupportMapFragment supportMapFragment;
-        LocationExerciseRecord ler;
-        boolean useCurrentLocationLabel;
-        int mapType;
-        Cursor cursor;
-        ActivityPhotosCallback activityPhotosCallback;
-        String title;
-
-        public Builder(SupportMapFragment supportMapFragment) {
-            this.supportMapFragment = supportMapFragment;
-        }
-
-        public Builder setLocationExerciseRecord(LocationExerciseRecord ler) {
-            this.ler = ler;
-            return this;
-        }
-
-        public Builder setUseCurrentLocationLabel(boolean useCurrentLocationLabel) {
-            this.useCurrentLocationLabel = useCurrentLocationLabel;
-            return this;
-        }
-
-        public Builder setMapType(int mapType) {
-            this.mapType = mapType;
-            return this;
-        }
-
-        public Builder setCursor(Cursor cursor) {
-            this.cursor = cursor;
-            return this;
-        }
-
-        public Builder setActivityPhotosCallback(ActivityPhotosCallback activityPhotosCallback) {
-            this.activityPhotosCallback = activityPhotosCallback;
-            return this;
-        }
-
-        public Builder setTitle(String title){
-            this.title = title;
-            return this;
-        }
-
-        public MapRoute build() {
-            MapRoute mapRoute = new MapRoute();
-            mapRoute.supportMapFragment = this.supportMapFragment;
-            mapRoute.context = supportMapFragment.getContext();
-            mapRoute.ler = ler;
-            mapRoute.useCurrentLocationLabel = useCurrentLocationLabel;
-            mapRoute.cursor = cursor;
-            mapRoute.mapType = mapType;
-            mapRoute.activityPhotosCallback = activityPhotosCallback;
-            mapRoute.title = title;
-            return mapRoute;
-        }
+    public MapRoute setUseCurrentLocationLabel(boolean useCurrentLocationLabel) {
+        this.useCurrentLocationLabel = useCurrentLocationLabel;
+        return this;
     }
+
+    public MapRoute setCursor(Cursor cursor) {
+        this.cursor = cursor;
+        return this;
+    }
+
+    public MapRoute setTitle(String title) {
+        this.title = title;
+        return this;
+    }
+
 
     public void plotGpsRoute() {
         getMapReady();
@@ -153,7 +129,7 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
     private void setupMapPinInfo() {
         currentDistance = 0;
         distance = 0;
-        distanceUnits = (DisplayUnits.isImperialDisplay() ?
+        distanceUnits = (displayUnits.isImperialDisplay() ?
                 context.getString(R.string.map_pin_miles) : context.getString(R.string.map_pin_kilometers));
     }
 
@@ -170,7 +146,7 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
     }
 
     public void getExerciseRecord() {
-        Single<ExerciseRecord> observable = TrackerDatabaseHelper.getErSingleObservable(ler.getExerciseId());
+        Single<ExerciseRecord> observable = trackerDatabaseHelper.getErSingleObservable(ler.getExerciseId());
         compositeDisposable.add(observable.subscribe(exerciseRecord -> {
                     er = exerciseRecord;
                     getPhotosTakenFromStartToFinish();
@@ -184,11 +160,12 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
 
 
     // TODO get intial value from preferences, store any change to map type to preference
-    void setMapType(int mapType) {
+    public MapRoute setMapType(int mapType) {
         if (googleMap != null) {
             googleMap.setMapType(mapType);
         }
         this.mapType = mapType;
+        return this;
     }
 
     private void startPlotting() {
@@ -285,10 +262,10 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
     }
 
     private int setPhotoMarkers(LatLng atLatLng, long fromTime, long toTime, int groupTime, int photoStartIndex) {
-        Log.d(TAG, "Starting at photo " + photoStartIndex  + " latLng:" + atLatLng.toString());
+        Log.d(TAG, "Starting at photo " + photoStartIndex + " latLng:" + atLatLng.toString());
         int photoPointsSize = 0;
         long photoDate;
-        if (mediaDetailList.size() == 0 || photoStartIndex > mediaDetailList.size() - 1 ) {
+        if (mediaDetailList.size() == 0 || photoStartIndex > mediaDetailList.size() - 1) {
             return photoStartIndex;
         }
 
@@ -338,13 +315,13 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
     }
 
     private void placePhotoPoints() {
-        if (mediaPoints.size() > 0 ) {
+        if (mediaPoints.size() > 0) {
             googleMap.setOnMarkerClickListener(this);
         }
         for (int i = 0; i < mediaPoints.size(); ++i) {
             Marker marker = googleMap.addMarker(new MarkerOptions()
                     .position(mediaPoints.get(i).getLatlng()));
-                    //.title(i + ""));
+            //.title(i + ""));
             marker.setTag(i);
 
         }
@@ -360,10 +337,10 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
         // Seems like Maps returns click on a milage marker that is very close to photo pin
         if (photoPointPosition != null && photoPointPosition != NON_PHOTO_PIN) {
             MediaPoint mediaPoint = mediaPoints.get(photoPointPosition);
-                intent = MediaGridPagerActivity.IntentBuilder.getBuilder(context)
-                        .setPhotoPoints(mediaPoints)
-                        .setPhotoPointPosition(photoPointPosition)
-                        .setTitle(title).build();
+            intent = MediaGridPagerActivity.IntentBuilder.getBuilder(context)
+                    .setPhotoPoints(mediaPoints)
+                    .setPhotoPointPosition(photoPointPosition)
+                    .setTitle(title).build();
             context.startActivity(intent);
             return true;
         }
@@ -378,19 +355,19 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
         if (pinEveryX <= 0) {
             return;
         }
-        boolean isImperialDisplay = DisplayUnits.isImperialDisplay();
+        boolean isImperialDisplay = displayUnits.isImperialDisplay();
         Location.distanceBetween(fromLatLng.latitude, fromLatLng.longitude, toLatLng.latitude, toLatLng.longitude, distanceBetweenPoints);
         distance += distanceBetweenPoints[0];
-        if (Utility.coveredDistanceForMarker(distance, isImperialDisplay, pinEveryX)) {
+        if (statsUtil.coveredDistanceForMarker(distance, isImperialDisplay, pinEveryX)) {
             currentDistance += distance;
-            int displayDistance = Utility.calcDisplayDistance(currentDistance, isImperialDisplay);
+            int displayDistance = statsUtil.calcDisplayDistance(currentDistance, isImperialDisplay);
             distance = 0;
-           Marker marker =  map.addMarker(new MarkerOptions()
+            Marker marker = map.addMarker(new MarkerOptions()
                     .position(toLatLng)
                     .icon(BitmapDescriptorFactory.fromBitmap(setMarkerDrawable(displayDistance + distanceUnits)))
                     // SET ANCHOR POINT TO MARKER CENTER
                     .anchor(0.5f, 0.5f));
-           marker.setTag(NON_PHOTO_PIN);
+            marker.setTag(NON_PHOTO_PIN);
         }
     }
 
@@ -412,7 +389,6 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
             swLat = gpsLatLng.latitude;
             swLong = gpsLatLng.longitude;
 
-            northeast = gpsLatLng;
             neLat = gpsLatLng.latitude;
             neLong = gpsLatLng.longitude;
         }
@@ -441,38 +417,30 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
     }
 
 
-    public void getPhotosTakenFromMidnightToEoD(){
+    public void getPhotosTakenFromMidnightToEoD() {
         // Find midnight at start of activity
         long startTimeLong = ler.getStartTimestamp().getTime();
         long startMidnight = startTimeLong - (startTimeLong % (24 * 60 * 60 * 1000));
         // find 1 sec prior to midnight at end of activity (might be next day or later);
         long endTimeLong = ler.getEndTimestamp().getTime();
-        long endOfDay = endTimeLong - (endTimeLong % (24 * 60 * 60 * 1000)) + (1000 * (59 + (59 * 60) +  (11 * 60 * 60)));
+        long endOfDay = endTimeLong - (endTimeLong % (24 * 60 * 60 * 1000)) + (1000 * (59 + (59 * 60) + (11 * 60 * 60)));
         getPhotosTaken(context, startMidnight, endOfDay);
     }
 
     public void getPhotosTaken(Context context, long startTime, long endTime) {
-        //compositeDisposable.add(PhotoUtils.getPhotoDetailListObservable(context, startTime, endTime)
-        compositeDisposable.add(PhotoUtils.getMediaListObservable(context, startTime, endTime)
+        compositeDisposable.add(photoUtils.getMediaListObservable(context, startTime, endTime)
                 .onErrorReturn(throwable -> {
                             Toast.makeText(context, R.string.error_get_photos_for_activity, Toast.LENGTH_LONG).show();
                             return new ArrayList<>();
                         }
                 )
-                .subscribe(photoList -> {
-                            MapRoute.this.mediaDetailList = photoList;
+                .subscribe(medialDetailList -> {
+                            MapRoute.this.mediaDetailList = medialDetailList;
                             startPlotting();
-                            callbackPhotoList(photoList);
                         },
                         throwable -> {
                             Toast.makeText(context, R.string.error_get_photos_for_activity, Toast.LENGTH_LONG).show();
                         }));
-    }
-
-    private void callbackPhotoList(ArrayList<MediaDetail> photoList){
-        if (activityPhotosCallback != null) {
-            activityPhotosCallback.photoList(photoList);
-        }
     }
 
     public void onTerminate() {

@@ -12,16 +12,22 @@ import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.ExrcsLocation;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
+import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 import com.fisincorporated.exercisetracker.ui.logger.ActivityLoggerActivity;
 import com.fisincorporated.exercisetracker.ui.logger.GPSLocationManager;
-import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerActivity;
 
-public class StartExercise extends ExerciseMasterFragmentActivity {
-	private static final String TAG = "StartExercise";
+import javax.inject.Inject;
+
+public class StartExerciseActivity extends ExerciseDaggerActivity {
+	private static final String TAG = "StartExerciseActivity";
 	private LocationExerciseDAO leDAO = null;
 	private LocationExerciseRecord ler = null;
 	private ExerciseDAO eDAO = null;
 	private ExerciseRecord er = null;
+
+	@Inject
+	TrackerDatabaseHelper trackerDatabaseHelper;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -39,8 +45,8 @@ public class StartExercise extends ExerciseMasterFragmentActivity {
 
 	private void directToActivityLogger(long id) {
 		Intent intent = new Intent(this, ActivityLoggerActivity.class);
-		leDAO = new LocationExerciseDAO();
-		eDAO = new ExerciseDAO();
+		leDAO = trackerDatabaseHelper.getLocationExerciseDAO();
+		eDAO = trackerDatabaseHelper.getExerciseDAO();
 		ler = leDAO.loadLocationExerciseRecordById(id);
 		intent.putExtra(LocationExercise.LOCATION_EXERCISE_TABLE, ler);
 		intent.putExtra(Exercise.EXERCISE, leDAO.getExercise(ler.getExerciseId()));

@@ -3,24 +3,27 @@ package com.fisincorporated.exercisetracker.ui.filters;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
+import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
+import android.support.v4.app.Fragment;
 import android.widget.ArrayAdapter;
 
-import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 
 import java.util.ArrayList;
 
-public abstract class FilterDialogFragment extends DialogFragment {
+import javax.inject.Inject;
 
-	protected TrackerDatabaseHelper databaseHelper;
-	protected SQLiteDatabase database;
+import dagger.android.AndroidInjector;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.support.AndroidSupportInjection;
+import dagger.android.support.HasSupportFragmentInjector;
+
+public abstract class FilterDialogFragment extends DialogFragment implements HasSupportFragmentInjector {
 
 	public static final String EXTRA_SELECTIONS = "com.fisincorporated.ExerciseTracker.checkedSelections";
 	public static final String EXTRA_TITLE = "com.fisincorporated.ExerciseTracker.title";
@@ -30,50 +33,26 @@ public abstract class FilterDialogFragment extends DialogFragment {
 	private ArrayList<String> checkedSelections;
 	private boolean[] checkedItems;
 
-	public FilterDialogFragment() {
-		// TODO Auto-generated constructor stub
-	}
+    @Inject
+    DispatchingAndroidInjector<Fragment> childFragmentInjector;
 
-	// public static FilterDialogFragment
-	// newInstance(ArrayList<String>originalSelections, String title){
-	// Bundle args = new Bundle();
-	// args.putStringArrayList(EXTRA_EXERCISE_SELECTIONS, originalSelections);
-	// args.putString(EXTRA_TITLE,title);
-	// FilterDialogFragment fragment = new FilterDialogFragment();
-	// fragment.setArguments(args);
-	// return fragment;
-	// }
+	@Inject
+	TrackerDatabaseHelper databaseHelper;
 
-	// use by implementing class
-	protected void getDatabaseSetup() {
-		if (databaseHelper == null)
-			databaseHelper = TrackerDatabaseHelper.getTrackerDatabaseHelper();
-		if (database == null) {
-			Log.i(GlobalValues.LOG_TAG,
-					"FilterDialog.getDatabaseSetup com.fisincorporated.exercisetracker.database null, calling getWritable");
-			database = TrackerDatabaseHelper.getDatabase();
-		}
-		if (!database.isOpen()) {
-			Log.i(GlobalValues.LOG_TAG,
-					"FilterDialog.getDatabaseSetup com.fisincorporated.exercisetracker.database not null but not open, calling getWritable");
-			database = databaseHelper.getWritableDatabase();
-		}
+	public FilterDialogFragment() {}
 
-	}
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        AndroidSupportInjection.inject(this);
+    }
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		getDatabaseSetup();
-
-	}
-
-	@SuppressWarnings("unchecked")
+	@NonNull
+    @SuppressWarnings("unchecked")
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 
 		String title = getArguments().getString(EXTRA_TITLE);
-		originalSelections = (ArrayList<String>) getArguments()
-				.getStringArrayList(EXTRA_SELECTIONS);
+		originalSelections = getArguments().getStringArrayList(EXTRA_SELECTIONS);
 		checkedSelections = (ArrayList<String>) originalSelections.clone();
 		selections = loadSelectionArray();
 		setCheckedItems();
@@ -85,73 +64,38 @@ public abstract class FilterDialogFragment extends DialogFragment {
 		arrayAdapter
 				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		builder.setTitle(title);
-		// .setView(view)
 		builder.setMultiChoiceItems(selections.toArray(new String[0]),
-				checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which,
-							boolean isChecked) {
-						// Log.i(GlobalValues.LOG_TAG, "Item " + which
-						// + (isChecked ? " is checked" : " is not checked"));
-						checkedItems[which] = isChecked;
-					}
-
-				});
+				checkedItems, (dialog, which, isChecked) -> {
+                    // Log.i(GlobalValues.LOG_TAG, "Item " + which
+                    // + (isChecked ? " is checked" : " is not checked"));
+                    checkedItems[which] = isChecked;
+                });
 
 		// The OK button returns a (possibly) updated filter list)
 		builder.setPositiveButton(R.string.ok,
-				new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int id) {
-						createNewFilterList();
-						sendResult(Activity.RESULT_OK);
-					}
-				});
+				(dialog, id) -> {
+                    createNewFilterList();
+                    sendResult(Activity.RESULT_OK);
+                });
 		// Negative button is Cancel so return the original filter list
 		builder.setNegativeButton(R.string.cancel,
-				new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int id) {
-						// Log.i(GlobalValues.LOG_TAG, "NegativeButton Clicked");
-						checkedSelections = originalSelections;
-						sendResult(Activity.RESULT_OK);
-					}
-				});
+				(dialog, id) -> {
+                    // Log.i(GlobalValues.LOG_TAG, "NegativeButton Clicked");
+                    checkedSelections = originalSelections;
+                    sendResult(Activity.RESULT_OK);
+                });
 		// set neutral is to clear filter (show all)
 		builder.setNeutralButton(R.string.clear_filter,
-				new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int id) {
-						// Log.i(GlobalValues.LOG_TAG, "Neutral Clicked");
-						checkedSelections = new ArrayList<String>();
-						sendResult(Activity.RESULT_OK);
-					}
-				});
+				(dialog, id) -> {
+                    // Log.i(GlobalValues.LOG_TAG, "Neutral Clicked");
+                    checkedSelections = new ArrayList<String>();
+                    sendResult(Activity.RESULT_OK);
+                });
 		return builder.create();
 	}
 
 	// Load list of strings into selections ArrayList
 	protected abstract ArrayList<String> loadSelectionArray();
-
-	// protected ArrayList<String> loadSelectionArray() {
-	// selections = new ArrayList<String>();
-	// databaseHelper = TrackerDatabaseHelper
-	// .getTrackerDatabaseHelper(getActivity());
-	// com.fisincorporated.exercisetracker.database = databaseHelper.getWritableDatabase();
-	// Cursor csr = com.fisincorporated.exercisetracker.database.query(Exercise.EXERCISE_TABLE,
-	// new String[] { Exercise.EXERCISE }, null, null, null, null,
-	// Exercise.DEFAULT_SORT_ORDER);
-	// if (csr.getCount() != 0){
-	// csr.moveToFirst();
-	// while (!csr.isAfterLast()) {
-	// selections.add(csr.getString(csr
-	// .getColumnIndex(Exercise.EXERCISE)));
-	// csr.moveToNext();
-	// }
-	// }
-	// csr.close();
-	// return selections;
-	// }
 
 	private void setCheckedItems() {
 		checkedItems = new boolean[selections.size()];
@@ -166,7 +110,7 @@ public abstract class FilterDialogFragment extends DialogFragment {
 	}
 
 	private void createNewFilterList() {
-		checkedSelections = new ArrayList<String>();
+		checkedSelections = new ArrayList<>();
 		for (int i = 0; i < selections.size(); ++i) {
 			if (checkedItems[i])
 				checkedSelections.add(selections.get(i));
@@ -184,28 +128,9 @@ public abstract class FilterDialogFragment extends DialogFragment {
 				intent);
 	}
 
-	public void onDestroy() {
-//		if (database != null) {
-//			Log.i(GlobalValues.LOG_TAG, "FilterDialog.onDestroy com.fisincorporated.exercisetracker.database not null");
-//			if (database.isOpen()) {
-//				Log.i(GlobalValues.LOG_TAG,
-//						"FilterDialog.onDestroy com.fisincorporated.exercisetracker.database is open so calling close ");
-//				database.close();
-//			}
-//			database = null;
-//		}
-		super.onDestroy();
-	}
+    @Override
+    public AndroidInjector<Fragment> supportFragmentInjector() {
+        return childFragmentInjector;
+    }
 
-	@Override
-	public void finalize() {
-//		if (database != null) {
-//			Log.i(GlobalValues.LOG_TAG, "FilterDialog.finalize com.fisincorporated.exercisetracker.database not null");
-//			if (database.isOpen())
-//				Log.i(GlobalValues.LOG_TAG,
-//						"FilterDialog.finalize com.fisincorporated.exercisetracker.database is open so calling close");
-//			database.close();
-//			database = null;
-//		}
-	}
 }

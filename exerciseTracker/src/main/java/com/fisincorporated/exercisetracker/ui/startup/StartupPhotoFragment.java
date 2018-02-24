@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,21 +15,26 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.fisincorporated.exercisetracker.R;
-import com.fisincorporated.exercisetracker.ui.startactivity.StartExercise;
+import com.fisincorporated.exercisetracker.ui.startactivity.StartExerciseActivity;
 import com.fisincorporated.exercisetracker.utility.PhotoUtils;
 
-public class StartupPhotoFragment extends Fragment {
+import javax.inject.Inject;
+
+import dagger.android.support.DaggerFragment;
+
+public class StartupPhotoFragment extends DaggerFragment {
 
     private static final String TAG = StartupPhotoFragment.class.getSimpleName();
 
-    private View view;
+    @Inject
+    PhotoUtils photoUtils;
+
     private ImageView imageView;
     private String photoPath;
     private FloatingActionButton startFab;
     private TextView noPhotoTextView;
     private ProgressBar progressBar;
     private ValueAnimator valueAnimator;
-    private int animationTime = 10 * 1000;
     private float animatedFloat;
     private int animatedInt;
     private float animatedDecimal;
@@ -45,7 +49,7 @@ public class StartupPhotoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.startup_photo, container, false);
+        View view = inflater.inflate(R.layout.startup_photo, container, false);
         getReferencedViews(view);
         return view;
     }
@@ -64,10 +68,6 @@ public class StartupPhotoFragment extends Fragment {
         valueAnimator.end();
     }
 
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
-    }
 
     private void getReferencedViews(View view) {
         imageView = (ImageView) view.findViewById(R.id.startup_photo_view);
@@ -75,14 +75,14 @@ public class StartupPhotoFragment extends Fragment {
         progressBar = (ProgressBar) view.findViewById(R.id.change_startup_photo_progressBar);
         startFab = (FloatingActionButton) view.findViewById(R.id.startup_photo_fab);
         startFab.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), StartExercise.class);
+            Intent intent = new Intent(getActivity(), StartExerciseActivity.class);
             startActivity(intent);
         });
         checkForStartupPhoto();
     }
 
     private void checkForStartupPhoto() {
-        String currentPhotoPath = PhotoUtils.getStartupPhotoPath();
+        String currentPhotoPath = photoUtils.getStartupPhotoPath();
         if (currentPhotoPath == null) {
             noPhotoTextView.setVisibility(View.VISIBLE);
         } else {
@@ -94,7 +94,7 @@ public class StartupPhotoFragment extends Fragment {
     }
 
     private void loadUserPhoto(String photoPath) {
-        if (!PhotoUtils.loadPhotoToImageView(imageView, photoPath, progressBar, noPhotoTextView)) {
+        if (!photoUtils.loadPhotoToImageView(imageView, photoPath, progressBar, noPhotoTextView)) {
             noPhotoTextView.setVisibility(View.VISIBLE);
 
         }
@@ -102,6 +102,7 @@ public class StartupPhotoFragment extends Fragment {
 
     private void setupActivityFabAnimator(final FloatingActionButton fab) {
         // To display all icons and fad in/out go from 0 - ids.length. But be careful not to handle possible index exception
+        int animationTime = 10 * 1000;
         valueAnimator = ValueAnimator.ofFloat(0f, (float) ids.length ).setDuration(animationTime);
         valueAnimator.setRepeatCount(Animation.INFINITE);
         valueAnimator.setInterpolator(new LinearInterpolator());

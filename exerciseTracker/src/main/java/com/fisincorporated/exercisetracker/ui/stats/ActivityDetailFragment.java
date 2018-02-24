@@ -25,21 +25,24 @@ import com.fisincorporated.exercisetracker.database.LocationExerciseDAO;
 import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.GPSLog;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
+import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerFragment;
 import com.fisincorporated.exercisetracker.ui.media.slideshow.FullscreenPhotoPagerActivity;
 import com.fisincorporated.exercisetracker.ui.media.MediaDetail;
 import com.fisincorporated.exercisetracker.ui.media.MediaPoint;
-import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
 import com.fisincorporated.exercisetracker.ui.media.mediagrid.MediaGridPagerActivity;
 import com.fisincorporated.exercisetracker.ui.utils.ActivityDialogFragment;
 import com.fisincorporated.exercisetracker.utility.PhotoUtils;
-import com.fisincorporated.exercisetracker.utility.Utility;
+import com.fisincorporated.exercisetracker.utility.StatsUtil;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 import io.reactivex.disposables.CompositeDisposable;
 
-public class ActivityDetailFragment extends ExerciseMasterFragment {
+public class ActivityDetailFragment extends ExerciseDaggerFragment {
     private static final int DELETE_REQUESTCODE = 1;
     private TextView tvExerciseLocation = null;
     private LocationExerciseRecord ler = null;
@@ -54,6 +57,15 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private FloatingActionButton mapFab;
     private FloatingActionButton photosFab;
+
+    @Inject
+    PhotoUtils photoUtils;
+
+    @Inject
+    StatsUtil statsUtil;
+
+    @Inject
+    TrackerDatabaseHelper trackerDatabaseHelper;
 
     /**
      * Pass in the arguments needed by this fragment
@@ -187,16 +199,6 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
         ActivityDialogFragment dialog;
         Bundle args = new Bundle();
         switch (item.getItemId()) {
-//            case R.id.activity_detail_showMap:
-//                args.putLong(LocationExercise._ID, locationExerciseId);
-//                args.putString(GlobalValues.TITLE, title);
-//                args.putString(LocationExercise.DESCRIPTION, description);
-//                args.putInt(GlobalValues.DISPLAY_TARGET, GlobalValues.DISPLAY_MAP);
-//                Toast.makeText(getActivity().getBaseContext(),
-//                        getActivity().getResources().getString(R.string.displaying_the_map_may_take_a_moment), Toast.LENGTH_SHORT)
-//                        .show();
-//                callBacks.onSelectedAction(args);
-//                return true;
             case R.id.activity_detail_showChart:
                 args.putLong(LocationExercise._ID, locationExerciseId);
                 args.putString(GlobalValues.TITLE, title);
@@ -209,7 +211,7 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
 //			args.putString(GlobalValues.TITLE,title);
 //			args.putString(LocationExercise.DESCRIPTION, description) ;
 //			StringBuilder activityStatsSB = new StringBuilder();
-//			Utility.formatActivityStatsForFacebook(getActivity(), activityStatsSB,
+//			StatsUtil.formatActivityStatsForFacebook(getActivity(), activityStatsSB,
 //					 ler,  imperialMetric, imperial,   feetMeters , milesKm,  mphKph) ;
 //			args.putString(GlobalValues.ACTIVITY_STATS, activityStatsSB.toString());
 //			args.putInt(GlobalValues.DISPLAY_TARGET, GlobalValues.DISPLAY_FACEBOOK_TO_POST);
@@ -253,12 +255,12 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
     }
 
     public void doPositiveCancelClick() {
-        GPSLogDAO gpslogDAO = new GPSLogDAO();
+        GPSLogDAO gpslogDAO = trackerDatabaseHelper.getGPSLogDAO();
         gpslogDAO.deleteGPSLogbyLerRowId(ler.get_id());
         Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.gps_log_detail_deleted),
                 Toast.LENGTH_SHORT).show();
         if (deleteDetailType == 1) {
-            leDAO = new LocationExerciseDAO();
+            leDAO = trackerDatabaseHelper.getLocationExerciseDAO();
             leDAO.deleteLocationExercise(ler);
             Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.activity_deleted), Toast.LENGTH_SHORT)
                     .show();
@@ -276,7 +278,7 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
      * summary
      */
     private void loadActivityRecords() {
-        leDAO = new LocationExerciseDAO();
+        leDAO =trackerDatabaseHelper.getLocationExerciseDAO();
         ler = leDAO.loadLocationExerciseRecordById(locationExerciseId);
         if (ler.get_id() < 1) {
             Toast.makeText(
@@ -292,7 +294,7 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
     }
 
     public void formatActivityStats() {
-        Utility.formatActivityStats(getActivity(), stats, ler);
+        statsUtil.formatActivityStats(stats, ler);
     }
 
     public float calcMaxSpeedToPoint(Long lerId) {
@@ -358,7 +360,7 @@ public class ActivityDetailFragment extends ExerciseMasterFragment {
     }
 
     private void getPhotosTaken(Context context, long startTime, long endTime) {
-        compositeDisposable.add(PhotoUtils.getMediaListObservable(context, startTime, endTime)
+        compositeDisposable.add(photoUtils.getMediaListObservable(context, startTime, endTime)
                 .onErrorReturn(throwable -> {
                             Toast.makeText(context, R.string.error_get_photos_for_activity, Toast.LENGTH_LONG).show();
                             return new ArrayList<>();

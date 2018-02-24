@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -23,6 +24,7 @@ import io.reactivex.Single;
 
 
 // TODO use Dagger
+// TODO make static methods non-static after Dagger cutover complete
 public class TrackerDatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = GlobalValues.DATABASE_NAME;
     // Update DATABASE_VERSION if schema changes
@@ -34,6 +36,7 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
 
     private Context context;
     private static TrackerDatabaseHelper trackerDatabaseHelper = null;
+    private SQLiteDatabase database = null;
 
 
     private TrackerDatabaseHelper(Context context) {
@@ -62,8 +65,11 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
         return trackerDatabaseHelper;
     }
 
-    public static SQLiteDatabase getDatabase(){
-        return trackerDatabaseHelper.getWritableDatabase();
+    public SQLiteDatabase getDatabase(){
+        if (database == null) {
+            database = trackerDatabaseHelper.getWritableDatabase();
+        }
+        return database;
     }
 
     @SuppressLint("Override")
@@ -130,9 +136,27 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
         super.onOpen(db);
     }
 
+
+    public ExerciseDAO getExerciseDAO(){
+        return new ExerciseDAO(database);
+    }
+
+    public ExrcsLocationDAO getExrcsLocationDAO(){
+        return new ExrcsLocationDAO(database);
+    }
+
+    public GPSLogDAO getGPSLogDAO(){
+        return new GPSLogDAO(database);
+    }
+
+    public LocationExerciseDAO getLocationExerciseDAO(){
+        return new LocationExerciseDAO(database);
+    }
+
+
     // Turn all methods into static
     private void loadExerciseTableIfNeeded(SQLiteDatabase db) {
-        Cursor cursor = null;
+        Cursor cursor;
         Log.i(GlobalValues.LOG_TAG,
                 "TrackerDatabaseHelper.loadExerciseTableIfNeeded db version: "
                         + db.getVersion());
@@ -605,11 +629,67 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
                 + Exercise.EXERCISE);
     }
 
+    public ArrayList<String> loadExerciseSelectionArray() {
+        Cursor csr = null;
+        ArrayList<String> selections = new ArrayList<>();
+        try {
+            csr = getDatabase().query(Exercise.EXERCISE_TABLE,
+                    new String[]{Exercise.EXERCISE}, null, null, null, null,
+                    Exercise.DEFAULT_SORT_ORDER);
+            if (csr.getCount() != 0) {
+                csr.moveToFirst();
+                while (!csr.isAfterLast()) {
+                    selections.add(csr.getString(csr
+                            .getColumnIndex(Exercise.EXERCISE)));
+                    csr.moveToNext();
+                }
+            }
+        } catch (SQLException sqle) {
+            Log.i(GlobalValues.LOG_TAG, "ExerciseFilterDialog.loadSelectionArray sqlexception : " + sqle.toString());
+        } finally {
+            if (csr != null && !csr.isClosed()) {
+                Log.i(GlobalValues.LOG_TAG,
+                        "ExerciseFilterDialog.loadSelectionArray closing cursor");
+                csr.close();
+            }
+        }
+        return selections;
+    }
 
-    public static Single<LocationExerciseRecord> getLerSingleObservable(Long locationExerciseId) {
+
+    public  ArrayList<String> loadLocationSelectionArray() {
+        Cursor csr = null;
+        ArrayList<String> selections = new ArrayList<>();
+        try {
+            csr = getDatabase().query(ExrcsLocation.LOCATION_TABLE,
+                    new String[] { ExrcsLocation.LOCATION }, null, null, null, null,
+                    ExrcsLocation.DEFAULT_SORT_ORDER);
+
+            if (csr.getCount() != 0) {
+                csr.moveToFirst();
+                while (!csr.isAfterLast()) {
+                    selections.add(csr.getString(csr
+                            .getColumnIndex(ExrcsLocation.LOCATION)));
+                    csr.moveToNext();
+                }
+            }
+        } catch (SQLException sqle) {
+            Log.i(GlobalValues.LOG_TAG,"LocationFilterDialog.loadSelectionArray sqlexception : " + sqle.toString());
+        } finally {
+            if (csr != null && !csr.isClosed()) {
+                Log.i(GlobalValues.LOG_TAG,
+                        "LocationFilterDialog.loadSelectionArray closing cursor");
+                csr.close();
+            }
+        }
+        return selections;
+    }
+
+
+    public  Single<LocationExerciseRecord> getLerSingleObservable(Long locationExerciseId) {
         return Single.create(emitter -> {
             try {
-                LocationExerciseRecord ler = new LocationExerciseDAO().loadLocationExerciseRecordById(locationExerciseId);
+                LocationExerciseRecord ler = new LocationExerciseDAO(database).loadLocationExerciseRecordById(locationExerciseId);
                 if (ler.get_id() > 0) {
                     emitter.onSuccess(ler);
                 } else {
@@ -621,15 +701,15 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
         });
     }
 
-    public static Single<ExerciseRecord> getErSingleObservable(Long exerciseId) {
+    public  Single<ExerciseRecord> getErSingleObservable(Long exerciseId) {
         return Single.create(emitter -> {
-            emitter.onSuccess(new ExerciseDAO().loadExerciseRecordById(exerciseId));
+            emitter.onSuccess(new ExerciseDAO(database).loadExerciseRecordById(exerciseId));
         });
     }
 
     public Single<ExrcsLocationRecord> getElrSingleObservable(Long locationId) {
         return Single.create(emitter -> {
-            emitter.onSuccess(new ExrcsLocationDAO().loadExrcsLocationRecordById(locationId));
+            emitter.onSuccess(new ExrcsLocationDAO(database).loadExrcsLocationRecordById(locationId));
         });
     }
 

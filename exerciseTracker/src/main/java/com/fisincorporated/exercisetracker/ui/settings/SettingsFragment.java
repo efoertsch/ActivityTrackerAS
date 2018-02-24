@@ -2,12 +2,14 @@ package com.fisincorporated.exercisetracker.ui.settings;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.preference.Preference;
@@ -21,21 +23,32 @@ import com.fisincorporated.exercisetracker.utility.PhotoUtils;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
+import javax.inject.Inject;
+
+import dagger.android.support.AndroidSupportInjection;
+
 import static android.app.Activity.RESULT_OK;
-
-
 
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String TAG = SettingsFragment.class.getSimpleName();
-
-
     private boolean handleThisChange = true;
+
+    @Inject
+    PhotoUtils photoUtils;
 
     public static SettingsFragment newInstance(Bundle bundle) {
         SettingsFragment settingsFragment = new SettingsFragment();
         settingsFragment.setArguments(bundle);
         return settingsFragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        // Note: AndroidSupportInjection not AndroidInjection
+        AndroidSupportInjection.inject(this);
+        super.onAttach(context);
+
     }
 
     @Override
@@ -54,36 +67,31 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     private void setupPreferences() {
         Preference photoImagePreference = findPreference(getString(R.string.startup_image));
         if (photoImagePreference != null) {
-            photoImagePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference preference) {
-                    String currentPhotoPath = PhotoUtils.getStartupPhotoPath();
-                    if (currentPhotoPath == null) {
-                        Intent intent = new Intent();
-                        // Show only images, no videos or anything else
-                        intent.setType("image/*");
-                        intent.setAction(Intent.ACTION_GET_CONTENT);
-                        startActivityForResult(Intent.createChooser(intent, "Select Picture"), GlobalValues.PICK_PHOTO);
-                    } else {
-                        Intent intent = new Intent(SettingsFragment.this.getContext(), ChangeStartupPhotoActivity.class);
-                        startActivity(intent);
-                    }
-                    return true;
+            photoImagePreference.setOnPreferenceClickListener(preference -> {
+                String currentPhotoPath = photoUtils.getStartupPhotoPath();
+                if (currentPhotoPath == null) {
+                    Intent intent = new Intent();
+                    // Show only images, no videos or anything else
+                    intent.setType("image/*");
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), GlobalValues.PICK_PHOTO);
+                } else {
+                    Intent intent = new Intent(SettingsFragment.this.getContext(), ChangeStartupPhotoActivity.class);
+                    startActivity(intent);
                 }
+                return true;
             });
         }
 
         Preference backupPreference = findPreference(getString(R.string.backup_button_key));
         if (backupPreference != null) {
-            backupPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    Intent intent = new Intent(getActivity(), SettingsActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putInt(getString(R.string.backup_button_key), 0);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
-                    return true;
-                }
+            backupPreference.setOnPreferenceClickListener(preference -> {
+                Intent intent = new Intent(getActivity(), SettingsActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt(getString(R.string.backup_button_key), 0);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                return true;
             });
         }
     }
@@ -141,7 +149,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 // Should we show an explanation?
                 if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
                         Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    // Show an expanation to the user *asynchronously* -- don't block
+                    // Show an exlpanation to the user *asynchronously* -- don't block
                     // this thread waiting for the user's response! After the user
                     // sees the explanation, try again to request the permission.
                 } else {
@@ -165,7 +173,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case GlobalValues.PICK_PHOTO: {
                 // If request is cancelled, the result arrays are empty.
@@ -199,7 +207,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 if (resultCode == RESULT_OK
                         && intent != null
                         && intent.getData() != null) {
-                    PhotoUtils.saveToInternalStorage(getActivity(), intent.getData());
+                    photoUtils.saveToInternalStorage(getActivity(), intent.getData());
                 }
             }
             case (GlobalValues.BACKUP_TO_DRIVE): {
@@ -245,4 +253,5 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         dialog.setCancelable(false);
         dialog.show();
     }
+
 }

@@ -1,6 +1,5 @@
 package com.fisincorporated.exercisetracker.utility;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -35,6 +34,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import javax.inject.Inject;
+
 import io.reactivex.Single;
 
 
@@ -42,50 +43,32 @@ public class PhotoUtils {
 
     private static final String TAG = PhotoUtils.class.getSimpleName();
 
-    @SuppressLint("StaticFieldLeak")
-    private static Context context;
+    private Context context;
 
-    public static void init(Context context) {
-        PhotoUtils.context = context;
+    @Inject
+    public PhotoUtils(Context context){
+        this.context = context;
     }
 
-    public static void storePhotoPath(String filePath) {
+    public void storePhotoPath(String filePath) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(context.getString(R.string.startup_image), filePath);
         editor.commit();
     }
 
-    public static String getStartupPhotoPath() {
+    public String getStartupPhotoPath() {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         return sharedPref.getString(context.getString(R.string.startup_image), null);
     }
 
-    public static boolean loadPhotoToImageView(ImageView imageView, String photoPath, ProgressBar progressBar, TextView errorTextView) {
+    public boolean loadPhotoToImageView(ImageView imageView, String photoPath, ProgressBar progressBar, TextView errorTextView) {
         if (photoPath != null) {
             File imgFile = new File(photoPath);
             if (imgFile.exists()) {
                 progressBar.setVisibility(View.VISIBLE);
                 Glide.with(imageView.getContext())
                         .load(imgFile)
-                        //.load(Uri.fromFile(imgFile))
-//                        .listener(new RequestListener<Uri, GlideDrawable>() {
-//                            @Override
-//                            public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
-//                                errorTextView.setText(R.string.error_occurred_loading_photo);
-//                                progressBar.setVisibility(View.GONE);
-//                                errorTextView.setVisibility(View.VISIBLE);
-//                                return false;
-//                            }
-//
-//                            @Override
-//                            public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-//                                progressBar.setVisibility(View.GONE);
-//                                errorTextView.setVisibility(View.GONE);
-//                                return true;
-//                            }
-//                        })
-//
                         .listener(new RequestListener<File, GlideDrawable>() {
                             @Override
                             public boolean onException(Exception e, File model, Target<GlideDrawable> target, boolean isFirstResource) {
@@ -117,12 +100,12 @@ public class PhotoUtils {
         return false;
     }
 
-    public static void saveToInternalStorage(Activity activity, Uri imageUri) {
+    public void saveToInternalStorage(Activity activity, Uri imageUri) {
         InputStream imageStream = null;
         try {
             imageStream = activity.getContentResolver().openInputStream(imageUri);
             Bitmap bitmapImage = BitmapFactory.decodeStream(imageStream);
-            String filename = PhotoUtils.getFileNameFromURI(imageUri);
+            String filename = getFileNameFromURI(imageUri);
             writeResizedBitmap(bitmapImage, filename);
         } catch (FileNotFoundException e) {
             Log.d(TAG, e.toString());
@@ -137,7 +120,7 @@ public class PhotoUtils {
         }
     }
 
-    public static void writeResizedBitmap(Bitmap bitmapImage, String filename) {
+    public void writeResizedBitmap(Bitmap bitmapImage, String filename) {
         FileOutputStream fos = null;
         try {
             File directory = getPhotoFileDirectory();
@@ -160,20 +143,20 @@ public class PhotoUtils {
         }
     }
 
-    public static File getPhotoFileDirectory() {
+    public File getPhotoFileDirectory() {
         ContextWrapper cw = new ContextWrapper(context);
         // path to /data/data/yourapp/app_data/imageDir
         return cw.getDir(GlobalValues.IMAGE_DIR, Context.MODE_PRIVATE);
     }
 
-    public static void removeStorePhotoPreference() {
+    public void removeStorePhotoPreference() {
         File directory = getPhotoFileDirectory();
         deleteAllFiles(directory);
         storePhotoPath(null);
     }
 
 
-    public static Bitmap getResizedImage(Bitmap bitmap) {
+    public Bitmap getResizedImage(Bitmap bitmap) {
         int[] imageSize = new int[]{bitmap.getWidth(), bitmap.getHeight()};
         int[] newSize;
         int[] screenSize = getScreenSize();
@@ -181,25 +164,25 @@ public class PhotoUtils {
             // landscape photo - w > h
             if (screenSize[0] > screenSize[1]) {
                 // landscape device orientation
-                return PhotoUtils.resize(bitmap, screenSize[1], screenSize[0]);
+                return resize(bitmap, screenSize[1], screenSize[0]);
             } else {
                 // portrait device orientation
-                return PhotoUtils.resize(bitmap, screenSize[1], screenSize[0]);
+                return resize(bitmap, screenSize[1], screenSize[0]);
             }
         } else {
             // portrait photo  w < h
             if (screenSize[0] > screenSize[1]) {
                 // landscape device orientation
-                return PhotoUtils.resize(bitmap, screenSize[1], screenSize[0]);
+                return resize(bitmap, screenSize[1], screenSize[0]);
             } else {
                 // portrait device orientation
-                return PhotoUtils.resize(bitmap, screenSize[1], screenSize[0]);
+                return resize(bitmap, screenSize[1], screenSize[0]);
             }
         }
     }
 
 
-    public static Bitmap resize(Bitmap image, int maxWidth, int maxHeight) {
+    public Bitmap resize(Bitmap image, int maxWidth, int maxHeight) {
         if (maxHeight > 0 && maxWidth > 0) {
             int width = image.getWidth();
             int height = image.getHeight();
@@ -231,7 +214,7 @@ public class PhotoUtils {
      * @param image
      * @return
      */
-    public static Bitmap resizeForPortraitView(Bitmap image) {
+    public Bitmap resizeForPortraitView(Bitmap image) {
         if (image == null) {
             return null;
         }
@@ -272,7 +255,7 @@ public class PhotoUtils {
     }
 
 
-    public static String getFileNameFromURI(Uri uri) {
+    public String getFileNameFromURI(Uri uri) {
         String fileName = "";
         ContentResolver cr = context.getContentResolver();
         String[] projection = {MediaStore.MediaColumns.DISPLAY_NAME};
@@ -289,7 +272,7 @@ public class PhotoUtils {
         return fileName;
     }
 
-    public static void deleteAllFiles(File dir) {
+    public void deleteAllFiles(File dir) {
         for (File file : dir.listFiles())
             if (!file.isDirectory() && file.toString().endsWith(".jpeg")) {
                 file.delete();
@@ -301,46 +284,45 @@ public class PhotoUtils {
      *
      * @return
      */
-    public static int[] getScreenSize() {
+    public int[] getScreenSize() {
         int[] size = {getScreenWidth(), getScreenHeight()};
         return size;
     }
 
-    public static int getScreenWidth() {
+    public int getScreenWidth() {
         return Resources.getSystem().getDisplayMetrics().widthPixels;
     }
 
-    public static int getScreenHeight() {
+    public int getScreenHeight() {
         return Resources.getSystem().getDisplayMetrics().heightPixels;
     }
 
-    public static Single<ArrayList<MediaDetail>> getPhotoDetailListObservable(Context context, Long startTime, Long endTime) {
+    public Single<ArrayList<MediaDetail>> getPhotoDetailListObservable(Context context, Long startTime, Long endTime) {
         return Single.create(emitter -> {
-            emitter.onSuccess(PhotoUtils.getPhotosTaken(context, startTime, endTime));
+            emitter.onSuccess(getPhotosTaken(context, startTime, endTime));
         });
     }
 
-    public static Single<ArrayList<MediaDetail>> getVideoListObservable(Context context, Long startTime, Long endTime) {
+    public Single<ArrayList<MediaDetail>> getVideoListObservable(Context context, Long startTime, Long endTime) {
         return Single.create(emitter -> {
-            emitter.onSuccess(PhotoUtils.getVideoTaken(context, startTime, endTime));
+            emitter.onSuccess(getVideoTaken(context, startTime, endTime));
 
         });
     }
 
     // Note to self - make sure you import io.reactivex.functions.BiConsumer, rather than java version
-    public static Single<ArrayList<MediaDetail>> getMediaListObservable(final Context context, final Long startTime, final Long endTime) {
-        return Single.concat(PhotoUtils.getPhotoDetailListObservable(context, startTime, endTime)
-                , PhotoUtils.getVideoListObservable(context, startTime, endTime))
+    public Single<ArrayList<MediaDetail>> getMediaListObservable(final Context context, final Long startTime, final Long endTime) {
+        return Single.concat(getPhotoDetailListObservable(context, startTime, endTime)
+                , getVideoListObservable(context, startTime, endTime))
                 .collect(ArrayList::new
                         , (mediaDetails, mediaDetails2) -> {
                             mediaDetails.addAll(mediaDetails2);
                             Collections.sort(mediaDetails);
-
                         });
     }
 
     //MimeType null on MotoX 2nd gen
-    public static ArrayList<MediaDetail> getPhotosTaken(Context context, Long startTime, Long
+    public ArrayList<MediaDetail> getPhotosTaken(Context context, Long startTime, Long
             endTime) {
         ArrayList<MediaDetail> photosTaken = new ArrayList<>();
         if (startTime != null && endTime != null) {
@@ -359,7 +341,6 @@ public class PhotoUtils {
             int latitudeIndex = cursor.getColumnIndex(MediaStore.Images.Media.LATITUDE);
             int longitudeIndex = cursor.getColumnIndex(MediaStore.Images.Media.LONGITUDE);
             int dateTakenIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN);
-            int mimeTypeIndex = cursor.getColumnIndex(MediaStore.Images.Media.MIME_TYPE);
 
             while (cursor.moveToNext()) {
                 MediaDetail mediaDetail = new MediaDetail().setMediaPath(cursor.getString(pathIndex))
@@ -378,7 +359,7 @@ public class PhotoUtils {
         return photosTaken;
     }
 
-    public static ArrayList<MediaDetail> getVideoTaken(Context context, Long startTime, Long
+    public ArrayList<MediaDetail> getVideoTaken(Context context, Long startTime, Long
             endTime) {
         ArrayList<MediaDetail> photosTaken = new ArrayList<>();
         if (startTime != null && endTime != null) {
@@ -387,34 +368,28 @@ public class PhotoUtils {
                     MediaStore.Video.VideoColumns.LATITUDE,
                     MediaStore.Video.VideoColumns.LONGITUDE,
                     MediaStore.Video.VideoColumns.DATE_TAKEN,
-                    MediaStore.Video.VideoColumns.DATE_ADDED,
-            MediaStore.Video.VideoColumns.MINI_THUMB_MAGIC};
+                    MediaStore.Video.VideoColumns.MINI_THUMB_MAGIC};
 
-            String selection =MediaStore.Video.VideoColumns.DATE_TAKEN + " >= ? and "
+            String selection = MediaStore.Video.VideoColumns.DATE_TAKEN + " >= ? and "
                     + MediaStore.Video.VideoColumns.DATE_TAKEN + " <=  ? ";
-            final String orderBy =  MediaStore.Video.VideoColumns.DATE_TAKEN + " ASC ";
+            final String orderBy = MediaStore.Video.VideoColumns.DATE_TAKEN + " ASC ";
             String[] selectionArgs = {startTime.toString(), endTime.toString()};
 
             Uri queryUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
 
             cursor = context.getContentResolver().query(queryUri, columns, selection, selectionArgs, orderBy);
-            //cursor = context.getContentResolver().query(queryUri, columns, null, null, orderBy);
-
             int pathIndex = cursor.getColumnIndex(MediaStore.Video.VideoColumns.DATA);
             int latitudeIndex = cursor.getColumnIndex(MediaStore.Video.VideoColumns.LATITUDE);
             int longitudeIndex = cursor.getColumnIndex(MediaStore.Video.VideoColumns.LONGITUDE);
             int dateTakenIndex = cursor.getColumnIndex(MediaStore.Video.VideoColumns.DATE_TAKEN);
-            int dateAddedIndex = cursor.getColumnIndex(MediaStore.Video.VideoColumns.DATE_ADDED);
 
             String path;
             String dateTaken;
             String dateAdded;
 
-
             while (cursor.moveToNext()) {
                 path = cursor.getString(pathIndex);
                 dateTaken = cursor.getString(dateTakenIndex);
-                dateAdded = cursor.getString(dateAddedIndex);
 
                 if (path != null && dateTaken != null) {
                     MediaDetail mediaDetail = new MediaDetail().setMediaPath(path)

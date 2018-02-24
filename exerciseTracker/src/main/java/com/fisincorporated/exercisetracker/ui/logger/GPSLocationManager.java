@@ -1,18 +1,20 @@
 package com.fisincorporated.exercisetracker.ui.logger;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
@@ -27,16 +29,20 @@ import com.fisincorporated.exercisetracker.database.TrackerDatabase;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
-import com.fisincorporated.exercisetracker.utility.Utility;
+import com.fisincorporated.exercisetracker.utility.StatsUtil;
+import com.jakewharton.rxrelay2.PublishRelay;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
 // Adapted from Android Programming - The Big Nerd Ranch Guide. Modified to retrofit into existing system
+// Updates come in via LocationReciever
+
+// TODO - refactor sqlite logic
 public class GPSLocationManager {
     private static final String TAG = "GPSLocationManager";
-    public static final String LER_UPDATE = "com.fisincorporated.ExerciseTracker.LER_UPDATE";
-    public static final String ACTION_LOCATION = "com.fisincorporated.ExerciseTracker.ACTION_LOCATION";
+    // ACTION_LOCATION string must match to manifest receiver
+    private static final String ACTION_LOCATION = "com.fisincorporated.ExerciseTracker.ACTION_LOCATION";
     private static final String PREFS_FILE = "activity";
     private static final String PREF_CURRENT_LER_ID = "GPSLocationManager.currentLerId";
     private static final String UPDATE_RATE = "GPSLocationManager.UPDATE_RATE";
@@ -45,15 +51,8 @@ public class GPSLocationManager {
     private static SharedPreferences sPrefs;
     private static long sCurrentLerId;
 
-    protected static String imperialMetric;
-    protected static String imperial;
-    protected static String feetMeters;
-    protected static String milesKm;
-    protected static String mphKph;
-
-
     // private static final String TEST_PROVIDER = "TEST_PROVIDER";
-    private static GPSLocationManager sGPSLocationManager;
+
     private static Context sAppContext;
     private static LocationManager sLocationManager;
     private static float sMinDistanceToLog = 20;
@@ -78,19 +77,14 @@ public class GPSLocationManager {
     private static ArrayList<String[]> sStats = new ArrayList<String[]>();
     private static NotificationManager sNotificationManager;
 
-    // referenced in manifest
-//	private BroadcastReceiver LocationReceiver = new LocationReceiver() {
-//		@Override
-//		public void onReceive(Context context, Intent intent) {
-//			Location location = (Location) intent
-//					.getParcelableExtra(LocationManager.KEY_LOCATION_CHANGED);
-//			LocationExerciseRecord ler = getLer();
-//			updateLer(ler, location);
-//		}
-//	};
+    private StatsUtil statsUtil;
+    private PublishRelay<Object> publishRelay;
+    private TrackerDatabaseHelper trackerDatabaseHelper;
 
-    private GPSLocationManager(Context appContext) {
+    public GPSLocationManager(Context appContext, StatsUtil statsUtil, PublishRelay<Object> publishRelay, TrackerDatabaseHelper trackerDatabaseHelper) {
         sAppContext = appContext;
+        this.statsUtil = statsUtil;
+        this.publishRelay = publishRelay;
         sLocationManager = (LocationManager) sAppContext
                 .getSystemService(Context.LOCATION_SERVICE);
         sPrefs = sAppContext.getSharedPreferences(PREFS_FILE,
@@ -103,36 +97,25 @@ public class GPSLocationManager {
 
         }
         if (sLeDAO == null)
-            sLeDAO = new LocationExerciseDAO();
+            sLeDAO = trackerDatabaseHelper.getLocationExerciseDAO();
         if (sGpslrDAO == null)
-            sGpslrDAO = new GPSLogDAO();
-        if (sEDao == null){
-            sEDao = new ExerciseDAO();
+            sGpslrDAO = trackerDatabaseHelper.getGPSLogDAO();
+        if (sEDao == null) {
+            sEDao = trackerDatabaseHelper.getExerciseDAO();
         }
-        findDisplayUnits();
     }
-
-	public static GPSLocationManager get(Context c) {
-		if (sGPSLocationManager == null) {
-			// we use the application context to avoid leaking activities
-			sGPSLocationManager = new GPSLocationManager(c.getApplicationContext());
-		}
-		return sGPSLocationManager;
-	}
 
     public static long checkActivityId(Context appContext) {
         sPrefs = appContext
                 .getSharedPreferences(PREFS_FILE, Context.MODE_PRIVATE);
         return sPrefs.getLong(PREF_CURRENT_LER_ID, -1);
-
     }
 
     // This should only called by class responsible to start/continue logging an
     // activity
     public static void setActivityDetails(Bundle bundle) {
         if (bundle != null) {
-            sLer = (LocationExerciseRecord) bundle
-                    .getParcelable(LocationExercise.LOCATION_EXERCISE_TABLE);
+            sLer = bundle.getParcelable(LocationExercise.LOCATION_EXERCISE_TABLE);
             if (sLer.get_id() != sCurrentLerId) {
                 sCurrentLerId = sLer.get_id();
                 sPrefs.edit().putLong(PREF_CURRENT_LER_ID, sCurrentLerId).apply();
@@ -155,6 +138,7 @@ public class GPSLocationManager {
         return PendingIntent.getBroadcast(sAppContext, 0, broadcast, flags);
     }
 
+    @SuppressLint("MissingPermission")
     private void startLocationUpdates() {
         String provider = LocationManager.GPS_PROVIDER;
         // // if we have the test provider and it's enabled, use it
@@ -164,7 +148,10 @@ public class GPSLocationManager {
         // }
         Log.d(TAG, "Using provider " + provider);
 
-        // get the last known location and broadcast it if we have one
+        if (!isLocationPermissionGranted()) {
+            publishRelay.accept(new NeedLocationPermission());
+            return;
+        }
         Location lastKnown = sLocationManager.getLastKnownLocation(provider);
         if (lastKnown != null) {
             // reset the time to now
@@ -177,32 +164,29 @@ public class GPSLocationManager {
         Log.d(TAG, "Starting GPS");
     }
 
+    private boolean isLocationPermissionGranted(){
+        return (ActivityCompat.checkSelfPermission(sAppContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(sAppContext, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED);
+    }
+
     public boolean isTrackingLer() {
         return getLocationPendingIntent(false) != null;
     }
 
-    // public boolean isTrackingLer(LocationExerciseRecord ler) {
-    // return ler != null && ler.get_id() == sCurrentLerId;
-    // }
-
     private void broadcastLerUpdate(LocationExerciseRecord ler, Location location) {
-        Intent broadcast = new Intent(LER_UPDATE);
-        broadcast.putExtra(LER_UPDATE, ler);
-        broadcast.putExtra(LocationManager.KEY_LOCATION_CHANGED, location);
-        sAppContext.sendBroadcast(broadcast);
+        publishRelay.accept(ler);
         // Update notification
         generateNotification();
     }
 
-    public LocationExerciseRecord startNewLer(LocationExerciseRecord ler) {
+    void startNewLer(LocationExerciseRecord ler) {
         // insert the activity into the db
         sLer = ler;
         // start tracking the run
         startTrackingLer(sLer);
-        return sLer;
     }
 
-    public void startTrackingLer(LocationExerciseRecord ler) {
+    void startTrackingLer(LocationExerciseRecord ler) {
         // keep the ID
         sCurrentLerId = ler.get_id();
         // store it in shared preferences
@@ -228,19 +212,6 @@ public class GPSLocationManager {
         }
 
     }
-
-    public LocationExerciseRecord getLer(long id) {
-        LocationExerciseRecord ler = sLeDAO.loadLocationExerciseRecordById(id);
-        return ler;
-    }
-
-    // public void insertLocation(Location loc) {
-    // if (sCurrentLerId != -1) {
-    // updateLer(sLer, loc);
-    // } else {
-    // Log.e(TAG, "Location received with no tracking id; ignoring.");
-    // }
-    // }
 
     private LocationExerciseRecord getLer() {
         return sLer = sLeDAO.loadLocationExerciseRecordById(sCurrentLerId);
@@ -358,7 +329,7 @@ public class GPSLocationManager {
             return;
         }
         sLastNotificationTime = System.currentTimeMillis();
-        Utility.formatActivityStats(sActivity, sStats, sLer);
+        statsUtil.formatActivityStats(sStats, sLer);
         String notificationText = sExercise + "@" + sExrcsLocation +'\n';
 
         NotificationCompat.Builder builder =
@@ -422,27 +393,6 @@ public class GPSLocationManager {
         }
     }
 
-
-    // TODO duplicated in ExerciseMasterFragemnt - how to refactor to avoid duplication?
-    private void findDisplayUnits() {
-        Resources res = sAppContext.getResources();
-        imperial = res.getString(R.string.imperial);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(sAppContext);
-
-        imperialMetric = prefs.getString(res.getString(R.string.display_units), imperial);
-        if (imperialMetric.equalsIgnoreCase(res.getString(R.string.imperial))) {
-            feetMeters = "ft";
-            milesKm = "miles";
-            mphKph = "mph";
-        } else {
-            feetMeters = "m";
-            milesKm = "km";
-            mphKph = "kph";
-
-        }
-
-    }
-
     public void setNotification(FragmentActivity activity, String exercise, String exrcsLocation) {
         sActivity = activity;
         sExercise = exercise;
@@ -455,4 +405,6 @@ public class GPSLocationManager {
         }
         else return -1l;
     }
+
+
 }

@@ -1,9 +1,15 @@
 package com.fisincorporated.exercisetracker.ui.logger;
 
+import android.Manifest;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,47 +24,95 @@ import android.widget.Toast;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.backupandrestore.BackupScheduler;
-import com.fisincorporated.exercisetracker.broadcastreceiver.UpdateLerReceiver;
 import com.fisincorporated.exercisetracker.database.LocationExerciseDAO;
 import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.ExrcsLocation;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
-import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragment;
+import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerFragment;
 import com.fisincorporated.exercisetracker.ui.stats.StatsArrayAdapter;
-import com.fisincorporated.exercisetracker.utility.Utility;
+import com.fisincorporated.exercisetracker.utility.StatsUtil;
+import com.jakewharton.rxrelay2.PublishRelay;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+
 //Removed service logic and updated to location logic from Android Programming - The Big Nerd Ranch Guide
 
-public class ActivityLoggerFragment extends ExerciseMasterFragment {
+public class ActivityLoggerFragment extends ExerciseDaggerFragment {
 
-    static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final String TAG = ActivityLoggerFragment.class.getSimpleName();
 
-    ListView statsList = null;
-    StatsArrayAdapter statsArrayAdapter = null;
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int PERMISSION_REQUEST_LOCATION = 234240;
+    private static final int PERMISSION_REQUEST_CAMERA = 785352;
 
-    private Button btnStopRestart = null;
+    private View layoutView;
+    private ListView statsList;
+    private StatsArrayAdapter statsArrayAdapter;
+    private MenuItem cameraMenuItem;
+    private Button btnStopRestart;
 
     private String exrcsLocation;
     private String exercise;
     private String description;
-
     private ArrayList<String[]> stats = new ArrayList<>();
 
-    protected LocationExerciseRecord ler = null;
+    private Disposable publishRelayDisposable;
 
-    private MenuItem cameraMenuItem;
+    protected LocationExerciseRecord ler;
 
-    private GPSLocationManager gpsLocationManager = null;
-    private UpdateLerReceiver updateLerReceiver = new UpdateLerReceiver() {
+    @Inject
+    StatsUtil statsUtil;
+
+    @Inject
+    GPSLocationManager gpsLocationManager;
+
+    @Inject
+    PublishRelay<Object> publishRelay;
+
+    @Inject
+    SharedPreferences sharedPreferences;
+
+    @Inject
+    TrackerDatabaseHelper trackerDatabaseHelper;
+
+
+    private Observer<Object> publishRelayObserver = new Observer<Object>() {
         @Override
-        protected void onLerUpdate(LocationExerciseRecord ler) {
-            if (isVisible())
-                displayActivityStats(ler);
+        public void onSubscribe(Disposable disposable) {
+            publishRelayDisposable = disposable;
         }
 
+        @Override
+        public void onNext(Object o) {
+            if (o instanceof  LocationExerciseRecord) {
+                if (isVisible())
+                    displayActivityStats((LocationExerciseRecord) o);
+            }
+            if (o instanceof NeedLocationPermission) {
+                checkLocationPermission();
+            }
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            // Big Trouble - PublishRelay should never throw
+            Log.e(TAG, "PublishRelay throwing error:" + e.toString());
+            // TODO Do something more
+        }
+
+        @Override
+        public void onComplete() {
+            // Big Trouble - PublishRelay should never call
+            Log.e(TAG, "PublishRelay onComplete Thrown");
+            // TODO Do something more
+        }
     };
 
     public static ActivityLoggerFragment newInstance(Bundle bundle) {
@@ -74,7 +128,6 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         Bundle bundle = lookForArguments(savedInstanceState);
-        gpsLocationManager = GPSLocationManager.get(getActivity());
         // Created 2nd call for notification as passing in the get() method above would cause
         // problem in LocationReceiver.onLocationReceived() with passes just context
         gpsLocationManager.setNotification(getActivity(), exercise, exrcsLocation);
@@ -107,10 +160,10 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_stats, container, false);
-        getReferencedViews(view);
+        layoutView = inflater.inflate(R.layout.activity_stats, container, false);
+        getReferencedViews(layoutView);
         setHasOptionsMenu(true);
-        return view;
+        return layoutView;
     }
 
     @Override
@@ -126,19 +179,20 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
     @Override
     public void onStart() {
         super.onStart();
-        getActivity().registerReceiver(updateLerReceiver,
-                new IntentFilter(GPSLocationManager.LER_UPDATE));
+        publishRelay.subscribe(publishRelayObserver);
     }
 
     @Override
     public void onStop() {
-        getActivity().unregisterReceiver(updateLerReceiver);
+        if (publishRelayDisposable != null) {
+            publishRelayDisposable.dispose();
+        }
+        publishRelayDisposable = null;
         super.onStop();
     }
 
-
     private void getCurrentLer() {
-        LocationExerciseDAO leDAO = new LocationExerciseDAO();
+        LocationExerciseDAO leDAO = trackerDatabaseHelper.getLocationExerciseDAO();
         ler = leDAO.loadLocationExerciseRecordById(ler.get_id());
     }
 
@@ -157,30 +211,25 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
         btnStopRestart = (Button) view
                 .findViewById(R.id.activity_stats_stop_restart);
         btnStopRestart.setOnClickListener(v -> {
-            if (btnStopRestart.getText().equals(
-                    getResources().getString(R.string.stop))) {
-
-                // gpsLocationManager.stopLocationUpdates();
+            if (btnStopRestart.getText().equals(getResources().getString(R.string.stop))) {
                 gpsLocationManager.stopTrackingLer();
-
                 Toast.makeText(getActivity(), "Stopping GPS logging",
                         Toast.LENGTH_SHORT).show();
                 checkStopRestartButton();
                 startBackups();
             } else {
-                // gpsLocationManager.startLocationUpdates();
-                gpsLocationManager.startTrackingLer(ler);
-                Toast.makeText(getActivity(), "Continuing GPS logging",
-                        Toast.LENGTH_SHORT).show();
-                checkStopRestartButton();
+                checkLocationPermission();
             }
         });
     }
 
-    //TODO come up with better backup strategy
     private void startBackups() {
-        BackupScheduler.scheduleBackupJob(getActivity().getApplicationContext(), GlobalValues.BACKUP_TO_DRIVE);
-        BackupScheduler.scheduleBackupJob(getActivity().getApplicationContext(), GlobalValues.BACKUP_TO_LOCAL);
+        if (sharedPreferences.getBoolean(getString(R.string.drive_backup), false)) {
+            BackupScheduler.scheduleBackupJob(getActivity().getApplicationContext(), GlobalValues.BACKUP_TO_DRIVE);
+        }
+        if (sharedPreferences.getBoolean(getString(R.string.local_backup), false)) {
+            BackupScheduler.scheduleBackupJob(getActivity().getApplicationContext(), GlobalValues.BACKUP_TO_LOCAL);
+        }
     }
 
     // Note this is called after onResume() (Seems odd time to call it)
@@ -220,10 +269,8 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
                 args.putInt(GlobalValues.BAR_CHART_TYPE, GlobalValues.DISTANCE_VS_ELEVATION);
                 callBacks.onSelectedAction(args);
                 return true;
-
             case R.id.activity_logger_camera:
-
-                startCameraApp();
+               checkCameraPermission();
                 return true;
 
             default:
@@ -255,7 +302,7 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
     }
 
     private void formatLerStarts(LocationExerciseRecord ler) {
-        Utility.formatActivityStats(getActivity(), stats, ler);
+        statsUtil.formatActivityStats(stats, ler);
     }
 
     private void checkStopRestartButton() {
@@ -277,6 +324,108 @@ public class ActivityLoggerFragment extends ExerciseMasterFragment {
     private void displayCameraMenuIcon(boolean visible) {
         if (cameraMenuItem != null) {
             cameraMenuItem.setVisible(visible);
+        }
+    }
+
+    private void startTracking() {
+        gpsLocationManager.startTrackingLer(ler);
+        checkStopRestartButton();
+    }
+
+    private void checkLocationPermission() {
+        // Check if the Location permission has been granted
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            startTracking();
+        } else {
+            // Permission is missing and must be requested.
+            requestLocationPermission();
+        }
+    }
+
+    private void checkCameraPermission(){
+        // Check if the Location permission has been granted
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            startCameraApp();
+        } else {
+            // Permission is missing and must be requested.
+            requestCameraPermission();
+        }
+    }
+
+    /**
+     * Requests the {@link android.Manifest.permission#ACCESS_FINE_LOCATION} permission.
+     * If an additional rationale should be displayed, the user has to launch the request from
+     * a SnackBar that includes additional information.
+     */
+    private void requestLocationPermission() {
+        // Permission has not been granted and must be requested.
+        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
+            // Provide an additional rationale to the user if the permission was not granted
+            // and the user would benefit from additional context for the use of the permission.
+            // Display a SnackBar with a button to request the missing permission.
+            Snackbar.make(layoutView, "Location access is required to display to record GPS points.",
+                    Snackbar.LENGTH_INDEFINITE).setAction("OK", view -> {
+                // Request the permission
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        PERMISSION_REQUEST_LOCATION);
+            }).show();
+
+        } else {
+            Snackbar.make(layoutView,
+                    "Permission is not available. Requesting location permission.",
+                    Snackbar.LENGTH_SHORT).show();
+            // Request the permission. The result will be received in onRequestPermissionResult().
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSION_REQUEST_LOCATION);
+        }
+    }
+
+    private void requestCameraPermission() {
+        // Permission has not been granted and must be requested.
+        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.CAMERA)) {
+            // Provide an additional rationale to the user if the permission was not granted
+            // and the user would benefit from additional context for the use of the permission.
+            // Display a SnackBar with a button to request the missing permission.
+            Snackbar.make(layoutView, "Camera permission is required to use the camera.",
+                    Snackbar.LENGTH_INDEFINITE).setAction("OK", view -> {
+                        // Request the permission
+                        ActivityCompat.requestPermissions(getActivity(),
+                                new String[]{Manifest.permission.CAMERA},
+                                PERMISSION_REQUEST_CAMERA);
+                    }).show();
+        } else {
+            Snackbar.make(layoutView,
+                    "Permission is not available. Requesting camera permission.",
+                    Snackbar.LENGTH_SHORT).show();
+            // Request the permission. The result will be received in onRequestPermissionResult().
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA},
+                    PERMISSION_REQUEST_CAMERA);
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == PERMISSION_REQUEST_LOCATION) {
+            // Request for location permission.
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startTracking();
+            } else {
+                // Permission request was denied.
+                Snackbar.make(layoutView, "Location permission request was denied.",
+                        Snackbar.LENGTH_SHORT).show();
+            }
+        }
+        if (requestCode == PERMISSION_REQUEST_CAMERA) {
+            // Request for camera permission.
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startCameraApp();
+            } else {
+                // Permission request was denied.
+                Snackbar.make(layoutView, "Camera permission request was denied.",
+                        Snackbar.LENGTH_SHORT)
+                        .show();
+            }
         }
     }
 

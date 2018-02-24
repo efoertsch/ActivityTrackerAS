@@ -3,32 +3,46 @@ package com.fisincorporated.exercisetracker.ui.drive;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
-import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.drive.Drive;
 
 
-public class DriveSignOnActivity extends ExerciseMasterFragmentActivity {
+public class DriveSignOnActivity extends AppCompatActivity {
 
     private static final String TAG = DriveSignOnActivity.class.getSimpleName();
     private static final int REQUEST_CODE_SIGN_IN = 0;
     private GoogleSignInClient mGoogleSignInClient;
 
-    @Override
-    protected Fragment createFragment() {
-        return null;
+    protected ActionBar actionBar;
+    protected Toolbar toolbar;
+
+    protected int getLayoutResId() {
+        return R.layout.activity_masterdetail;
     }
 
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(getLayoutResId());
+
+        // implement this in superclass?
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         signIn();
     }
 
@@ -40,7 +54,6 @@ public class DriveSignOnActivity extends ExerciseMasterFragmentActivity {
         mGoogleSignInClient = buildGoogleSignInClient();
         startActivityForResult(mGoogleSignInClient.getSignInIntent(), REQUEST_CODE_SIGN_IN);
     }
-
 
     private GoogleSignInClient buildGoogleSignInClient() {
         GoogleSignInOptions signInOptions =

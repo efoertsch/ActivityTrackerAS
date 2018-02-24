@@ -4,9 +4,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.fisincorporated.exercisetracker.R;
-import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterFragmentActivity;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterActivity;
 
-public class SettingsActivity extends ExerciseMasterFragmentActivity {
+public class SettingsActivity extends ExerciseMasterActivity {
 
 
     @Override
@@ -20,5 +20,6 @@ public class SettingsActivity extends ExerciseMasterFragmentActivity {
         SettingsFragment settingsFragment = SettingsFragment.newInstance(getIntent().getExtras());
         return settingsFragment;
     }
+
 
 }

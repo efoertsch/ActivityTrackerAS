@@ -2,7 +2,6 @@ package com.fisincorporated.exercisetracker.ui.settings;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,15 +11,21 @@ import android.widget.ProgressBar;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerFragment;
 import com.fisincorporated.exercisetracker.utility.PhotoUtils;
+
+import javax.inject.Inject;
 
 import static android.app.Activity.RESULT_OK;
 
-public class ChangeStartupPhotoFragment extends Fragment {
+public class ChangeStartupPhotoFragment extends ExerciseDaggerFragment {
 
     private ImageView imageView;
     private ProgressBar progressBar;
     private String photoPath;
+
+    @Inject
+    public PhotoUtils photoUtils;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,13 +58,13 @@ public class ChangeStartupPhotoFragment extends Fragment {
         progressBar = (ProgressBar) view.findViewById(R.id.change_startup_photo_progressBar);
         Button button = (Button) view.findViewById(R.id.change_startup_photo_remove_button);
         button.setOnClickListener(v -> {
-            PhotoUtils.removeStorePhotoPreference();
+            photoUtils.removeStorePhotoPreference();
             checkForStartupPhoto();
         });
     }
 
     private void checkForStartupPhoto() {
-        String currentPhotoPath = PhotoUtils.getStartupPhotoPath();
+        String currentPhotoPath = photoUtils.getStartupPhotoPath();
         if (currentPhotoPath == null) {
             setPhotoDefaultImage();
         } else if (photoPath == null || !currentPhotoPath.equals(photoPath)) {
@@ -68,14 +73,14 @@ public class ChangeStartupPhotoFragment extends Fragment {
         }
     }
     private void loadUserPhoto(String photoPath) {
-        if (!PhotoUtils.loadPhotoToImageView(imageView, photoPath, progressBar, null)) {
+        if (!photoUtils.loadPhotoToImageView(imageView, photoPath, progressBar, null)) {
             setPhotoDefaultImage();
         }
     }
 
     private void setPhotoDefaultImage() {
         imageView.setImageResource(R.drawable.ic_photo_black_image);
-        PhotoUtils.removeStorePhotoPreference();
+        photoUtils.removeStorePhotoPreference();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -85,7 +90,7 @@ public class ChangeStartupPhotoFragment extends Fragment {
                 if (resultCode == RESULT_OK
                         && intent != null
                         && intent.getData() != null) {
-                    PhotoUtils.saveToInternalStorage(getActivity(), intent.getData());
+                    photoUtils.saveToInternalStorage(getActivity(), intent.getData());
                     checkForStartupPhoto();
                 }
             }

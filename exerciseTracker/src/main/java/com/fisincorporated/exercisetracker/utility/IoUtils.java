@@ -13,7 +13,7 @@ public class IoUtils {
     private static final int BUFFER_SIZE = 1024;
 
     private IoUtils() {
-        // Utility class.
+        // StatsUtil class.
     }
 
     public static int copy(InputStream input, OutputStream output) throws Exception {

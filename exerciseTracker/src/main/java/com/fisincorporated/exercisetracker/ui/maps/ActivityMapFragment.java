@@ -78,6 +78,9 @@ public class ActivityMapFragment extends ExerciseDaggerFragment implements Loade
     @Inject
     StatsUtil statsUtil;
 
+    @Inject
+    TrackerDatabaseHelper trackerDatabaseHelper;
+
 
     public static ActivityMapFragment newInstance(Bundle bundle) {
         ActivityMapFragment fragment = new ActivityMapFragment();
@@ -207,7 +210,7 @@ public class ActivityMapFragment extends ExerciseDaggerFragment implements Loade
 
     private void loadLocationExerciseRecord(long locationExerciseId){
         compositeDisposable = new CompositeDisposable();
-        Single<LocationExerciseRecord> lerSingleObservable = TrackerDatabaseHelper.getLerSingleObservable(locationExerciseId);
+        Single<LocationExerciseRecord> lerSingleObservable = trackerDatabaseHelper.getLerSingleObservable(locationExerciseId);
         compositeDisposable.add(lerSingleObservable.subscribeWith(new DisposableSingleObserver<LocationExerciseRecord>() {
             @Override
             public void onSuccess(LocationExerciseRecord ler) {
@@ -280,7 +283,7 @@ public class ActivityMapFragment extends ExerciseDaggerFragment implements Loade
     }
 
     private void plotRouteForMap(Cursor csr){
-        mapRoute = new MapRoute(displayUnits, photoUtils, statsUtil );
+        mapRoute = new MapRoute(displayUnits, photoUtils, statsUtil, trackerDatabaseHelper);
         mapRoute.setSupportMapFragment(supportMapFragment)
                 .setLocationExerciseRecord(ler)
                 .setMapType(mapType)

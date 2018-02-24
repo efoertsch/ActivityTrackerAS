@@ -252,8 +252,6 @@ public class ExerciseMaintenanceDetailFragment extends ExerciseDaggerFragment {
             if (!(exerciseExists = doesExerciseExist())) {
                 // save new Exercise
                 updateExerciseRecordFromScreen();
-                // new
-                // ExerciseDAO(getTrackerDataseHelper()).createExerciseRecord(exerciseRecord);
                 insertNewExcersiseRecord(exerciseRecord);
                 Toast.makeText(
                         getActivity(),

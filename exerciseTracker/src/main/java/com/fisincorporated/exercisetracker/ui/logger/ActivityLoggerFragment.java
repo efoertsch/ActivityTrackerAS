@@ -29,6 +29,7 @@ import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.ExrcsLocation;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
+import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerFragment;
 import com.fisincorporated.exercisetracker.ui.stats.StatsArrayAdapter;
 import com.fisincorporated.exercisetracker.utility.StatsUtil;
@@ -77,6 +78,9 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
 
     @Inject
     SharedPreferences sharedPreferences;
+
+    @Inject
+    TrackerDatabaseHelper trackerDatabaseHelper;
 
 
     private Observer<Object> publishRelayObserver = new Observer<Object>() {
@@ -188,7 +192,7 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
     }
 
     private void getCurrentLer() {
-        LocationExerciseDAO leDAO = new LocationExerciseDAO();
+        LocationExerciseDAO leDAO = trackerDatabaseHelper.getLocationExerciseDAO();
         ler = leDAO.loadLocationExerciseRecordById(ler.get_id());
     }
 

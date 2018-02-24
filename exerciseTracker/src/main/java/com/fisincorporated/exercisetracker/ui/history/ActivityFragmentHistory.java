@@ -10,6 +10,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,16 +25,16 @@ import com.fisincorporated.exercisetracker.database.GPSLogDAO;
 import com.fisincorporated.exercisetracker.database.LocationExerciseDAO;
 import com.fisincorporated.exercisetracker.database.SQLiteCursorLoader;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase;
+import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 import com.fisincorporated.exercisetracker.ui.filters.ExerciseFilterDialog;
 import com.fisincorporated.exercisetracker.ui.filters.LocationFilterDialog;
 import com.fisincorporated.exercisetracker.ui.logger.GPSLocationManager;
+import com.fisincorporated.exercisetracker.ui.master.ChangeToolbarEvent;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerFragment;
-import com.fisincorporated.exercisetracker.ui.master.IChangeToolbar;
 import com.fisincorporated.exercisetracker.ui.master.IHandleSelectedAction;
 import com.fisincorporated.exercisetracker.ui.utils.ActivityDialogFragment;
+import com.jakewharton.rxrelay2.PublishRelay;
 
-import java.lang.ref.WeakReference;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,10 +42,15 @@ import java.util.Iterator;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+
 //TODO replace CursorLoader
 //TODO convert to DataBinding
 
-public class ActivityFragmentHistory extends ExerciseDaggerFragment implements IHistoryListCallbacks, LoaderManager.LoaderCallbacks<Cursor> {
+public class ActivityFragmentHistory extends ExerciseDaggerFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    private static final String TAG = ActivityHistorySummary.class.getSimpleName();
 
     protected static final String EXERCISE_FILTER_DIALOG = "exercise_filter_dialog";
     protected static final String LOCATION_FILTER_DIALOG = "location_filter_dialog";
@@ -64,9 +70,6 @@ public class ActivityFragmentHistory extends ExerciseDaggerFragment implements I
 
     protected Cursor cursor = null;
 
-    //dateFormat used in subclasses
-    protected SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
     // Delete stuff
     private LocationExerciseDAO leDAO = null;
     private GPSLogDAO gpslrDAO = null;
@@ -75,29 +78,71 @@ public class ActivityFragmentHistory extends ExerciseDaggerFragment implements I
 
     // TODO convert callbacks to RxJava or use Bus
     private IHandleSelectedAction handleSelectedActionImpl;
-    private IChangeToolbar changeToolbarImpl;
 
     private HashMap<Long, Long> deleteList = new HashMap<>();
     private HashSet<Long> deleteSet = new HashSet<>();
 
     private MenuItem trashcan;
 
+    private Disposable publishRelayDisposable;
+
     @Inject
     GPSLocationManager gpsLocationManager;
 
-    public void setHandleSelectedActionImpl(IHandleSelectedAction handleSelectedActionImpl){
-        this.handleSelectedActionImpl = handleSelectedActionImpl;
-    }
+    @Inject
+    PublishRelay<Object> publishRelay;
 
-    public void setChangeToolbarImpl(IChangeToolbar changeToolbarImpl){
-        this.changeToolbarImpl = changeToolbarImpl;
+    @Inject
+    TrackerDatabaseHelper trackerDatabaseHelper;
+
+    private Observer<Object> publishRelayObserver = new Observer<Object>() {
+        @Override
+        public void onSubscribe(Disposable disposable) {
+            publishRelayDisposable = disposable;
+        }
+
+        @Override
+        public void onNext(Object o) {
+            if (o instanceof ActivityHistorySummary) {
+                ActivityHistorySummary activityHistorySummary = (ActivityHistorySummary) o;
+                switch (activityHistorySummary.getAction()) {
+                    case DISPLAY_MAP:
+                        displayMap(activityHistorySummary);
+                        break;
+                    case DISPLAY_STATS:
+                        displayStats(activityHistorySummary);
+                        break;
+                }
+                return;
+            }
+            if (o instanceof DeleteHistoryListEvent) {
+                deleteSet = ((DeleteHistoryListEvent) o).getDeleteSet();
+            }
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            // Big Trouble - PublishRelay should never throw
+            Log.e(TAG, "PublishRelay throwing error:" + e.toString());
+            // TODO Do something more
+        }
+
+        @Override
+        public void onComplete() {
+            // Big Trouble - PublishRelay should never call
+            Log.e(TAG, "PublishRelay onComplete Thrown");
+            // TODO Do something more
+        }
+    };
+
+    public void setHandleSelectedActionImpl(IHandleSelectedAction handleSelectedActionImpl) {
+        this.handleSelectedActionImpl = handleSelectedActionImpl;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         handleSelectedActionImpl = null;
-        changeToolbarImpl = null;
     }
 
     @Override
@@ -117,7 +162,7 @@ public class ActivityFragmentHistory extends ExerciseDaggerFragment implements I
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-         setHasOptionsMenu(true);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -130,6 +175,9 @@ public class ActivityFragmentHistory extends ExerciseDaggerFragment implements I
         recyclerView = (RecyclerView) view.findViewById(R.id.activity_history_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
+        activityHistoryItemAdapter = new ActivityHistoryItemAdapter(getContext(), publishRelay);
+        recyclerView.setAdapter(activityHistoryItemAdapter);
+
         return view;
     }
 
@@ -148,12 +196,22 @@ public class ActivityFragmentHistory extends ExerciseDaggerFragment implements I
         if (recyclerView != null && activityHistoryItemAdapter != null) {
             recyclerView.setAdapter(activityHistoryItemAdapter);
         }
+        publishRelay.subscribe(publishRelayObserver);
     }
 
     public void onResume() {
         super.onResume();
         displayTrashCanIfAnyToBeDeleted();
         getLoaderManager().restartLoader(0, null, this);
+    }
+
+    @Override
+    public void onStop() {
+        if (publishRelayDisposable != null) {
+            publishRelayDisposable.dispose();
+        }
+        publishRelayDisposable = null;
+        super.onStop();
     }
 
     @Override
@@ -251,7 +309,7 @@ public class ActivityFragmentHistory extends ExerciseDaggerFragment implements I
         }
     }
 
-    // Note that sortOrder must match
+    // Note that sortOrder must match corresponding column in sql query
     public boolean setSortOrder(MenuItem item) {
         boolean result = false;
         switch (item.getItemId()) {
@@ -292,7 +350,6 @@ public class ActivityFragmentHistory extends ExerciseDaggerFragment implements I
                 break;
         }
         if (result)
-            // getActivitiesListCursor(sortOrder);
             getLoaderManager().restartLoader(0, null, this);
         return result;
     }
@@ -302,8 +359,9 @@ public class ActivityFragmentHistory extends ExerciseDaggerFragment implements I
         getDatabaseSetup();
         databaseHelper.createActivitySQL(query, exerciseSelections, locationSelections, sortOrder);
         cursor = database.rawQuery(query.toString(), null);
-        if (cursor.getCount() == 0)
+        if (cursor.getCount() == 0) {
             return null;
+        }
         return cursor;
     }
 
@@ -335,12 +393,12 @@ public class ActivityFragmentHistory extends ExerciseDaggerFragment implements I
 
         if (deleteSet.size() > 0) {
             trashcan.setVisible(true);
-            changeToolbarImpl.setToolbarColor(getResources().getColor(R.color.check_circle_blue_grey));
-            changeToolbarImpl.setToolbarTitle(getString(R.string.delete_activity_n, deleteSet.size()));
+            publishRelay.accept(new ChangeToolbarEvent(ChangeToolbarEvent.EVENT.SET_TOOLBAR_COLOR).setToolbarColor(getResources().getColor(R.color.check_circle_blue_grey)));
+            publishRelay.accept(new ChangeToolbarEvent(ChangeToolbarEvent.EVENT.SET_TOOLBAR_TITLE).setToolbarTitle(getString(R.string.delete_activity_n, deleteSet.size())));
         } else {
-           trashcan.setVisible(false);
-           changeToolbarImpl.resetToolbarColorToDefault();
-           changeToolbarImpl.resetToolbarTitleToDefault();
+            trashcan.setVisible(false);
+            publishRelay.accept(new ChangeToolbarEvent(ChangeToolbarEvent.EVENT.RESET_TOOLBAR_COLOR_TO_DEFAULT));
+            publishRelay.accept(new ChangeToolbarEvent(ChangeToolbarEvent.EVENT.RESET_TOOLBAR_TITLE_TO_DEFAULT));
         }
     }
 
@@ -399,10 +457,10 @@ public class ActivityFragmentHistory extends ExerciseDaggerFragment implements I
         // May want to delete activity that is currently running
         long currentLerId = gpsLocationManager.getCurrentLer();
         if (leDAO == null) {
-            leDAO = new LocationExerciseDAO();
+            leDAO = trackerDatabaseHelper.getLocationExerciseDAO();
         }
         if (gpslrDAO == null) {
-            gpslrDAO = new GPSLogDAO();
+            gpslrDAO = trackerDatabaseHelper.getGPSLogDAO();
         }
         database.beginTransaction();
         try {
@@ -428,27 +486,6 @@ public class ActivityFragmentHistory extends ExerciseDaggerFragment implements I
         }
     }
 
-    // start IHistoryListCallbacks
-    public boolean isSetToDelete(ActivityHistorySummary activityHistorySummary) {
-        return deleteSet.contains(activityHistorySummary.getRow_id());
-    }
-
-    public void deleteThisActivity(ActivityHistorySummary activityHistorySummary) {
-        Long id = activityHistorySummary.getRow_id();
-        deleteSet.add(id);
-        displayTrashCanIfAnyToBeDeleted();
-    }
-
-    public void removeFromDeleteList(ActivityHistorySummary activityHistorySummary) {
-        Long id = activityHistorySummary.getRow_id();
-        if (deleteSet.contains(activityHistorySummary.getRow_id())) {
-            deleteSet.remove(id);
-        }
-        displayTrashCanIfAnyToBeDeleted();
-    }
-    // end IHistoryListCallbacks
-
-
     // LoaderCallBacks interface methods
     // #1
     // Note this gets called before onResume
@@ -462,10 +499,6 @@ public class ActivityFragmentHistory extends ExerciseDaggerFragment implements I
     // #2
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        if (activityHistoryItemAdapter == null) {
-            activityHistoryItemAdapter = new ActivityHistoryItemAdapter(getContext(), new WeakReference<IHistoryListCallbacks>(this));
-            recyclerView.setAdapter(activityHistoryItemAdapter);
-        }
         activityHistoryItemAdapter.swapCursor(cursor);
     }
 
@@ -489,7 +522,6 @@ public class ActivityFragmentHistory extends ExerciseDaggerFragment implements I
         return bundle;
     }
 
-    //start IHistoryCallbacks
     public void displayMap(ActivityHistorySummary activityHistorySummary) {
         Toast.makeText(getContext(), getContext().getResources().getString(R.string.displaying_the_map_may_take_a_moment),
                 Toast.LENGTH_SHORT).show();
@@ -501,7 +533,7 @@ public class ActivityFragmentHistory extends ExerciseDaggerFragment implements I
         handleSelectedActionImpl.onSelectedAction(args);
     }
 
-    public void displayStats(ActivityHistorySummary activityHistorySummary, int position) {
+    public void displayStats(ActivityHistorySummary activityHistorySummary) {
         Bundle args = new Bundle();
         args.putLong(TrackerDatabase.LocationExercise._ID, activityHistorySummary.getRow_id());
         args.putString(GlobalValues.TITLE, activityHistorySummary.createActivityTitle());
@@ -509,11 +541,11 @@ public class ActivityFragmentHistory extends ExerciseDaggerFragment implements I
         args.putInt(GlobalValues.SORT_ORDER, sortOrder);
         args.putStringArrayList(GlobalValues.EXERCISE_FILTER_PHRASE, exerciseSelections);
         args.putStringArrayList(GlobalValues.LOCATION_FILTER_PHRASE, locationSelections);
-        args.putInt(GlobalValues.CURSOR_POSITION, position);
+        args.putInt(GlobalValues.CURSOR_POSITION, activityHistorySummary.getPosition());
         args.putInt(GlobalValues.DISPLAY_TARGET, GlobalValues.DISPLAY_STATS);
         handleSelectedActionImpl.onSelectedAction(args);
 
     }
-    //end IHistoryCallbacks
+
 
 }

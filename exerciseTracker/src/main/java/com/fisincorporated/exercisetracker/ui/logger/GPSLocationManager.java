@@ -28,6 +28,7 @@ import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
+import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 import com.fisincorporated.exercisetracker.utility.StatsUtil;
 import com.jakewharton.rxrelay2.PublishRelay;
 
@@ -78,8 +79,9 @@ public class GPSLocationManager {
 
     private StatsUtil statsUtil;
     private PublishRelay<Object> publishRelay;
+    private TrackerDatabaseHelper trackerDatabaseHelper;
 
-    public GPSLocationManager(Context appContext, StatsUtil statsUtil, PublishRelay<Object> publishRelay) {
+    public GPSLocationManager(Context appContext, StatsUtil statsUtil, PublishRelay<Object> publishRelay, TrackerDatabaseHelper trackerDatabaseHelper) {
         sAppContext = appContext;
         this.statsUtil = statsUtil;
         this.publishRelay = publishRelay;
@@ -95,11 +97,11 @@ public class GPSLocationManager {
 
         }
         if (sLeDAO == null)
-            sLeDAO = new LocationExerciseDAO();
+            sLeDAO = trackerDatabaseHelper.getLocationExerciseDAO();
         if (sGpslrDAO == null)
-            sGpslrDAO = new GPSLogDAO();
+            sGpslrDAO = trackerDatabaseHelper.getGPSLogDAO();
         if (sEDao == null) {
-            sEDao = new ExerciseDAO();
+            sEDao = trackerDatabaseHelper.getExerciseDAO();
         }
     }
 

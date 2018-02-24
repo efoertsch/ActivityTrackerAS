@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,10 +15,23 @@ import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.ui.charts.DistancePerExerciseFragment;
 import com.fisincorporated.exercisetracker.ui.charts.GraphActivity;
+import com.fisincorporated.exercisetracker.ui.master.ChangeToolbarEvent;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterActivity;
-import com.fisincorporated.exercisetracker.ui.master.IChangeToolbar;
+import com.jakewharton.rxrelay2.PublishRelay;
 
-public class ActivityHistory extends ExerciseMasterActivity implements IChangeToolbar {
+import javax.inject.Inject;
+
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+
+public class ActivityHistory extends ExerciseMasterActivity {
+
+    private static final String TAG = ActivityHistory.class.getSimpleName();
+
+    @Inject
+    PublishRelay<Object> publishRelay;
+    private Disposable publishRelayDisposable;
+
     ActivityFragmentHistory alf = null;
     Menu myMenu = null;
     String originalTitle = "";
@@ -31,25 +45,40 @@ public class ActivityHistory extends ExerciseMasterActivity implements IChangeTo
 
     @Override
     protected Fragment createFragment() {
-         alf = new ActivityFragmentHistory();
-
-         return alf;
+        alf = new ActivityFragmentHistory();
+        return alf;
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         alf.setHandleSelectedActionImpl(this);
-        alf.setChangeToolbarImpl(this);
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
-        alf.setChangeToolbarImpl(null);
         alf.setHandleSelectedActionImpl(null);
 
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (publishRelay != null) {
+            publishRelay.subscribe(publishRelayObserver);
+        }
+    }
+
+    @Override
+    public void onStop() {
+        if (publishRelayDisposable != null) {
+            publishRelayDisposable.dispose();
+        }
+        publishRelayDisposable = null;
+        super.onStop();
+    }
+
     // added for tablet
     @Override
     protected int getLayoutResId() {
@@ -106,7 +135,7 @@ public class ActivityHistory extends ExerciseMasterActivity implements IChangeTo
     public void showChart(int chartType) {
         Bundle bundle = alf.getSortFilterValues();
         bundle.putInt(GlobalValues.BAR_CHART_TYPE, chartType);
-        Fragment newDetail = null;
+        Fragment newDetail;
         if (findViewById(R.id.detailFragmentContainer) == null) {
             Intent intent = new Intent(this, GraphActivity.class);
             xferBundleToIntent(intent, bundle);
@@ -128,28 +157,51 @@ public class ActivityHistory extends ExerciseMasterActivity implements IChangeTo
         }
     }
 
-    @Override
-    public void setToolbarColor(int color) {
-        if (actionBar != null) {
-            actionBar.setBackgroundDrawable(new ColorDrawable(color));
+    private Observer<Object> publishRelayObserver = new Observer<Object>() {
+        @Override
+        public void onSubscribe(Disposable disposable) {
+            publishRelayDisposable = disposable;
         }
 
-    }
+        @Override
+        public void onNext(Object o) {
+            if (o instanceof ChangeToolbarEvent) {
+                ChangeToolbarEvent changeToolbarEvent = (ChangeToolbarEvent) o;
+                switch (changeToolbarEvent.getEvent()) {
+                    case SET_TOOLBAR_COLOR:
+                        if (actionBar != null) {
+                            actionBar.setBackgroundDrawable(new ColorDrawable(changeToolbarEvent.getColor()));
+                        }
+                        break;
+                    case RESET_TOOLBAR_COLOR_TO_DEFAULT:
+                        setActionBarBackgroundColorToDefault();
+                        break;
+                    case SET_TOOLBAR_TITLE:
+                        if (actionBar != null) {
+                            setActivityTitle(changeToolbarEvent.getTitle());
+                        }
+                        break;
+                    case RESET_TOOLBAR_TITLE_TO_DEFAULT:
+                        setActivityTitle(originalTitle);
+                        break;
 
-    @Override
-    public void resetToolbarColorToDefault() {
-        setActionBarBackgroundColorToDefault();
+                }
+            }
+        }
 
-    }
+        @Override
+        public void onError(Throwable e) {
+            // Big Trouble - PublishRelay should never throw
+            Log.e(TAG, "PublishRelay throwing error:" + e.toString());
+            // TODO Do something more
+        }
 
-    @Override
-    public void setToolbarTitle(String title) {
-        setActivityTitle(title);
-    }
+        @Override
+        public void onComplete() {
+            // Big Trouble - PublishRelay should never call
+            Log.e(TAG, "PublishRelay onComplete Thrown");
+            // TODO Do something more
+        }
+    };
 
-    @Override
-    public void resetToolbarTitleToDefault() {
-        setActivityTitle(originalTitle);
-
-    }
 }

@@ -4,10 +4,10 @@ package com.fisincorporated.exercisetracker.ui.media;
 
 import java.util.ArrayList;
 
-public class MedialDetailMsg {
+public class MedialDetailEvent {
     private ArrayList<MediaDetail> mediaDetails;
 
-    public MedialDetailMsg(ArrayList<MediaDetail> mediaDetails) {
+    public MedialDetailEvent(ArrayList<MediaDetail> mediaDetails) {
         this.mediaDetails = mediaDetails;
     }
 

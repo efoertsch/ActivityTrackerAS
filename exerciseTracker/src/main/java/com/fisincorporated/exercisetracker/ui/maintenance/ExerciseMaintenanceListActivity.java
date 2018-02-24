@@ -13,6 +13,7 @@ import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.ExerciseDAO;
 import com.fisincorporated.exercisetracker.database.ExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
+import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerActivity;
 import com.jakewharton.rxrelay2.PublishRelay;
 
@@ -30,6 +31,9 @@ public class ExerciseMaintenanceListActivity extends ExerciseDaggerActivity  {
     @Inject
     PublishRelay<Object> publishRelay;
 
+    @Inject
+    TrackerDatabaseHelper trackerDatabaseHelper;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setActivityTitle(R.string.exercise_list);
@@ -43,9 +47,9 @@ public class ExerciseMaintenanceListActivity extends ExerciseDaggerActivity  {
 
         @Override
         public void onNext(Object o) {
-            if (o instanceof ExerciseSelectedMsg) {
-                ExerciseSelectedMsg exerciseSelectedMsg = (ExerciseSelectedMsg) o;
-                onExerciseSelected(exerciseSelectedMsg.getExerciseId(), exerciseSelectedMsg.getPosition());
+            if (o instanceof ExerciseSelectedEvent) {
+                ExerciseSelectedEvent exerciseSelectedEvent = (ExerciseSelectedEvent) o;
+                onExerciseSelected(exerciseSelectedEvent.getExerciseId(), exerciseSelectedEvent.getPosition());
 
             }
         }
@@ -111,7 +115,7 @@ public class ExerciseMaintenanceListActivity extends ExerciseDaggerActivity  {
             Fragment oldDetail = fm.findFragmentById(R.id.detailFragmentContainer);
             Bundle args = new Bundle();
             args.putParcelable(Exercise.EXERCISE_TABLE,
-                    new ExerciseDAO().loadExerciseRecordById(exerciseId));
+                    trackerDatabaseHelper.getExerciseDAO().loadExerciseRecordById(exerciseId));
             args.putInt(GlobalValues.CURSOR_POSITION, position);
             newDetail = ExerciseMaintenanceDetailFragment.newInstance(args);
             if (oldDetail != null) {

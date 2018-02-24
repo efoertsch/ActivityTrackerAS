@@ -81,10 +81,6 @@ public class ExerciseRecord implements Parcelable {
         this.logInterval = logInterval;
     }
 
-    public int compareTo(LocationRecord other) {
-        return (int) ((this._id) - (other.get_id()));
-    }
-
     public int getLogDetail() {
         return logDetail;
     }

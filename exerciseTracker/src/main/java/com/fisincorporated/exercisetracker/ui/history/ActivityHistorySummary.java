@@ -12,11 +12,18 @@ import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExer
 
 public class ActivityHistorySummary {
 
+    public enum ACTIVITY_HISTORY_ACTION {
+        DISPLAY_STATS,
+        DISPLAY_MAP}
+
+    private ACTIVITY_HISTORY_ACTION action;
     private long row_id;
     private String exercise;
     private String location;
     private String activityDate;
     private String description;
+
+    private int position;
 
     private ActivityHistorySummary(){}
 
@@ -30,6 +37,15 @@ public class ActivityHistorySummary {
         activityHistorySummary.description = cursor.getString(cursor.getColumnIndex(LocationExercise.DESCRIPTION));
 
         return activityHistorySummary;
+    }
+
+    public ACTIVITY_HISTORY_ACTION getAction() {
+        return action;
+    }
+
+    public ActivityHistorySummary setAction(ACTIVITY_HISTORY_ACTION action) {
+        this.action = action;
+        return this;
     }
 
     public long getRow_id() {
@@ -54,5 +70,14 @@ public class ActivityHistorySummary {
 
     public String createActivityTitle(){
         return exercise + "@" + location + " " + activityDate;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public ActivityHistorySummary setPosition(int position) {
+        this.position = position;
+        return this;
     }
 }

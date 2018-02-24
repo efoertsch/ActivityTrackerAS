@@ -3,6 +3,7 @@ package com.fisincorporated.exercisetracker.database;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.util.Log;
 
@@ -15,8 +16,8 @@ public class ExerciseDAO extends BaseDAO {
 
     private Cursor csr;
 
-    public ExerciseDAO() {
-        super();
+    public ExerciseDAO(SQLiteDatabase database) {
+        super(database);
     }
 
     /**
@@ -36,9 +37,6 @@ public class ExerciseDAO extends BaseDAO {
         values.put(Exercise.MIN_DISTANCE_TO_LOG, Float.toString(exerciser.getMinDistanceToLog()));
         values.put(Exercise.PIN_EVERY_X_MILES, Integer.toString((exerciser.getPinEveryXMiles())));
 
-        if (!dbIsOpen) {
-            open();
-        }
         rowId = database.insert(Exercise.EXERCISE_TABLE, null, values);
         exerciser.set_id(rowId);
         return exerciser;
@@ -71,19 +69,13 @@ public class ExerciseDAO extends BaseDAO {
         values.put(Exercise.MIN_DISTANCE_TO_LOG, Float.toString(exerciser.getMinDistanceToLog()));
         values.put(Exercise.PIN_EVERY_X_MILES, Integer.toString((exerciser.getPinEveryXMiles())));
 
-        if (!dbIsOpen) {
-            open();
-        }
+
         database.update(Exercise.EXERCISE_TABLE, values, " _id = ?",
                 new String[]{rowId.toString()});
     }
 
     public int deleteExercise(Long rowId) {
         int count = 0;
-        if (!dbIsOpen) {
-            open();
-        }
-
         database.delete(Exercise.EXERCISE_TABLE, Exercise._ID + " = " + rowId,
                 null);
         return count;
@@ -99,9 +91,6 @@ public class ExerciseDAO extends BaseDAO {
 
     public int deleteByExerciseRowid(long exerciseRowid) {
         int count = 0;
-        if (!dbIsOpen) {
-            open();
-        }
         count = database.delete(Exercise.EXERCISE_TABLE, Exercise._ID + " = "
                 + exerciseRowid, null);
         return count;
@@ -113,10 +102,6 @@ public class ExerciseDAO extends BaseDAO {
                 new String[]{Exercise._ID, Exercise.EXERCISE, Exercise.LOG_INTERVAL, Exercise.DEFAULT_LOG_INTERVAL, Exercise.LOG_DETAIL
                         , Exercise.TIMES_USED, Exercise.MIN_DISTANCE_TO_LOG, Exercise.ELEVATION_IN_DIST_CALCS, Exercise.PIN_EVERY_X_MILES}
                 , null, null, null, null, Exercise.DEFAULT_SORT_ORDER);
-
-        if (!dbIsOpen) {
-            open();
-        }
 
         if (csr.getCount() == 0) {
             return exerciseArray;
@@ -149,11 +134,6 @@ public class ExerciseDAO extends BaseDAO {
         try {
             SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
             queryBuilder.setTables(Exercise.EXERCISE_TABLE);
-
-            // xxxxx come up with better method of open/closing cursors.
-            if (!dbIsOpen) {
-                open();
-            }
 
             // run the query since it's all ready to go
             csr = queryBuilder.query(database,
@@ -267,9 +247,6 @@ public class ExerciseDAO extends BaseDAO {
     }
 
     public void updateTimesUsed(double id, int value) {
-        if (!dbIsOpen) {
-            open();
-        }
         database.execSQL("update " + Exercise.EXERCISE_TABLE
                 + " set " + Exercise.TIMES_USED + " = " + Exercise.TIMES_USED + " + " + value
                 + " where " + Exercise._ID + " = " + id);

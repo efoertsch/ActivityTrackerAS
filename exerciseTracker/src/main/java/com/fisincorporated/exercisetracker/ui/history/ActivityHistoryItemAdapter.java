@@ -15,35 +15,37 @@ import android.widget.TextView;
 
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.ui.utils.RecyclerViewCursorAdapter;
+import com.jakewharton.rxrelay2.PublishRelay;
 
-import java.lang.ref.WeakReference;
+import java.util.HashSet;
 
 import static android.view.animation.Animation.AnimationListener;
 
 public class ActivityHistoryItemAdapter extends RecyclerViewCursorAdapter<ActivityHistoryItemAdapter.ItemHolder> {
 
     private Context context;
-    private WeakReference<IHistoryListCallbacks> callbacks;
+    private PublishRelay<Object> publishRelay;
+    private HashSet<Long> deleteSet = new HashSet<>();
 
-    public ActivityHistoryItemAdapter(Context context, WeakReference<IHistoryListCallbacks> historyListCallbacks) {
+    ActivityHistoryItemAdapter(Context context, PublishRelay publishRelay) {
         super(null);
         this.context = context;
-        this.callbacks = historyListCallbacks;
+        this.publishRelay = publishRelay;
     }
 
     @Override
     public ItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.activity_history_row, parent, false);
-        return new ItemHolder(view, callbacks);
+        return new ItemHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ItemHolder holder, Cursor cursor) {
         holder.bindItem(ActivityHistorySummary.getFromCursor(cursor));
+        deleteSet.clear();
     }
 
     public class ItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
-        private WeakReference<IHistoryListCallbacks> viewCallbacks;
         private View summaryTextView;
         private TextView tvActivity;
         private TextView tvLocation;
@@ -53,9 +55,8 @@ public class ActivityHistoryItemAdapter extends RecyclerViewCursorAdapter<Activi
         private ImageView imgvDeleteCheckmark;
         private boolean ignoreClick = false;
 
-        public ItemHolder(View itemView, WeakReference<IHistoryListCallbacks> callbacks) {
+        ItemHolder(View itemView) {
             super(itemView);
-            viewCallbacks = callbacks;
             summaryTextView = itemView.findViewById(R.id.activity_row_summary_layout);
             tvActivity = (TextView) itemView.findViewById(R.id.activity_history_row_activity);
             tvLocation = (TextView) itemView.findViewById(R.id.activity_history_row_location);
@@ -68,7 +69,7 @@ public class ActivityHistoryItemAdapter extends RecyclerViewCursorAdapter<Activi
             summaryTextView.setOnClickListener(this);
         }
 
-        public void bindItem(final ActivityHistorySummary activityHistorySummary) {
+        void bindItem(final ActivityHistorySummary activityHistorySummary) {
             summaryTextView.setTag(activityHistorySummary);
             summaryTextView.setOnClickListener(this);
             tvActivity.setText(activityHistorySummary.getExercise());
@@ -77,7 +78,7 @@ public class ActivityHistoryItemAdapter extends RecyclerViewCursorAdapter<Activi
             tvDescription.setText(activityHistorySummary.getDescription());
             imgbtnMap.setTag(activityHistorySummary);
             imgvDeleteCheckmark.setTag(activityHistorySummary);
-            if (callbacks.get().isSetToDelete(activityHistorySummary)){
+            if (deleteSet.contains(activityHistorySummary.getRow_id())){
                 imgbtnMap.setVisibility(View.GONE);
                 imgvDeleteCheckmark.setVisibility(View.VISIBLE);
             } else {
@@ -92,10 +93,11 @@ public class ActivityHistoryItemAdapter extends RecyclerViewCursorAdapter<Activi
             if (!ignoreClick) {
                 switch (v.getId()) {
                     case R.id.activity_row_summary_layout:
-                        viewCallbacks.get().displayStats((ActivityHistorySummary) v.getTag(), getAdapterPosition());
+                        ActivityHistorySummary activityHistorySummary = ((ActivityHistorySummary) v.getTag()).setPosition(getAdapterPosition());
+                        publishRelay.accept(activityHistorySummary.setAction(ActivityHistorySummary.ACTIVITY_HISTORY_ACTION.DISPLAY_STATS));
                         break;
                     case R.id.activity_history_row_btnShowMap:
-                        viewCallbacks.get().displayMap((ActivityHistorySummary) v.getTag());
+                        publishRelay.accept(((ActivityHistorySummary) v.getTag()).setAction(ActivityHistorySummary.ACTIVITY_HISTORY_ACTION.DISPLAY_MAP));
                         break;
                 }
             }
@@ -112,13 +114,14 @@ public class ActivityHistoryItemAdapter extends RecyclerViewCursorAdapter<Activi
             switch (v.getId()) {
                 case R.id.activity_row_summary_layout:
                     // toggle to delete/undelete activity
-                    if (!callbacks.get().isSetToDelete(activityHistorySummary)) {
-                        callbacks.get().deleteThisActivity(activityHistorySummary);
+                    if (!deleteSet.contains(activityHistorySummary.getRow_id())) {
+                        deleteSet.add(activityHistorySummary.getRow_id());
                         crossFade(imgbtnMap, R.anim.rotate_fade_out, imgvDeleteCheckmark, R.anim.rotate_fade_in);
                     } else {
-                        callbacks.get().removeFromDeleteList(activityHistorySummary);
+                        deleteSet.remove(activityHistorySummary.getRow_id());
                         crossFade(imgvDeleteCheckmark, R.anim.rotate_fade_out, imgbtnMap, R.anim.rotate_fade_in);
                     }
+                    publishRelay.accept(new DeleteHistoryListEvent(deleteSet));
                     // longclick also fires click event so bypass click event
                     ignoreClick = true;
                     break;

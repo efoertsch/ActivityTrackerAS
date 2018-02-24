@@ -52,6 +52,7 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
     private DisplayUnits displayUnits;
     private PhotoUtils photoUtils;
     private StatsUtil statsUtil;
+    private TrackerDatabaseHelper trackerDatabaseHelper;
 
     private SupportMapFragment supportMapFragment;
     private Context context;
@@ -87,13 +88,12 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @Inject
-    public MapRoute(DisplayUnits displayUnits, PhotoUtils photoUtils, StatsUtil statsUtil) {
+    public MapRoute(DisplayUnits displayUnits, PhotoUtils photoUtils, StatsUtil statsUtil, TrackerDatabaseHelper trackerDatabaseHelper) {
         this.displayUnits = displayUnits;
         this.photoUtils = photoUtils;
         this.statsUtil = statsUtil;
+        this.trackerDatabaseHelper = trackerDatabaseHelper;
     }
-
-
 
     public MapRoute setSupportMapFragment(SupportMapFragment supportMapFragment) {
         this.supportMapFragment = supportMapFragment;
@@ -146,7 +146,7 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
     }
 
     public void getExerciseRecord() {
-        Single<ExerciseRecord> observable = TrackerDatabaseHelper.getErSingleObservable(ler.getExerciseId());
+        Single<ExerciseRecord> observable = trackerDatabaseHelper.getErSingleObservable(ler.getExerciseId());
         compositeDisposable.add(observable.subscribe(exerciseRecord -> {
                     er = exerciseRecord;
                     getPhotosTakenFromStartToFinish();

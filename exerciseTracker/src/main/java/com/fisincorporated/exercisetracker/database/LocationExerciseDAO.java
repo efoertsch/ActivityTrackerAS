@@ -3,6 +3,7 @@ package com.fisincorporated.exercisetracker.database;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.util.Log;
 
@@ -15,8 +16,8 @@ import java.sql.Timestamp;
 
 public class LocationExerciseDAO extends BaseDAO {
 
-	public LocationExerciseDAO() {
-		super();
+	public LocationExerciseDAO(SQLiteDatabase database) {
+		super(database);
 	}
 
 	/**
@@ -96,9 +97,6 @@ public class LocationExerciseDAO extends BaseDAO {
 		}
 
 		try {
-			if (!dbIsOpen) {
-				open();
-			}
 			rowId = database.insert(LocationExercise.LOCATION_EXERCISE_TABLE,
 					null, values);
 			ler.set_id(rowId);
@@ -191,9 +189,6 @@ public class LocationExerciseDAO extends BaseDAO {
 		}
 
 		try {
-			if (!dbIsOpen) {
-				open();
-			}
 			database.update(LocationExercise.LOCATION_EXERCISE_TABLE, values,
 					" _id = ?", new String[] { rowId.toString() });
 		} catch (SQLException sqle) {
@@ -211,10 +206,6 @@ public class LocationExerciseDAO extends BaseDAO {
 	public int deleteLocationExercise(Long rowId) {
 		int count = 0;
 		try {
-			if (!dbIsOpen) {
-				open();
-			}
-
 			count = database.delete(LocationExercise.LOCATION_EXERCISE_TABLE,
 					LocationExercise._ID + " = " + rowId, null);
 		} catch (SQLException sqle) {
@@ -240,11 +231,6 @@ public class LocationExerciseDAO extends BaseDAO {
 		try {
 			SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 			queryBuilder.setTables(LocationExercise.LOCATION_EXERCISE_TABLE);
-
-			// xxxxx come up with better method of open/closing cursors.
-			if (!dbIsOpen) {
-				open();
-			}
 
 			// run the query since it's all ready to go
 			csr = queryBuilder.query(database,
@@ -436,12 +422,6 @@ public class LocationExerciseDAO extends BaseDAO {
 		try {
 			SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 			queryBuilder.setTables(ExrcsLocation.LOCATION_TABLE);
-
-			// xxxxx come up with better method of open/closing cursors.
-			if (!dbIsOpen) {
-				open();
-			}
-
 			// run the query since it's all ready to go
 			csr = queryBuilder.query(database,
 					new String[] { ExrcsLocation.LOCATION }, "  _id = ?",
@@ -478,12 +458,6 @@ public class LocationExerciseDAO extends BaseDAO {
 		try {
 			SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 			queryBuilder.setTables(Exercise.EXERCISE_TABLE);
-
-			// xxxxx come up with better method of open/closing cursors.
-			if (!dbIsOpen) {
-				open();
-			}
-
 			// run the query since it's all ready to go
 			csr = queryBuilder.query(database, new String[] { Exercise.EXERCISE },
 					"  _id = ?", new String[] { exerciseId + "" }, null, null, null);

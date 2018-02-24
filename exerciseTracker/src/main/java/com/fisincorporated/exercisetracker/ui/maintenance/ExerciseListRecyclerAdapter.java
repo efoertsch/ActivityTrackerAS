@@ -58,7 +58,7 @@ public class ExerciseListRecyclerAdapter extends RecyclerViewCursorAdapter<Exerc
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.exercise_recycler_row_exercise:
-                    publishRelay.accept(new ExerciseSelectedMsg((Integer) v.getTag(), getAdapterPosition()));
+                    publishRelay.accept(new ExerciseSelectedEvent((Integer) v.getTag(), getAdapterPosition()));
 
                     break;
             }

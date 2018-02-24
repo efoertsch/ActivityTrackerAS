@@ -136,9 +136,27 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
         super.onOpen(db);
     }
 
+
+    public ExerciseDAO getExerciseDAO(){
+        return new ExerciseDAO(database);
+    }
+
+    public ExrcsLocationDAO getExrcsLocationDAO(){
+        return new ExrcsLocationDAO(database);
+    }
+
+    public GPSLogDAO getGPSLogDAO(){
+        return new GPSLogDAO(database);
+    }
+
+    public LocationExerciseDAO getLocationExerciseDAO(){
+        return new LocationExerciseDAO(database);
+    }
+
+
     // Turn all methods into static
     private void loadExerciseTableIfNeeded(SQLiteDatabase db) {
-        Cursor cursor = null;
+        Cursor cursor;
         Log.i(GlobalValues.LOG_TAG,
                 "TrackerDatabaseHelper.loadExerciseTableIfNeeded db version: "
                         + db.getVersion());
@@ -613,7 +631,7 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
 
     public ArrayList<String> loadExerciseSelectionArray() {
         Cursor csr = null;
-        ArrayList<String> selections = new ArrayList<String>();
+        ArrayList<String> selections = new ArrayList<>();
         try {
             csr = getDatabase().query(Exercise.EXERCISE_TABLE,
                     new String[]{Exercise.EXERCISE}, null, null, null, null,
@@ -668,10 +686,10 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public static Single<LocationExerciseRecord> getLerSingleObservable(Long locationExerciseId) {
+    public  Single<LocationExerciseRecord> getLerSingleObservable(Long locationExerciseId) {
         return Single.create(emitter -> {
             try {
-                LocationExerciseRecord ler = new LocationExerciseDAO().loadLocationExerciseRecordById(locationExerciseId);
+                LocationExerciseRecord ler = new LocationExerciseDAO(database).loadLocationExerciseRecordById(locationExerciseId);
                 if (ler.get_id() > 0) {
                     emitter.onSuccess(ler);
                 } else {
@@ -683,15 +701,15 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
         });
     }
 
-    public static Single<ExerciseRecord> getErSingleObservable(Long exerciseId) {
+    public  Single<ExerciseRecord> getErSingleObservable(Long exerciseId) {
         return Single.create(emitter -> {
-            emitter.onSuccess(new ExerciseDAO().loadExerciseRecordById(exerciseId));
+            emitter.onSuccess(new ExerciseDAO(database).loadExerciseRecordById(exerciseId));
         });
     }
 
     public Single<ExrcsLocationRecord> getElrSingleObservable(Long locationId) {
         return Single.create(emitter -> {
-            emitter.onSuccess(new ExrcsLocationDAO().loadExrcsLocationRecordById(locationId));
+            emitter.onSuccess(new ExrcsLocationDAO(database).loadExrcsLocationRecordById(locationId));
         });
     }
 

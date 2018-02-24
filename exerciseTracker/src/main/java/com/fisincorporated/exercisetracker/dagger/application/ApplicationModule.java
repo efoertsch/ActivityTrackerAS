@@ -52,8 +52,8 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    GPSLocationManager provideGpsLocationManager(Context context, StatsUtil statsUtil, PublishRelay<Object> publishRelay) {
-        return new GPSLocationManager(context, statsUtil, publishRelay);
+    GPSLocationManager provideGpsLocationManager(Context context, StatsUtil statsUtil, PublishRelay<Object> publishRelay, TrackerDatabaseHelper trackerDatabaseHelper) {
+        return new GPSLocationManager(context, statsUtil, publishRelay, trackerDatabaseHelper);
     }
 
     // RxJava Bus to replace callback interfaces

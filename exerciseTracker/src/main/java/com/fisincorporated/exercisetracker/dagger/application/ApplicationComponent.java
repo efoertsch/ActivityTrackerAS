@@ -25,18 +25,6 @@ public interface ApplicationComponent extends
     }
 
     void inject(ActivityTrackerApplication activityTrackerApplication);
-//
-//    void inject(StartupPhotoFragment startupPhotoFragment);
-//
-//    void inject(SettingsFragment settingsFragment);
-//
-//    void inject(ActivityLoggerFragment activityLoggerFragment);
-//
-//    void inject(LocationReceiver locationReceiver);
-//
-//    void inject(ActivityFragmentHistory activityFragmentHistory);
-
-
 
 }
 

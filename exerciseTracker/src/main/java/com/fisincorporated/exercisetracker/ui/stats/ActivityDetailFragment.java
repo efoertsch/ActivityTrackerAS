@@ -25,6 +25,7 @@ import com.fisincorporated.exercisetracker.database.LocationExerciseDAO;
 import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.GPSLog;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
+import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerFragment;
 import com.fisincorporated.exercisetracker.ui.media.slideshow.FullscreenPhotoPagerActivity;
 import com.fisincorporated.exercisetracker.ui.media.MediaDetail;
@@ -57,12 +58,14 @@ public class ActivityDetailFragment extends ExerciseDaggerFragment {
     private FloatingActionButton mapFab;
     private FloatingActionButton photosFab;
 
-
     @Inject
     PhotoUtils photoUtils;
 
     @Inject
     StatsUtil statsUtil;
+
+    @Inject
+    TrackerDatabaseHelper trackerDatabaseHelper;
 
     /**
      * Pass in the arguments needed by this fragment
@@ -252,12 +255,12 @@ public class ActivityDetailFragment extends ExerciseDaggerFragment {
     }
 
     public void doPositiveCancelClick() {
-        GPSLogDAO gpslogDAO = new GPSLogDAO();
+        GPSLogDAO gpslogDAO = trackerDatabaseHelper.getGPSLogDAO();
         gpslogDAO.deleteGPSLogbyLerRowId(ler.get_id());
         Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.gps_log_detail_deleted),
                 Toast.LENGTH_SHORT).show();
         if (deleteDetailType == 1) {
-            leDAO = new LocationExerciseDAO();
+            leDAO = trackerDatabaseHelper.getLocationExerciseDAO();
             leDAO.deleteLocationExercise(ler);
             Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.activity_deleted), Toast.LENGTH_SHORT)
                     .show();
@@ -275,7 +278,7 @@ public class ActivityDetailFragment extends ExerciseDaggerFragment {
      * summary
      */
     private void loadActivityRecords() {
-        leDAO = new LocationExerciseDAO();
+        leDAO =trackerDatabaseHelper.getLocationExerciseDAO();
         ler = leDAO.loadLocationExerciseRecordById(locationExerciseId);
         if (ler.get_id() < 1) {
             Toast.makeText(

@@ -54,8 +54,8 @@
     <string name="default_exercise_can_not_be_deleted">A default exercise can not be deleted</string>
     <string name="default_log_interval">Default Log Interval (seconds)</string>
     <string name="delete">Delete</string>
-    <string name="delete_complete_activity">Activities?</string>
-    <string name="delete_only_gps_detail">GPS detail?</string>
+    <string name="delete_complete_activity">All?</string>
+    <string name="delete_only_gps_detail">GPS trace?</string>
     <string name="delete_detail">Delete Detail</string>
     <string name="delete_prior_activity">Delete this activity</string>
     <string name="delete_trace">Delete only GPS trace</string>
@@ -150,7 +150,7 @@
     <string name="press_backup_to_make_backup">The backup will overwrite any existing backup. Press Backup to continue else cancel."</string>
     <string name="press_restore_to_restore">If you continue, there is no going back! The restore will overwrite your existing database! Press Restore to continue else cancel."</string>
     <string name="press_yes_to_delete_selected_activities_or_no_to_cancel">Press Yes to delete the selected activities or No to cancel.</string>
-    <string name="press_yes_to_delete_GPS_delail_or_no_to_cancel">Press YES to delete GPS detail or No to cancel.</string>
+    <string name="press_yes_to_delete_GPS_delail_or_no_to_cancel">Press YES to delete GPS trace(s) or No to cancel.</string>
     <string name="rack_up_the_miles">Rack up the miles!</string>
     <string name="reenter_location_for_activity">Reenter the location for the Activity</string>
     <string name="review_exercise">Review Exercise</string>
@@ -310,7 +310,7 @@
 
     <string name="error_playing_media_file">Error playing media file %1$s.</string>
     <string name="hours_and_minutes">%d %s  %.1f %S</string>
-    <string name="hrs">Hrs</string>
+    <string name="hrs">hrs</string>
     <string name="mins">mins</string>
 
 

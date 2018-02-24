@@ -24,21 +24,12 @@ public class ActivityTrackerApplication extends DaggerApplication {
 
     @Override
     public void onCreate() {
+        // Note call to super will end up calling AndroidInjector
         super.onCreate();
-      //  createDaggerInjections();
         opendDatabase();
-
         // To be able to use setTag with Glide
         ViewTarget.setTagId(R.id.glide_tag);
     }
-//
-//    protected void createDaggerInjections() {
-//        DaggerApplicationComponent
-//                .builder()
-//                .application(this)
-//                .build()
-//                .inject(this);
-//    }
 
     @Override
     protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
@@ -48,7 +39,7 @@ public class ActivityTrackerApplication extends DaggerApplication {
     }
 
     public void opendDatabase() {
-        database = trackerDatabaseHelper.getReadableDatabase();
+        database = trackerDatabaseHelper.getDatabase();
     }
 
     @Override

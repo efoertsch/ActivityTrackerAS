@@ -18,8 +18,6 @@ import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerFragment;
 import com.jakewharton.rxrelay2.PublishRelay;
 
-import java.lang.ref.WeakReference;
-
 import javax.inject.Inject;
 
 public class ExerciseMaintenanceListFragment extends ExerciseDaggerFragment implements LoaderManager.LoaderCallbacks<Cursor>{
@@ -50,7 +48,7 @@ public class ExerciseMaintenanceListFragment extends ExerciseDaggerFragment impl
 				// Go to the exercise maintenance activity to add new exercise
 				// mod for tablets, return selected (new) exercise to acivity and it will determine
 				// if for detail fragment or call activity to display exercise fragment
-                publishRelay.accept(new ExerciseSelectedMsg(-1,0));
+                publishRelay.accept(new ExerciseSelectedEvent(-1,0));
 			}
 		});
         return view;

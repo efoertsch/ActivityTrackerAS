@@ -255,8 +255,10 @@
 
     <!-- Backup/Restore -->
     <string name="title_activity_drive">DriveActivity</string>
-    <string name="drive_backup_success">ActivityTracker database successfully backed up to Drive</string>
-    <string name="local_backup_success">ActivityTracker database successfully backed up to local Download directory</string>
+    <string name="drive_backup_success">Successful backup to Drive</string>
+    <string name="local_backup_success">Succesful backup to Download directory</string>
+    <string name="drive_backup_failure">Backup to Drive failed!</string>
+    <string name="local_backup_failure">Backup to Download directory failed!</string>
     <string name="backup_error">Oops! ActivityTracker Backup Error!</string>
     <string name="error_creating_local_backup_directory">No Download directory found!</string>
     <string name="backup_scheduled">Backup scheduled.</string>

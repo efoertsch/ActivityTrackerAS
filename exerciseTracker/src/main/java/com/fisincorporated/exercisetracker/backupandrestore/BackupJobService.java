@@ -19,15 +19,10 @@ import com.fisincorporated.exercisetracker.ui.startup.ExerciseDrawerActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
-import java.io.File;
-
 import io.reactivex.Completable;
-import io.reactivex.disposables.CompositeDisposable;
 
 public class BackupJobService extends JobService {
     private static final String TAG = BackupJobService.class.getSimpleName();
-
-    private final CompositeDisposable disposables = new CompositeDisposable();
 
     @Override
     public boolean onStartJob(JobParameters params) {
@@ -59,8 +54,8 @@ public class BackupJobService extends JobService {
     }
 
     private boolean doLocalBackup(JobParameters params) {
-        Completable observable = LocalBackupUtils.getLocalBackupCompletable(getApplicationContext(), getApplicationContext().getPackageName(), GlobalValues.DATABASE_NAME);
-        subscribeToBackupObservable(params, observable);
+        Completable completable = LocalBackupUtils.getLocalBackupCompletable(getApplicationContext(), getApplicationContext().getPackageName(), GlobalValues.DATABASE_NAME);
+        subscribeToBackupObservable(params, completable, getString(R.string.local_backup_success));
         return true;
     }
 
@@ -72,28 +67,31 @@ public class BackupJobService extends JobService {
         }
 
         Completable completable = GoogleDriveUtil.getBackupToDriveCompletable(getApplicationContext(), signInAccount);
-        subscribeToBackupObservable(params, completable);
+        subscribeToBackupObservable(params, completable, getString(R.string.drive_backup_success));
         return true;
     }
 
-    private void subscribeToBackupObservable(JobParameters params, Completable observable) {
+    private void subscribeToBackupObservable(JobParameters params, Completable observable, String backupSuccessMsg) {
         observable.subscribe(() -> {
-            postNotification(getApplicationContext().getString(R.string.drive_backup_success));
+            postNotification(getBackupType(params), backupSuccessMsg);
             jobFinished(params, false);
         }, throwable -> {
-            postErrorNotification(throwable);
+            postErrorNotification(getBackupType(params), throwable);
             jobFinished(params, false);
         });
     }
 
     private int getBackupType(JobParameters params) {
         Bundle bundle = params.getExtras();
-        return bundle.getInt(GlobalValues.BACKUP_TYPE, GlobalValues.BACKUP_TO_LOCAL);
+        if (bundle != null) {
+            return bundle.getInt(GlobalValues.BACKUP_TYPE, GlobalValues.BACKUP_TO_LOCAL);
+        }
+        return 0;
     }
 
-    private void postErrorNotification(Throwable e) {
+    private void postErrorNotification(int backupType, Throwable e) {
         Log.e(TAG, e.toString());
-        postNotification(getApplicationContext().getString(R.string.backup_error));
+        postNotification(backupType, getApplicationContext().getString(backupType == GlobalValues.BACKUP_TO_DRIVE ? R.string.drive_backup_failure : R.string.local_backup_failure));
         log(e);
     }
 
@@ -128,7 +126,7 @@ public class BackupJobService extends JobService {
         mNotificationManager.notify(0,notification);
     }
 
-    public void postNotification(String notificationContent) {
+    public void postNotification(int backupType, String notificationContent) {
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_notification_info)
@@ -155,13 +153,7 @@ public class BackupJobService extends JobService {
         // mNotificationId is a unique integer your app uses to identify the
         // notification. For example, to cancel the notification, you can pass its ID
         // number to NotificationManager.cancel().
-        mNotificationManager.notify(0, builder.build());
-    }
-
-    private static File getDatabaseFile(Context context) {
-        String currentDBPath = context.getDatabasePath(GlobalValues.DATABASE_NAME).getAbsolutePath();
-        File currentDB = new File(currentDBPath);
-        return currentDB;
+        mNotificationManager.notify(backupType, builder.build());
     }
 
     private static void log(Throwable e) {

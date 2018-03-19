@@ -71,11 +71,14 @@ public class GlobalValues {
 
 	public static final String DISPLAY_UNITS_PREFERENCE_KEY = "DISPLAY_UNITS_PREFERENCE_KEY";
 
+	// Photos of course
 	public static final String PHOTO_POINTS = "PHOTO_POINTS";
 	public static final String PHOTO_POINT_INDEX = "PHOTO_POINT_INDEX";
 	public static final String PHOTO_DETAIL_INDEX = "PHOTO_DETAIL_INDEX";
     public static final String PHOTO_DETAIL_LIST = "PHOTO_DETAIL_LIST";
     public static final String PHOTO_URI = "PHOTO_URI" ;
 	public static final int PICK_PHOTO = 54321;
+
+	public static final String DISPLAY_SELECT_CUSTOM_PHOTO = "DISPLAY_SELECT_CUSTOM_PHOTO";
 
 }

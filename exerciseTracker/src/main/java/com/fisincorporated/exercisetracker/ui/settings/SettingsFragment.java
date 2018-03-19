@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -36,6 +35,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
     @Inject
     PhotoUtils photoUtils;
+
+    @Inject
+    SharedPreferences sharedPreferences;
 
     public static SettingsFragment newInstance(Bundle bundle) {
         SettingsFragment settingsFragment = new SettingsFragment();
@@ -137,6 +139,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         if (signInAccount == null) {
             Intent intent = new Intent(getActivity(), DriveSignOnActivity.class);
             startActivityForResult(intent, GlobalValues.BACKUP_TO_DRIVE);
+        } else {
+            updateDrivePreference(true);
         }
     }
 
@@ -220,12 +224,12 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     }
 
     private void updateDrivePreference(boolean driveSigninSuccess) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         boolean doDriveBackup = sharedPreferences.getBoolean(getContext().getString(R.string.drive_backup), false);
-        if (driveSigninSuccess && !doDriveBackup) {
+        if (driveSigninSuccess && doDriveBackup) {
             displayBackupNowDialog(GlobalValues.BACKUP_TO_DRIVE);
+        } else if (!driveSigninSuccess) {
+            setDriveBackupPreference(sharedPreferences, false);
         }
-        setDriveBackupPreference(sharedPreferences, driveSigninSuccess);
     }
 
     private void setDriveBackupPreference(SharedPreferences sharedPreferences, boolean doDriveBackup) {

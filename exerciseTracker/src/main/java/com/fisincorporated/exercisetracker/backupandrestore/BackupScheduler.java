@@ -35,9 +35,7 @@ public class BackupScheduler {
                 .setReplaceCurrent(true) // overwrite an existing job with the same tag
                 .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
                 // drive backup require wifi access
-                .setConstraints(((backupLocation == GlobalValues.BACKUP_TO_DRIVE) ? Constraint.ON_UNMETERED_NETWORK : Constraint.ON_ANY_NETWORK)
-                        // only run when the device is charging
-                        , Constraint.DEVICE_CHARGING)
+                .setConstraints(((backupLocation == GlobalValues.BACKUP_TO_DRIVE) ? Constraint.ON_UNMETERED_NETWORK : Constraint.ON_ANY_NETWORK))
                 .build();
         dispatcher.mustSchedule(backupJob);
     }

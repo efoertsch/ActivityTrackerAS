@@ -14,6 +14,7 @@ import com.fisincorporated.exercisetracker.ui.maintenance.ExerciseMaintenanceLis
 import com.fisincorporated.exercisetracker.ui.maintenance.ExerciseMaintenancePagerActivity;
 import com.fisincorporated.exercisetracker.ui.maps.ActivityMap;
 import com.fisincorporated.exercisetracker.ui.maps.ActivityMapFragment;
+import com.fisincorporated.exercisetracker.ui.settings.ChangeStartupPhotoFragment;
 import com.fisincorporated.exercisetracker.ui.settings.SettingsFragment;
 import com.fisincorporated.exercisetracker.ui.startactivity.StartExerciseActivity;
 import com.fisincorporated.exercisetracker.ui.startactivity.StartExerciseFragment;
@@ -83,6 +84,9 @@ public abstract class UIBuildersModule {
 
     @ContributesAndroidInjector(modules = {})
     abstract ExerciseMaintenancePagerActivity bindExerciseMaintenancePagerActivity();
+
+    @ContributesAndroidInjector(modules = {})
+    abstract ChangeStartupPhotoFragment bindChangeStartupPhotoFragment();
 
 
     // Add more bindings here for other sub components

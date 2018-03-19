@@ -298,7 +298,7 @@
     <string name="photos">Photos</string>
 
     <string name="activity_fullscreen_photo">Photo</string>
-    <string name="error_occurred_loading_photo">Ooops. An error occurred while loading your photo</string>
+    <string name="error_occurred_loading_photo">Ooops. An error occurred while loading the photo!</string>
     <string name="title_activity_change_startup_photo">Change Photo</string>
     <string name="activity_change_photo">Change Photo</string>
     <string name="tap_image_to_select_new_photo">Tap image to select new photo</string>
@@ -314,6 +314,11 @@
     <string name="hours_and_minutes">%d %s  %.1f %S</string>
     <string name="hrs">hrs</string>
     <string name="mins">mins</string>
+
+    <string name="select_startup_photo">Hi There!\nYou can display your own photo on startup. Would you like to do that now?</string>
+    <string name="select_startup_photo_later">Select later</string>
+    <string name="default_photo_display">OK. I am going to display a photo hopefully to help inspire you. You can switch this to your own photo by selecting Settings/Startup Screen Photo"</string>
+
 
 
 </resources>

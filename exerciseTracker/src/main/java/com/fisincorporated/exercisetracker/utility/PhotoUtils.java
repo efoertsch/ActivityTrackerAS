@@ -62,10 +62,11 @@ public class PhotoUtils {
         return sharedPref.getString(context.getString(R.string.startup_image), null);
     }
 
-    public boolean loadPhotoToImageView(ImageView imageView, String photoPath, ProgressBar progressBar, TextView errorTextView) {
+    public boolean loadStartupPhotoToImageView(ImageView imageView, String photoPath, ProgressBar progressBar, TextView errorTextView) {
         if (photoPath != null) {
             File imgFile = new File(photoPath);
             if (imgFile.exists()) {
+                // User has selected photo
                 progressBar.setVisibility(View.VISIBLE);
                 Glide.with(imageView.getContext())
                         .load(imgFile)
@@ -95,9 +96,44 @@ public class PhotoUtils {
                         .into(imageView);
 
                 return true;
+            } else {
+                loadDefaultStartupPhoto(imageView, progressBar, errorTextView);
+                return true;
             }
         }
-        return false;
+        loadDefaultStartupPhoto(imageView, progressBar, errorTextView);
+        return true;
+    }
+
+    private void loadDefaultStartupPhoto(ImageView imageView, ProgressBar progressBar, TextView errorTextView) {
+        // display default photo
+        // TODO DRY
+        Glide.with(imageView.getContext())
+                .load(R.drawable.zion_observation_point)
+                .listener(new RequestListener<Integer, GlideDrawable>() {
+                    @Override
+                    public boolean onException(Exception e, Integer drawable, Target<GlideDrawable> target, boolean isFirstResource) {
+                        errorTextView.setText(R.string.error_occurred_loading_photo);
+                        progressBar.setVisibility(View.GONE);
+                        if (errorTextView != null) {
+                            errorTextView.setVisibility(View.VISIBLE);
+                        }
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(GlideDrawable resource, Integer drawable, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        progressBar.setVisibility(View.GONE);
+                        if (errorTextView != null) {
+                            errorTextView.setVisibility(View.GONE);
+                        }
+                        imageView.setVisibility(View.VISIBLE);
+                        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                        return false;
+                    }
+                })
+                .error(R.id.startup_photo_no_photo_text)
+                .into(imageView);
     }
 
     public void saveToInternalStorage(Activity activity, Uri imageUri) {

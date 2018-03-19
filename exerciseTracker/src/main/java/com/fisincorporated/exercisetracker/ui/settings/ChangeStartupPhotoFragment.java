@@ -73,7 +73,11 @@ public class ChangeStartupPhotoFragment extends ExerciseDaggerFragment {
         }
     }
     private void loadUserPhoto(String photoPath) {
-        if (!photoUtils.loadPhotoToImageView(imageView, photoPath, progressBar, null)) {
+        if (photoPath == null){
+            getActivity().finish();
+            return;
+        }
+        if (!photoUtils.loadStartupPhotoToImageView(imageView, photoPath, progressBar, null)) {
             setPhotoDefaultImage();
         }
     }

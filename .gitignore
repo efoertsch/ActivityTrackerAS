@@ -9,7 +9,6 @@ exerciseTracker/build
 /build
 /captures
 app/build
-/facebook
 gradle/
 gradlew
 

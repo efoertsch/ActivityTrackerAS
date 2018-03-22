@@ -89,63 +89,6 @@ public class StatsUtil {
 
     }
 
-    public void formatActivityStatsForFacebook(StringBuilder sb,
-                                                      LocationExerciseRecord ler) {
-        boolean isImperialDisplay = displayUnits.isImperialDisplay();
-        String feetMeters = displayUnits.getFeetMeters();
-        String milesKm = displayUnits.getMilesKm();
-        String mphKph = displayUnits.getMphKph();
-
-        Resources res = Resources.getSystem();
-
-        sb.setLength(0);
-        String lineSeparator = System.getProperty("line.separator");
-
-        float distance = (isImperialDisplay ?metersToMiles((float) ler.getDistance()) : ((float) ler
-                .getDistance()) / 1000f);
-        sb.append(res.getString(R.string.distance_traveled) + " : " +
-                String.format("%.2f " + milesKm, distance) + lineSeparator);
-
-        long elapsed = ler.getEndTimestamp().getTime()
-                - ler.getStartTimestamp().getTime();
-        int diffHours = (int) (elapsed / GlobalValues.TIME_TO_FRACTION_HOURS);
-        // find remaining minutes
-        float diffMinutes = (elapsed - (diffHours * GlobalValues.TIME_TO_FRACTION_HOURS))
-                / GlobalValues.TIME_TO_MINUTES;
-        sb.append(res.getString(R.string.time_on_activity) + " : " +
-                res.getString(R.string.hours_and_minutes, diffHours, res.getString(R.string.hrs), diffMinutes, res.getString(R.string.mins)));
-
-        // speeds in kph or mph per distance calc above
-        float averageSpeed = 0;
-        if (elapsed > 0) {
-            averageSpeed = (distance)
-                    / (elapsed / GlobalValues.TIME_TO_FRACTION_HOURS);
-        }
-        sb.append(res.getString(R.string.average_speed) + " : " +
-                String.format("%.2f " + mphKph, averageSpeed) + lineSeparator);
-
-        sb.append(res.getString(R.string.max_speed) + " : " +
-                String.format(
-                        "%.2f " + mphKph,
-                        isImperialDisplay ? kilometersToMiles(ler.getMaxSpeedToPoint())
-                                : ler.getMaxSpeedToPoint()) + lineSeparator);
-
-        int altitude = (int) (isImperialDisplay ? (int)metersToFeet(ler.getAltitudeGained()) : ler.getAltitudeGained());
-        sb.append(
-                res.getString(R.string.altitude_gained) + " : " +
-                        String.format("%d " + feetMeters, altitude) + lineSeparator);
-
-        altitude = (int) (isImperialDisplay ? (int)metersToFeet(ler.getAltitudeLost()) : ler.getAltitudeLost());
-        sb.append(
-                res.getString(R.string.altitude_lost) + " : " +
-                        String.format("%d " + feetMeters, altitude) + lineSeparator);
-
-        altitude = (int) (isImperialDisplay ? (int)metersToFeet(ler.getAltitudeGained() - ler.getAltitudeLost())
-                : ler.getAltitudeGained() - ler.getAltitudeLost());
-        sb.append(res.getString(R.string.overall_altitude_change) + " : " +
-                String.format("%d " + feetMeters, altitude) + lineSeparator);
-
-    }
 
     public  String makeFileNameReady(String fileName) {
         return fileName.replaceAll("[^a-zA-Z0-9.@-]", "_");

@@ -93,9 +93,6 @@ dependencies {
 
     provided "javax.annotation:jsr250-api:$JSR250_VERSION"
 
-    // Facebook - TODO - reincorporate
-    compile 'com.facebook.android:facebook-android-sdk:4.7.0'
-
     // Unit testing dependencies
     testCompile 'junit:junit:4.12'
     testCompile "org.mockito:mockito-core:2.7.6"

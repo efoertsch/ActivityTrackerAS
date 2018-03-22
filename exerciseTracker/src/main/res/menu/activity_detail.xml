@@ -9,11 +9,7 @@
         android:id="@+id/activity_detail_showChart"
         android:title="@string/elevation_vs_distance">
     </item>
-   <!--  <item
-        android:id="@+id/post_to_facebook"
-        android:title="@string/post_to_facebook">
-    </item>
-     -->
+
     <item
         android:id="@+id/activity_detail_delete"
         android:title="@string/delete">

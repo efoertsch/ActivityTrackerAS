@@ -28,7 +28,6 @@ public class GlobalValues {
 	public static final int DISPLAY_STATS = 1;
 	public static final int DISPLAY_MAP = 2;
 	public static final int DISPLAY_CHART = 3;
-	public static final int DISPLAY_FACEBOOK_TO_POST = 4;
 	// values for LoadManagers
 	public static final int MAP_LOADER =1;
 	public static final int ACTIVITY_LIST_LOADER = 2;
@@ -44,9 +43,6 @@ public class GlobalValues {
 	public static final int BAR_CHART_DISTANCE_MONTHLY = 3;
 	public static final int BAR_CHART_DISTANCE_YEARLY = 4;
 	public static final int BAR_CHART_TIME_DEFAULT = BAR_CHART_LAST_MONTH;
-
-	// for Facebook posting
-	public static final String ACTIVITY_STATS = "activity_stats";
 
 	// For notifications
 	public static final int NOTIFICATION_LOGGER = 1;

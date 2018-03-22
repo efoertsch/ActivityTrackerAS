@@ -19,13 +19,6 @@
         <item name="android:paddingEnd">@dimen/margin_standard</item>
     </style>
 
-    <style name="facebook_btn">
-        <item name="android:textColor">#FFFFFF</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:background">@drawable/com_facebook_button_blue</item>
-    </style>
-
     <!--  the following was to fix a bug where autocompletetext was white on white when focus shifted
       out of the text view but caused a problem in +3.0(?) with newer themes. -->
     <style name="AutoCompleteTextViewLight" parent="@android:style/Widget.AutoCompleteTextView">

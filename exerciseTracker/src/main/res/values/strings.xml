@@ -22,7 +22,6 @@
     <string name="altitude_gained">Altitude Gained</string>
     <string name="altitude_lost">Altitude Lost</string>
     <string name="an_exercise_already_exists_with_this_name_exercise_not_added">An exercise already exists with this name. Exercise not added.</string>
-    <string name="facebook_app_id">682608938461276</string>
     <string name="app_name">ActivityTracker</string>
     <string name="average_speed">Avg Speed</string>
     <string name="backup">Backup</string>
@@ -92,7 +91,6 @@
     <string name="exercise_not_defined_nothing_to_save">"Exercise not defined. Nothing to save."</string>
     <string name="exercise_maintenance">Exercise Maintenance</string>
     <string name="exercise_map">Exercise Map</string>
-    <string name="facebook_posting_error">Facebook posting error</string>
     <string name="filter_by">Filter by</string>
     <string name="filter_by_activity">Filter by Activity</string>
     <string name="filter_by_exercise">Filter by Exercise</string>
@@ -145,8 +143,6 @@
     <string name="post_image">Post image</string>
     <string name="post_photos">Post photos</string>
     <string name="post_stats">Post stats</string>
-    <string name="post_to_facebook">Post to Facebook</string>
-    <string name="post_to_facebook_q">Post to Facebook?</string>
     <string name="press_backup_to_make_backup">The backup will overwrite any existing backup. Press Backup to continue else cancel."</string>
     <string name="press_restore_to_restore">If you continue, there is no going back! The restore will overwrite your existing database! Press Restore to continue else cancel."</string>
     <string name="press_yes_to_delete_selected_activities_or_no_to_cancel">Press Yes to delete the selected activities or No to cancel.</string>
@@ -183,7 +179,6 @@
     <string name="show_stats">Show Stats</string>
     <string name="summarize_exericse">Summarize Exercise</string>
     <string name="ten">"10"</string>
-    <string name="the_following_will_be_posted_to_facebook">The following will be posted to Facebook:</string>
     <string name="terrain">Terrain</string>
     <string name="the_exercise_was_deleted">The exercise was deleted</string>
     <string name="thirty">"30"</string>
@@ -208,7 +203,6 @@
     <string name="year">Year</string>
     <string name="yes">Yes</string>
     <string name="year_month">Year/Month</string>
-    <string name="your_stats_have_been_posted_to_facebook">Your stats have been posted to Facebook!</string>
     <!-- Titles for bar charts -->
     <string name="daily_chart">Daily Activity Chart</string>
 

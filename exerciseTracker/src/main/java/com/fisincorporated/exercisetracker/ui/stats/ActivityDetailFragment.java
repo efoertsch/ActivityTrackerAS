@@ -207,16 +207,6 @@ public class ActivityDetailFragment extends ExerciseDaggerFragment {
                 args.putInt(GlobalValues.BAR_CHART_TYPE, GlobalValues.DISTANCE_VS_ELEVATION);
                 callBacks.onSelectedAction(args);
                 return true;
-//		case R.id.post_to_facebook:
-//			args.putString(GlobalValues.TITLE,title);
-//			args.putString(LocationExercise.DESCRIPTION, description) ;
-//			StringBuilder activityStatsSB = new StringBuilder();
-//			StatsUtil.formatActivityStatsForFacebook(getActivity(), activityStatsSB,
-//					 ler,  imperialMetric, imperial,   feetMeters , milesKm,  mphKph) ;
-//			args.putString(GlobalValues.ACTIVITY_STATS, activityStatsSB.toString());
-//			args.putInt(GlobalValues.DISPLAY_TARGET, GlobalValues.DISPLAY_FACEBOOK_TO_POST);
-//			callBacks.onSelectedAction(args);
-//			return true;
             case R.id.activity_delete_activity:
                 deleteDetailType = 1;
                 dialog = ActivityDialogFragment.newInstance(-1,

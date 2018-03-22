@@ -13,8 +13,6 @@ import android.support.v7.widget.Toolbar;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
-import com.fisincorporated.exercisetracker.facebook.FacebookPostStatsActivity;
-import com.fisincorporated.exercisetracker.facebook.FacebookPostStatsFragment;
 import com.fisincorporated.exercisetracker.ui.charts.AltitudeVsDistanceGraphFragment;
 import com.fisincorporated.exercisetracker.ui.charts.GraphActivity;
 import com.fisincorporated.exercisetracker.ui.maps.ActivityMap;
@@ -94,9 +92,6 @@ abstract public class ExerciseMasterActivity extends AppCompatActivity implement
 				case  GlobalValues.DISPLAY_CHART:
 					startCharts(args);
 					break;
-				case  GlobalValues.DISPLAY_FACEBOOK_TO_POST:
-					startFacebookToPost(args);
-					break;
 			}
 		} else {
 			// display the activity info in the detailfragment container
@@ -114,8 +109,6 @@ abstract public class ExerciseMasterActivity extends AppCompatActivity implement
 				case  GlobalValues.DISPLAY_CHART:
 					newDetail = AltitudeVsDistanceGraphFragment.newInstance(bundle);
 					break;
-				case  GlobalValues.DISPLAY_FACEBOOK_TO_POST:
-					newDetail = FacebookPostStatsFragment.newInstance(bundle);
 			}
 
 			if (oldDetail != null) {
@@ -141,12 +134,6 @@ abstract public class ExerciseMasterActivity extends AppCompatActivity implement
 		startActivity(intent);
 	}
 
-	private void startFacebookToPost(Bundle args) {
-		Intent intent = new Intent(this, FacebookPostStatsActivity.class);
-		xferBundleToIntent(intent, args);
-		startActivity(intent);
-	}
-
 	private void startViewPager(Bundle args) {
 		Intent intent = new Intent(this, ActivityPagerActivity.class);
 		xferBundleToIntent(intent, args);
@@ -166,9 +153,6 @@ abstract public class ExerciseMasterActivity extends AppCompatActivity implement
 				args.getStringArrayList(GlobalValues.LOCATION_FILTER_PHRASE));
 		intent.putExtra(GlobalValues.CURSOR_POSITION,
 				args.getInt(GlobalValues.CURSOR_POSITION));
-
-		// for Facebook
-		intent.putExtra(GlobalValues.ACTIVITY_STATS,args.getString(GlobalValues.ACTIVITY_STATS));
 
 	}
 }

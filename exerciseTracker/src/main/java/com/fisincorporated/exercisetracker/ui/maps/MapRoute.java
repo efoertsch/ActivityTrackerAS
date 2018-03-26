@@ -320,7 +320,9 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
         }
         for (int i = 0; i < mediaPoints.size(); ++i) {
             Marker marker = googleMap.addMarker(new MarkerOptions()
-                    .position(mediaPoints.get(i).getLatlng()));
+                    .position(mediaPoints.get(i).getLatlng())
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.photo_map_pin)));
+           // .icon(BitmapDescriptorFactory.fromBitmap(photoBitmap)));
             //.title(i + ""));
             marker.setTag(i);
 

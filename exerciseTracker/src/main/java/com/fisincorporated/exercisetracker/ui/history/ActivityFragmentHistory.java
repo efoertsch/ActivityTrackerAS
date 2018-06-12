@@ -117,6 +117,7 @@ public class ActivityFragmentHistory extends ExerciseDaggerFragment implements L
             }
             if (o instanceof DeleteHistoryListEvent) {
                 deleteSet = ((DeleteHistoryListEvent) o).getDeleteSet();
+                displayTrashCanIfAnyToBeDeleted();
             }
         }
 

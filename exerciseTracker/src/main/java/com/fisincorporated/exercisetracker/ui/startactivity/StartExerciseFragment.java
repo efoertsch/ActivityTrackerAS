@@ -488,6 +488,7 @@ public class StartExerciseFragment extends ExerciseDaggerFragment {
         intent.putExtra(Exercise.MIN_DISTANCE_TO_LOG, minDistanceToLog);
         intent.putExtra(Exercise.ELEVATION_IN_DIST_CALCS, elevationInDistcalcs);
         startActivity(intent);
+        getActivity().finish();
     }
 
     // onBackPressed will trigger focus change on the autocomplete field which

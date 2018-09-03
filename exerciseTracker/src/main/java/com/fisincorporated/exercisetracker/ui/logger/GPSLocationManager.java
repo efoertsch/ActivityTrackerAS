@@ -164,7 +164,7 @@ public class GPSLocationManager {
         Log.d(TAG, "Starting GPS");
     }
 
-    private boolean isLocationPermissionGranted(){
+    private boolean isLocationPermissionGranted() {
         return (ActivityCompat.checkSelfPermission(sAppContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(sAppContext, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED);
     }
@@ -235,6 +235,7 @@ public class GPSLocationManager {
         int totalDistance = 0;
         float averageSpeed = 0;
         float maxSpeedToPoint = 0;
+        double altitude  = 0;
 
         // if startTime null then first time in.
         if (ler.getStartTimestamp() == null) {
@@ -251,6 +252,12 @@ public class GPSLocationManager {
             ler.setAltitudeLost(0f);
             ler.setAverageSpeed(0f);
             ler.setMaxSpeedToPoint(0f);
+
+            altitude = location.getAltitude() < 0 ? 0 : location.getAltitude();
+            ler.setCurrentGpsAltitude((int) altitude );
+            ler.setMinGpsAltitude((int) altitude);
+            ler.setMaxGpsAltitude((int) altitude);
+
         } else {
             // 2nd or subsequent time or restarting so calc distance from where you
             // stopped to where you are
@@ -271,10 +278,14 @@ public class GPSLocationManager {
             ler.setDistance(totalDistance);
             altitudeGained = ler.getAltitudeGained();
             altitudeLost = ler.getAltitudeLost();
-            if (location.getAltitude() > ler.getEndAltitude()) {
-                altitudeGained += location.getAltitude() - ler.getEndAltitude();
+
+            altitude = location.getAltitude();
+            altitude = altitude < 0 ? 0 : altitude;
+
+            if (altitude > ler.getEndAltitude()) {
+                altitudeGained += altitude - ler.getEndAltitude();
             } else {
-                altitudeLost += ler.getEndAltitude() - location.getAltitude();
+                altitudeLost += ler.getEndAltitude() - altitude;
             }
             ler.setAltitudeGained(altitudeGained);
             ler.setAltitudeLost(altitudeLost);
@@ -295,6 +306,13 @@ public class GPSLocationManager {
             ler.setEndLongitude((float) (location.getLongitude()));
             ler.setEndAltitude((float) (location.getAltitude()));
 
+            ler.setCurrentGpsAltitude((int) altitude);
+            if (altitude < ler.getMinGpsAltitude()) {
+                ler.setMinGpsAltitude((int) altitude);
+            }
+            if (altitude > ler.getMaxGpsAltitude()) {
+                ler.setMaxGpsAltitude((int) altitude);
+            }
         }
         sLeDAO.updateLocationExercise(ler);
         // distance may be 0 if first time in or >0 if restarting
@@ -325,12 +343,12 @@ public class GPSLocationManager {
     private void generateNotification() {
         if (sLer == null || sLer.getDistance() == null) return;
         // Only update notification every so often
-        if (System.currentTimeMillis() - sLastNotificationTime < sNotificationInterval){
+        if (System.currentTimeMillis() - sLastNotificationTime < sNotificationInterval) {
             return;
         }
         sLastNotificationTime = System.currentTimeMillis();
-        statsUtil.formatActivityStats(sStats, sLer);
-        String notificationText = sExercise + "@" + sExrcsLocation +'\n';
+        statsUtil.formatActivityStats(sStats, sLer, true);
+        String notificationText = sExercise + "@" + sExrcsLocation + '\n';
 
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(sActivity)
@@ -341,13 +359,12 @@ public class GPSLocationManager {
                 new NotificationCompat.InboxStyle();
         inboxStyle.setBigContentTitle("Activity Statistics");
 
-        for (int i=0; i < sStats.size(); i++) {
+        for (int i = 0; i < sStats.size(); i++) {
             inboxStyle.addLine(sStats.get(i)[0] + ": " + sStats.get(i)[1]);
         }
         builder.setStyle(inboxStyle);
 // Creates an explicit intent for an Activity in your app
         Intent resultIntent = createNotificationIntent();
-
 
 // The stack builder object will contain an artificial back stack for the
 // started Activity.
@@ -399,12 +416,10 @@ public class GPSLocationManager {
         sExrcsLocation = exrcsLocation;
     }
 
-    public long getCurrentLer(){
-        if (sLer != null){
+    public long getCurrentLer() {
+        if (sLer != null) {
             return sLer.get_id();
-        }
-        else return -1l;
+        } else return -1l;
     }
-
 
 }

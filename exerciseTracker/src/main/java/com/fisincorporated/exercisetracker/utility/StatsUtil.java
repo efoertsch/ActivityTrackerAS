@@ -30,7 +30,7 @@ public class StatsUtil {
     }
 
     public void formatActivityStats(ArrayList<String[]> stats,
-                                           LocationExerciseRecord ler) {
+                                           LocationExerciseRecord ler, boolean currentlyActive) {
         boolean isImperialDisplay = displayUnits.isImperialDisplay();
         String feetMeters = displayUnits.getFeetMeters();
         String milesKm = displayUnits.getMilesKm();
@@ -71,7 +71,21 @@ public class StatsUtil {
                         isImperialDisplay ? kilometersToMiles(ler.getMaxSpeedToPoint())
                                 : ler.getMaxSpeedToPoint())});
 
-        int altitude = (int) (isImperialDisplay ? (int)metersToFeet(ler.getAltitudeGained()) : ler.getAltitudeGained());
+        int altitude;
+
+        if (currentlyActive) {
+            altitude = (isImperialDisplay ? (int) metersToFeet(ler.getCurrentGpsAltitude()) : ler.getCurrentGpsAltitude());
+            stats.add(new String[]{res.getString(R.string.current_gps_altitude), String.format("%d %s", altitude, feetMeters)});
+        }
+
+        altitude = (isImperialDisplay ? (int)metersToFeet(ler.getMinGpsAltitude()) : ler.getMinGpsAltitude());
+        stats.add(new String[]{res.getString(R.string.min_gps_altitude), String.format("%d %s", altitude, feetMeters)});
+
+        altitude = (isImperialDisplay ? (int)metersToFeet(ler.getMaxGpsAltitude()) : ler.getMaxGpsAltitude());
+        stats.add(new String[]{res.getString(R.string.max_gps_altitude), String.format("%d %s", altitude, feetMeters)});
+
+
+                altitude = (int) (isImperialDisplay ? (int)metersToFeet(ler.getAltitudeGained()) : ler.getAltitudeGained());
         stats.add(new String[]{
                 res.getString(R.string.altitude_gained),
                 String.format("%d " + feetMeters, altitude)});

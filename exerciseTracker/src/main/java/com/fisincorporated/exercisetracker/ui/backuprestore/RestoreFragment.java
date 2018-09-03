@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,11 +18,15 @@ import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.backupandrestore.GoogleDriveUtil;
 import com.fisincorporated.exercisetracker.backupandrestore.LocalBackupUtils;
+import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 import com.fisincorporated.exercisetracker.ui.drive.DriveSignOnActivity;
 import com.fisincorporated.exercisetracker.ui.history.ActivityHistory;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerFragment;
 import com.fisincorporated.exercisetracker.ui.utils.ActivityDialogFragment;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+
+import javax.inject.Inject;
 
 import io.reactivex.Completable;
 import io.reactivex.disposables.CompositeDisposable;
@@ -31,7 +34,7 @@ import io.reactivex.disposables.CompositeDisposable;
 
 // code from http://stackoverflow.com/questions/6540906/android-simple-export-and-import-of-sqlite-com.fisincorporated.database
 // with slight modifications
-public class RestoreFragment extends Fragment {
+public class RestoreFragment extends ExerciseDaggerFragment {
 
     private static final String TAG = RestoreFragment.class.getSimpleName();
 
@@ -44,6 +47,9 @@ public class RestoreFragment extends Fragment {
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private GoogleSignInAccount signInAccount;
+
+    @Inject
+    TrackerDatabaseHelper databaseHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -102,7 +108,7 @@ public class RestoreFragment extends Fragment {
     private void runRestore(final int requestCode) {
         Completable completable;
         if (requestCode == RESTORE_FROM_LOCAL) {
-            completable = LocalBackupUtils.getRestoreLocalCompletable(getActivity().getApplicationContext(),getActivity().getApplicationContext().getPackageName(), GlobalValues.DATABASE_NAME);
+            completable = LocalBackupUtils.getRestoreLocalCompletable(getActivity().getApplicationContext(), getActivity().getApplicationContext().getPackageName(), GlobalValues.DATABASE_NAME);
             subscribeToCompletable(completable);
         } else {
             if (haveDriveAccess()) {
@@ -124,11 +130,21 @@ public class RestoreFragment extends Fragment {
 
     private void subscribeToCompletable(Completable completable) {
         completable.subscribe(() -> {
-                    displaySuccessfulRestoreDialog((getResources().getText(R.string.restore_successful)).toString());
+                    closeAndReopenDatabase();
                 },
                 throwable -> {
                     displayUnsuccessfulRestoreDialog((getResources().getText(R.string.restore_error, throwable.toString())).toString());
                 });
+    }
+
+    private void closeAndReopenDatabase() {
+        databaseHelper.closeAndReopenDatabase();
+        if (databaseHelper.getDatabase().isOpen()) {
+            displaySuccessfulRestoreDialog((getResources().getText(R.string.restore_successful)).toString());
+        }
+        else {
+            displayUnsuccessfulRestoreDialog(getResources().getText(R.string.restore_error, getString(R.string.database_not_successfully_reopened)).toString());
+        }
     }
 
     private void displaySuccessfulRestoreDialog(String message) {

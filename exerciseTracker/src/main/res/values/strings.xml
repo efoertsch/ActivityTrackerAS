@@ -312,7 +312,10 @@
     <string name="select_startup_photo">Hi There!\nYou can display your own photo on startup. Would you like to do that now?</string>
     <string name="select_startup_photo_later">Select later</string>
     <string name="default_photo_display">OK. I am going to display a photo hopefully to help inspire you. You can switch this to your own photo by selecting Settings/Startup Screen Photo"</string>
-
+    <string name="min_gps_altitude">Min. GPS Altitude</string>
+    <string name="max_gps_altitude">Max. GPS Altitude</string>
+    <string name="current_gps_altitude">Current GPS Altitude</string>
+    <string name="database_not_successfully_reopened">Database not successfully (re)opended.</string>
 
 
 </resources>

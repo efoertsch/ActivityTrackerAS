@@ -15,6 +15,10 @@ android {
         // For vector drawable icons in button/imageviews
         vectorDrawables.useSupportLibrary = true
 
+        // Set app version code and version name.
+        versionCode 22
+        versionName "1.7.4"
+
     }
 
     buildTypes {

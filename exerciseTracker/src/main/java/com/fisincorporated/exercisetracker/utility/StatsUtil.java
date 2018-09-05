@@ -21,16 +21,27 @@ import java.util.Date;
 
 public class StatsUtil {
 
-   private DisplayUnits displayUnits;
-   private Resources res;
+    private DisplayUnits displayUnits;
+    private Resources res;
 
-    public StatsUtil(DisplayUnits displayUnits, Context context){
+    /**
+     * For testing
+     * @return
+     */
+     public static StatsUtil getInstance() {
+        return new StatsUtil();
+    }
+
+    private StatsUtil() {
+    }
+
+    public StatsUtil(DisplayUnits displayUnits, Context context) {
         this.displayUnits = displayUnits;
         res = context.getResources();
     }
 
     public void formatActivityStats(ArrayList<String[]> stats,
-                                           LocationExerciseRecord ler, boolean currentlyActive) {
+                                    LocationExerciseRecord ler, boolean currentlyActive) {
         boolean isImperialDisplay = displayUnits.isImperialDisplay();
         String feetMeters = displayUnits.getFeetMeters();
         String milesKm = displayUnits.getMilesKm();
@@ -73,34 +84,33 @@ public class StatsUtil {
 
         int altitude;
 
-        altitude = Math.round(isImperialDisplay ?  metersToFeet(ler.getStartAltitude()) : ler.getStartAltitude());
+        altitude = Math.round(isImperialDisplay ? metersToFeet(ler.getStartAltitude()) : ler.getStartAltitude());
         stats.add(new String[]{res.getString(R.string.start_altitude), String.format("%d %s", altitude, feetMeters)});
 
-        altitude = Math.round(isImperialDisplay ?   metersToFeet(ler.getCurrentAltitude()) : ler.getCurrentAltitude());
+        altitude = Math.round(isImperialDisplay ? metersToFeet(ler.getCurrentAltitude()) : ler.getCurrentAltitude());
         if (currentlyActive) {
             stats.add(new String[]{res.getString(R.string.current_altitude), String.format("%d %s", altitude, feetMeters)});
         } else {
             stats.add(new String[]{res.getString(R.string.end_altitude), String.format("%d %s", altitude, feetMeters)});
         }
 
-        altitude = Math.round(isImperialDisplay ?  metersToFeet(ler.getMinAltitude()) : ler.getMinAltitude());
+        altitude = Math.round(isImperialDisplay ? metersToFeet(ler.getMinAltitude()) : ler.getMinAltitude());
         stats.add(new String[]{res.getString(R.string.min_altitude), String.format("%d %s", altitude, feetMeters)});
 
-        altitude = Math.round(isImperialDisplay ? (int)metersToFeet(ler.getMaxAltitude()) : ler.getMaxAltitude());
+        altitude = Math.round(isImperialDisplay ? (int) metersToFeet(ler.getMaxAltitude()) : ler.getMaxAltitude());
         stats.add(new String[]{res.getString(R.string.max_altitude), String.format("%d %s", altitude, feetMeters)});
 
-
-                altitude = (int) (isImperialDisplay ? (int)metersToFeet(ler.getAltitudeGained()) : ler.getAltitudeGained());
+        altitude = (int) (isImperialDisplay ? (int) metersToFeet(ler.getAltitudeGained()) : ler.getAltitudeGained());
         stats.add(new String[]{
                 res.getString(R.string.altitude_gained),
                 String.format("%d " + feetMeters, altitude)});
 
-        altitude = (int) (isImperialDisplay ? (int)metersToFeet(ler.getAltitudeLost()) : ler.getAltitudeLost());
+        altitude = (int) (isImperialDisplay ? (int) metersToFeet(ler.getAltitudeLost()) : ler.getAltitudeLost());
         stats.add(new String[]{
                 res.getString(R.string.altitude_lost),
                 String.format("%d " + feetMeters, altitude)});
 
-        altitude = (int) (isImperialDisplay ? (int)metersToFeet(ler.getAltitudeGained() - ler.getAltitudeLost())
+        altitude = (int) (isImperialDisplay ? (int) metersToFeet(ler.getAltitudeGained() - ler.getAltitudeLost())
                 : ler.getAltitudeGained() - ler.getAltitudeLost());
         stats.add(new String[]{
                 res.getString(R.string.overall_altitude_change),
@@ -109,32 +119,32 @@ public class StatsUtil {
     }
 
 
-    public  String makeFileNameReady(String fileName) {
+    public String makeFileNameReady(String fileName) {
         return fileName.replaceAll("[^a-zA-Z0-9.@-]", "_");
     }
 
-    public  String removeLtGt(String someString) {
+    public String removeLtGt(String someString) {
         return someString.replaceAll("[<>]", "_");
     }
 
-    public  float metersToFeet(float meters) {
+    public float metersToFeet(float meters) {
         return meters * 3.2808f;
     }
 
-    public  float feetToMeters(float feet) {
+    public float feetToMeters(float feet) {
         return feet / 3.2808f;
     }
 
-    public  float metersToMiles(float meters) {
+    public float metersToMiles(float meters) {
         return meters * 0.00062137f;
     }
 
-    public  float kilometersToMiles(float kilometers) {
+    public float kilometersToMiles(float kilometers) {
         return kilometers * 0.62137f;
     }
 
     //someDate must be in yyyy-mm-dd format
-    public  String formatDate(SimpleDateFormat dateFormat, String someDate) {
+    public String formatDate(SimpleDateFormat dateFormat, String someDate) {
         if (someDate.equalsIgnoreCase(GlobalValues.NO_DATE)) {
             return someDate;
         }
@@ -146,7 +156,7 @@ public class StatsUtil {
     }
 
     // cribbed code from http://stackoverflow.com/questions/9544737/read-file-from-assets
-    public  String readAssetFile(Context context, String filename) {
+    public String readAssetFile(Context context, String filename) {
         StringBuffer sb = new StringBuffer();
         try {
             BufferedReader reader = new BufferedReader(
@@ -166,7 +176,7 @@ public class StatsUtil {
 
 
     // from http://stackoverflow.com/questions/428918/how-can-i-increment-a-date-by-one-day-in-java
-    public  Date addDays(Date date, int days) {
+    public Date addDays(Date date, int days) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         cal.add(Calendar.DATE, days); //minus number would decrement the days
@@ -227,18 +237,17 @@ public class StatsUtil {
     }
 
     /**
-     *
-     * @param metersTraveled meters traveled between two points
-     * @param imperialDisplay true convert metersTraveled to miles and compare to distancePerMarker,
-     *                       false leave metersTraveled as is
+     * @param metersTraveled    meters traveled between two points
+     * @param imperialDisplay   true convert metersTraveled to miles and compare to distancePerMarker,
+     *                          false leave metersTraveled as is
      * @param distancePerMarker distance to cover for placing a marker
      * @return true if distance covered >= distancePerMarker else false
      */
-    public boolean coveredDistanceForMarker(float metersTraveled, boolean imperialDisplay, int distancePerMarker ){
-            return distancePerMarker <= calcDisplayDistance(metersTraveled,imperialDisplay);
+    public boolean coveredDistanceForMarker(float metersTraveled, boolean imperialDisplay, int distancePerMarker) {
+        return distancePerMarker <= calcDisplayDistance(metersTraveled, imperialDisplay);
     }
 
-    public  int calcDisplayDistance(float distanceInMeters, boolean imperialDisplay) {
+    public int calcDisplayDistance(float distanceInMeters, boolean imperialDisplay) {
         if (imperialDisplay) {
             // convert meters to miles
             return (int) (distanceInMeters * 3.28084) / 5280;

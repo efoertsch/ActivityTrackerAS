@@ -32,7 +32,8 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
     // version 2 - additional columns added to exercise and location/exercise
     // version 3 - no db change but update exercise usage and use for sorting in start exercise
     // version 4 - Drop program_setting table, add pin_every_x_miles to exercise table
-    // version 5 - Added min, max and current GPS altitude to db and display
+    // version 5 - Added min, max and current GPS altitude, timezone and gmt offset
+    //
     private static final int DATABASE_VERSION = 5;
 
     private Context context;
@@ -106,7 +107,7 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
 
         // initial load of tables
         loadExerciseTableIfNeeded(db);
-        loadExerciseTable(db);
+
 
     }
 
@@ -144,6 +145,14 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
                     + "  ADD COLUMN " + LocationExercise.MAX_ALTITUDE + " NUMBER NOT NULL DEFAULT 0");
             db.execSQL("ALTER TABLE " + LocationExercise.LOCATION_EXERCISE_TABLE
                     + "  ADD COLUMN " + LocationExercise.CURRENT_ALTITUDE + " NUMBER NOT NULL DEFAULT 0");
+
+            db.execSQL("ALTER TABLE " + LocationExercise.LOCATION_EXERCISE_TABLE
+                    + "  ADD COLUMN " + LocationExercise.TIMEZONE + " TEXT  DEFAULT '' ");
+            db.execSQL("ALTER TABLE " + LocationExercise.LOCATION_EXERCISE_TABLE
+                    + "  ADD COLUMN " + LocationExercise.GMT_HOUR_OFFSET + " INTEGER NOT NULL DEFAULT 0 ");
+            db.execSQL("ALTER TABLE " + LocationExercise.LOCATION_EXERCISE_TABLE
+                    + "  ADD COLUMN " + LocationExercise.GMT_MINUTE_OFFSET + " INTEGER NOT NULL DEFAULT 0 ");
+
 
             db.execSQL("update location_exercise set current_altitude = (select elevation from  (select location_exercise_id, elevation from gpslog a where timestamp = (select max(timestamp) from gpslog b where a.location_exercise_id = b.location_exercise_id)) c where c.location_exercise_id = _id )");
             db.execSQL("update location_exercise set min_altitude = (select elevation from  (select location_exercise_id, min(elevation) elevation from gpslog group by location_exercise_id) b where b.location_exercise_id = location_exercise._id)");

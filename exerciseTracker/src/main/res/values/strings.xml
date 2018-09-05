@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="about_activity_tracker">ActivityTracker was created solely as an exercise to learn Android programming.\n\nThe activity graph is implemented using MPAndroidChart.\n</string>
     <string name="activity">Activity</string>
     <string name="activity_asc">Activity ascending</string>
     <string name="activity_desc">Activity descending</string>
@@ -312,7 +311,12 @@
     <string name="select_startup_photo">Hi There!\nYou can display your own photo on startup. Would you like to do that now?</string>
     <string name="select_startup_photo_later">Select later</string>
     <string name="default_photo_display">OK. I am going to display a photo hopefully to help inspire you. You can switch this to your own photo by selecting Settings/Startup Screen Photo"</string>
-
+    <string name="min_altitude">Min. Altitude</string>
+    <string name="max_altitude">Max. Altitude</string>
+    <string name="current_altitude">Current Altitude</string>
+    <string name="database_not_successfully_reopened">Database not successfully (re)opended.</string>
+    <string name="start_altitude">Start Altitude</string>
+    <string name="end_altitude">End Altitude</string>
 
 
 </resources>

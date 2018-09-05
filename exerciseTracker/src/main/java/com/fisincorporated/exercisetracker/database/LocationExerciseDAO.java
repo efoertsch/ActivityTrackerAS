@@ -96,6 +96,21 @@ public class LocationExerciseDAO extends BaseDAO {
 					.getMaxSpeedToPoint().toString());
 		}
 
+		if (ler.getCurrentAltitude() != null) {
+			values.put(LocationExercise.CURRENT_ALTITUDE, ler
+					.getCurrentAltitude().toString());
+		}
+
+		if (ler.getMinAltitude() != null) {
+			values.put(LocationExercise.MIN_ALTITUDE, ler
+					.getMinAltitude().toString());
+		}
+
+		if (ler.getMaxAltitude() != null) {
+			values.put(LocationExercise.MAX_ALTITUDE, ler
+					.getMaxAltitude().toString());
+		}
+
 		try {
 			rowId = database.insert(LocationExercise.LOCATION_EXERCISE_TABLE,
 					null, values);
@@ -186,6 +201,21 @@ public class LocationExerciseDAO extends BaseDAO {
 		if (ler.getMaxSpeedToPoint() != null) {
 			values.put(LocationExercise.MAX_SPEED_TO_POINT, ler
 					.getMaxSpeedToPoint().toString());
+		}
+
+		if (ler.getCurrentAltitude() != null) {
+			values.put(LocationExercise.CURRENT_ALTITUDE, ler
+					.getCurrentAltitude().toString());
+		}
+
+		if (ler.getMinAltitude() != null) {
+			values.put(LocationExercise.MIN_ALTITUDE, ler
+					.getMinAltitude().toString());
+		}
+
+		if (ler.getMaxAltitude() != null) {
+			values.put(LocationExercise.MAX_ALTITUDE, ler
+					.getMaxAltitude().toString());
 		}
 
 		try {
@@ -400,6 +430,27 @@ public class LocationExerciseDAO extends BaseDAO {
 						LocationExercise.MAX_SPEED_TO_POINT)) {
 					if (csr.getString(columnIndex) != null) {
 						ler.setMaxSpeedToPoint(csr.getFloat(columnIndex));
+					}
+					continue;
+				}
+				if (csr.getColumnName(columnIndex).equalsIgnoreCase(
+						LocationExercise.CURRENT_ALTITUDE)) {
+					if (csr.getString(columnIndex) != null) {
+						ler.setCurrentAltitude(csr.getFloat(columnIndex));
+					}
+					continue;
+				}
+				if (csr.getColumnName(columnIndex).equalsIgnoreCase(
+						LocationExercise.MIN_ALTITUDE)) {
+					if (csr.getString(columnIndex) != null) {
+						ler.setMinAltitude(csr.getFloat(columnIndex));
+					}
+					continue;
+				}
+				if (csr.getColumnName(columnIndex).equalsIgnoreCase(
+						LocationExercise.MAX_ALTITUDE)) {
+					if (csr.getString(columnIndex) != null) {
+						ler.setMaxAltitude(csr.getFloat(columnIndex));
 					}
 					continue;
 				}

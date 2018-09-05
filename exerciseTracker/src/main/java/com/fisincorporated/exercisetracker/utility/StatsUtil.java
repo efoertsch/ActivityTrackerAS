@@ -30,7 +30,7 @@ public class StatsUtil {
     }
 
     public void formatActivityStats(ArrayList<String[]> stats,
-                                           LocationExerciseRecord ler) {
+                                           LocationExerciseRecord ler, boolean currentlyActive) {
         boolean isImperialDisplay = displayUnits.isImperialDisplay();
         String feetMeters = displayUnits.getFeetMeters();
         String milesKm = displayUnits.getMilesKm();
@@ -71,7 +71,26 @@ public class StatsUtil {
                         isImperialDisplay ? kilometersToMiles(ler.getMaxSpeedToPoint())
                                 : ler.getMaxSpeedToPoint())});
 
-        int altitude = (int) (isImperialDisplay ? (int)metersToFeet(ler.getAltitudeGained()) : ler.getAltitudeGained());
+        int altitude;
+
+        altitude = Math.round(isImperialDisplay ?  metersToFeet(ler.getStartAltitude()) : ler.getStartAltitude());
+        stats.add(new String[]{res.getString(R.string.start_altitude), String.format("%d %s", altitude, feetMeters)});
+
+        altitude = Math.round(isImperialDisplay ?   metersToFeet(ler.getCurrentAltitude()) : ler.getCurrentAltitude());
+        if (currentlyActive) {
+            stats.add(new String[]{res.getString(R.string.current_altitude), String.format("%d %s", altitude, feetMeters)});
+        } else {
+            stats.add(new String[]{res.getString(R.string.end_altitude), String.format("%d %s", altitude, feetMeters)});
+        }
+
+        altitude = Math.round(isImperialDisplay ?  metersToFeet(ler.getMinAltitude()) : ler.getMinAltitude());
+        stats.add(new String[]{res.getString(R.string.min_altitude), String.format("%d %s", altitude, feetMeters)});
+
+        altitude = Math.round(isImperialDisplay ? (int)metersToFeet(ler.getMaxAltitude()) : ler.getMaxAltitude());
+        stats.add(new String[]{res.getString(R.string.max_altitude), String.format("%d %s", altitude, feetMeters)});
+
+
+                altitude = (int) (isImperialDisplay ? (int)metersToFeet(ler.getAltitudeGained()) : ler.getAltitudeGained());
         stats.add(new String[]{
                 res.getString(R.string.altitude_gained),
                 String.format("%d " + feetMeters, altitude)});

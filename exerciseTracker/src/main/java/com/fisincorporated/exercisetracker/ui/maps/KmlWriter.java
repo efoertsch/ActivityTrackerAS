@@ -183,7 +183,7 @@ public class KmlWriter {
         StringBuilder sb = new StringBuilder();
         sb.append(context.getString(R.string.my_activity_statistics, title)).append(newline).append(newline);
 
-        statsUtil.formatActivityStats(stats, ler);
+        statsUtil.formatActivityStats(stats, ler, false);
         for (int i = 0; i < stats.size(); ++i) {
             sb.append(stats.get(i)[0]).append(":\t").append(stats.get(i)[1]).append(newline);
         }

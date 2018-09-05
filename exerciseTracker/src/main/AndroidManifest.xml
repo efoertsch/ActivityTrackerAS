@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.fisincorporated.exercisetracker"
           android:installLocation="auto"
-          android:versionCode="21"
-          android:versionName="1.7.3">
+          android:versionCode="22"
+          android:versionName="1.7.4">
 
     <uses-feature
         android:glEsVersion="0x00020000"

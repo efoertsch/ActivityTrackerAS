@@ -30,6 +30,7 @@ import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 import com.fisincorporated.exercisetracker.utility.StatsUtil;
+import com.fisincorporated.exercisetracker.utility.TimeZoneUtils;
 import com.jakewharton.rxrelay2.PublishRelay;
 
 import java.sql.Timestamp;
@@ -79,12 +80,15 @@ public class GPSLocationManager {
 
     private StatsUtil statsUtil;
     private PublishRelay<Object> publishRelay;
-    private TrackerDatabaseHelper trackerDatabaseHelper;
+    private TimeZoneUtils timeZoneUtils;
 
-    public GPSLocationManager(Context appContext, StatsUtil statsUtil, PublishRelay<Object> publishRelay, TrackerDatabaseHelper trackerDatabaseHelper) {
+    public GPSLocationManager(Context appContext, StatsUtil statsUtil
+            , PublishRelay<Object> publishRelay, TrackerDatabaseHelper trackerDatabaseHelper
+            , TimeZoneUtils timeZoneUtils) {
         sAppContext = appContext;
         this.statsUtil = statsUtil;
         this.publishRelay = publishRelay;
+        this.timeZoneUtils = timeZoneUtils;
         sLocationManager = (LocationManager) sAppContext
                 .getSystemService(Context.LOCATION_SERVICE);
         sPrefs = sAppContext.getSharedPreferences(PREFS_FILE,
@@ -257,6 +261,10 @@ public class GPSLocationManager {
             ler.setCurrentAltitude((float) altitude );
             ler.setMinAltitude((float) altitude);
             ler.setMaxAltitude((float) altitude);
+            ler.setTimezone(timeZoneUtils.getDeviceTimeZone());
+            ler.setGmtHourOffset(timeZoneUtils.getGmtHourOffset());
+            ler.setGmtMinuteOffset(timeZoneUtils.getGmtMinuteOffest());
+
 
         } else {
             // 2nd or subsequent time or restarting so calc distance from where you

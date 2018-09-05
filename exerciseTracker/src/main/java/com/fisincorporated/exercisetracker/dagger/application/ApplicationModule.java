@@ -11,6 +11,7 @@ import com.fisincorporated.exercisetracker.ui.logger.GPSLocationManager;
 import com.fisincorporated.exercisetracker.ui.utils.DisplayUnits;
 import com.fisincorporated.exercisetracker.utility.PhotoUtils;
 import com.fisincorporated.exercisetracker.utility.StatsUtil;
+import com.fisincorporated.exercisetracker.utility.TimeZoneUtils;
 import com.jakewharton.rxrelay2.PublishRelay;
 
 import javax.inject.Singleton;
@@ -52,8 +53,16 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    GPSLocationManager provideGpsLocationManager(Context context, StatsUtil statsUtil, PublishRelay<Object> publishRelay, TrackerDatabaseHelper trackerDatabaseHelper) {
-        return new GPSLocationManager(context, statsUtil, publishRelay, trackerDatabaseHelper);
+    TimeZoneUtils provideTimeZoneUtils() {
+        return new TimeZoneUtils();
+    }
+
+    @Provides
+    @Singleton
+    GPSLocationManager provideGpsLocationManager(Context context, StatsUtil statsUtil
+            , PublishRelay<Object> publishRelay
+            , TrackerDatabaseHelper trackerDatabaseHelper, TimeZoneUtils timeZoneUtils) {
+        return new GPSLocationManager(context, statsUtil, publishRelay, trackerDatabaseHelper, timeZoneUtils);
     }
 
     // RxJava Bus to replace callback interfaces

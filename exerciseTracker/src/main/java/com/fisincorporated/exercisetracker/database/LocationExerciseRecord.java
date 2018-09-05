@@ -31,6 +31,9 @@ public class LocationExerciseRecord implements Comparable<LocationExerciseRecord
     private Float maxAltitude = null;
     //current or last GPS altitude recorded
     private Float currentAltitude = null;
+    private String timezone = null;
+    private Integer gmtHourOffset = null;
+    private Integer gmtMinuteOffset = null;
 
     private boolean mSelectable = true;
 
@@ -41,10 +44,11 @@ public class LocationExerciseRecord implements Comparable<LocationExerciseRecord
     public LocationExerciseRecord(Long _id, Long locationId, Long exerciseId,
                                   String description, Timestamp startTimestamp, Timestamp endTimestamp,
                                   Integer distance, Float averageSpeed, Float startAltitude,
-                                  Float endAltitude, Float altitudeGained, Float altitudeLost
-            , Float startLatitude, Float startLongitude, Float endLatitude,
-                                  Float endLongitude, Integer logInterval, Integer logDetail, Float maxSpeedToPoint
-            , Float minAltitude, Float maxAltitude, Float currentAltitude) {
+                                  Float endAltitude, Float altitudeGained, Float altitudeLost,
+                                  Float startLatitude, Float startLongitude, Float endLatitude,
+                                  Float endLongitude, Integer logInterval, Integer logDetail, Float maxSpeedToPoint,
+                                  Float minAltitude, Float maxAltitude, Float currentAltitude,
+                                  String timezone, Integer gmtHourOffset, Integer gmtMinuteOffset) {
         super();
         this._id = _id;
         this.locationId = locationId;
@@ -68,6 +72,9 @@ public class LocationExerciseRecord implements Comparable<LocationExerciseRecord
         this.minAltitude = minAltitude;
         this.maxAltitude = maxAltitude;
         this.currentAltitude = currentAltitude;
+        this.timezone = timezone;
+        this.gmtHourOffset = gmtHourOffset;
+        this.gmtMinuteOffset = gmtMinuteOffset;
     }
 
     public boolean isSelectable() {
@@ -263,6 +270,30 @@ public class LocationExerciseRecord implements Comparable<LocationExerciseRecord
         this.currentAltitude = currentAltitude;
     }
 
+    public String getTimezone() {
+        return timezone;
+    }
+
+    public void setTimezone(String timezone) {
+        this.timezone = timezone;
+    }
+
+    public Integer getGmtHourOffset() {
+        return gmtHourOffset;
+    }
+
+    public void setGmtHourOffset(Integer gmtHourOffset) {
+        this.gmtHourOffset = gmtHourOffset;
+    }
+
+    public Integer getGmtMinuteOffset() {
+        return gmtMinuteOffset;
+    }
+
+    public void setGmtMinuteOffset(Integer gmtMinuteOffset) {
+        this.gmtMinuteOffset = gmtMinuteOffset;
+    }
+
     public static final Parcelable.Creator<LocationExerciseRecord> CREATOR = new Parcelable.Creator<LocationExerciseRecord>() {
 
         public LocationExerciseRecord createFromParcel(Parcel src) {
@@ -427,6 +458,29 @@ public class LocationExerciseRecord implements Comparable<LocationExerciseRecord
         } else {
             dest.writeInt(0);
         }
+
+        if (timezone != null){
+            dest.writeInt(1);
+            dest.writeString(timezone);
+        } else {
+            dest.writeInt(0);
+        }
+
+        if (gmtHourOffset != null){
+            dest.writeInt(1);
+            dest.writeInt(gmtHourOffset);
+        } else {
+            dest.writeInt(0);
+        }
+
+        if (gmtMinuteOffset != null){
+            dest.writeInt(1);
+            dest.writeInt(gmtMinuteOffset);
+        } else {
+            dest.writeInt(0);
+        }
+
+
     }
 
     // make sure order of reads same as writes
@@ -499,6 +553,20 @@ public class LocationExerciseRecord implements Comparable<LocationExerciseRecord
         }
         if (1 == src.readInt()) {
             currentAltitude = src.readFloat();
+        }
+        if (1 == src.readInt()){
+            timezone = src.readString();
+        }
+        if (1 == src.readInt()){
+            gmtHourOffset = src.readInt();
+        } else {
+            gmtHourOffset = 0;
+        }
+
+        if (1 == src.readInt()){
+            gmtMinuteOffset = src.readInt();
+        } else {
+            gmtMinuteOffset = 0;
         }
 
     }

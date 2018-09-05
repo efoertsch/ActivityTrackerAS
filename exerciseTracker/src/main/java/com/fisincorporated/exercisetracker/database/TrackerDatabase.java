@@ -100,6 +100,9 @@ public final class TrackerDatabase {
         public static final String MIN_ALTITUDE = "min_altitude";
         public static final String MAX_ALTITUDE = "max_altitude";
         public static final String CURRENT_ALTITUDE = "current_altitude";
+        public static final String TIMEZONE = "timezone";
+        public static final String GMT_HOUR_OFFSET = "gmt_hour_offset";
+        public static final String GMT_MINUTE_OFFSET = "gmt_minute_offset";
 
         public static final String DEFAULT_SORT_ORDER = START_TIMESTAMP + " ASC";
 
@@ -109,11 +112,12 @@ public final class TrackerDatabase {
                 END_TIMESTAMP, DISTANCE, AVERAGE_SPEED, START_ALTITUDE, END_ALTITUDE,
                 ALTITUDE_GAINED, ALTITUDE_LOST, START_LATITUDE, START_LONGITUDE,
                 END_LATITUDE, END_LONGITUDE, LOG_INTERVAL, LOG_DETAIL,
-                MAX_SPEED_TO_POINT, MAX_ALTITUDE, MIN_ALTITUDE, CURRENT_ALTITUDE};
+                MAX_SPEED_TO_POINT, MIN_ALTITUDE, MAX_ALTITUDE, CURRENT_ALTITUDE
+                ,TIMEZONE, GMT_HOUR_OFFSET, GMT_MINUTE_OFFSET};
     }
 
 
-    // Create the Type of Activity table (Alpine Skiing, Biking, ...
+    // Make sure to leave space between column name and column attribute!!!!
     public static String getCreateExerciseLocationTableSQL() {
         return "CREATE TABLE IF NOT EXISTS  " + LocationExercise.LOCATION_EXERCISE_TABLE
                 + "  (" + LocationExercise._ID
@@ -138,10 +142,13 @@ public final class TrackerDatabase {
                 + LocationExercise.END_LONGITUDE + " NUMBER , "
                 + LocationExercise.LOG_INTERVAL + " NUMBER, "
                 + LocationExercise.LOG_DETAIL + " INTEGER NOT NULL DEFAULT 0, "
-                + LocationExercise.MAX_SPEED_TO_POINT + " NUMBER NOT NULL DEFAULT 0,"
-                + LocationExercise.MIN_ALTITUDE + "NUMBER NOT NULL DEFAULT 0,"
-                + LocationExercise.MAX_ALTITUDE + "NUMBER NOT NULL DEFAULT 0,"
-                + LocationExercise.CURRENT_ALTITUDE + "NUMBER NOT NULL DEFAULT 0"
+                + LocationExercise.MAX_SPEED_TO_POINT + " NUMBER NOT NULL DEFAULT 0, "
+                + LocationExercise.MIN_ALTITUDE + " NUMBER NOT NULL DEFAULT 0 ,"
+                + LocationExercise.MAX_ALTITUDE +  " NUMBER NOT NULL DEFAULT 0, "
+                + LocationExercise.CURRENT_ALTITUDE + " NUMBER NOT NULL DEFAULT 0, "
+                + LocationExercise.TIMEZONE + " TEXT,"
+                + LocationExercise.GMT_HOUR_OFFSET + " INTEGER NOT NULL DEFAULT 0, "
+                + LocationExercise.GMT_MINUTE_OFFSET + " INTEGER NOT NULL DEFAULT 0"
                 + ");";
 
     }

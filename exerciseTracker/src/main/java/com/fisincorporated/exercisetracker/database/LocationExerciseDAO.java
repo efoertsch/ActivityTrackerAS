@@ -111,6 +111,19 @@ public class LocationExerciseDAO extends BaseDAO {
 					.getMaxAltitude().toString());
 		}
 
+		if (ler.getTimezone() != null) {
+			values.put(LocationExercise.TIMEZONE, ler.getTimezone());
+		}
+
+		if (ler.getGmtHourOffset() != null) {
+			values.put(LocationExercise.GMT_HOUR_OFFSET, ler.getGmtHourOffset());
+		}
+
+		if (ler.getGmtMinuteOffset() != null) {
+			values.put(LocationExercise.GMT_MINUTE_OFFSET, ler.getGmtMinuteOffset());
+		}
+
+
 		try {
 			rowId = database.insert(LocationExercise.LOCATION_EXERCISE_TABLE,
 					null, values);
@@ -216,6 +229,19 @@ public class LocationExerciseDAO extends BaseDAO {
 		if (ler.getMaxAltitude() != null) {
 			values.put(LocationExercise.MAX_ALTITUDE, ler
 					.getMaxAltitude().toString());
+		}
+
+		if (ler.getTimezone() != null) {
+			values.put(LocationExercise.TIMEZONE, ler
+					.getTimezone());
+		}
+
+		if (ler.getGmtHourOffset() != null) {
+			values.put(LocationExercise.GMT_HOUR_OFFSET, ler.getGmtHourOffset().toString());
+		}
+
+		if (ler.getGmtMinuteOffset() != null) {
+			values.put(LocationExercise.GMT_MINUTE_OFFSET, ler.getGmtMinuteOffset().toString());
 		}
 
 		try {
@@ -433,13 +459,7 @@ public class LocationExerciseDAO extends BaseDAO {
 					}
 					continue;
 				}
-				if (csr.getColumnName(columnIndex).equalsIgnoreCase(
-						LocationExercise.CURRENT_ALTITUDE)) {
-					if (csr.getString(columnIndex) != null) {
-						ler.setCurrentAltitude(csr.getFloat(columnIndex));
-					}
-					continue;
-				}
+
 				if (csr.getColumnName(columnIndex).equalsIgnoreCase(
 						LocationExercise.MIN_ALTITUDE)) {
 					if (csr.getString(columnIndex) != null) {
@@ -454,6 +474,35 @@ public class LocationExerciseDAO extends BaseDAO {
 					}
 					continue;
 				}
+				if (csr.getColumnName(columnIndex).equalsIgnoreCase(
+						LocationExercise.CURRENT_ALTITUDE)) {
+					if (csr.getString(columnIndex) != null) {
+						ler.setCurrentAltitude(csr.getFloat(columnIndex));
+					}
+					continue;
+				}
+				if (csr.getColumnName(columnIndex).equalsIgnoreCase(
+						LocationExercise.TIMEZONE)) {
+					if (csr.getString(columnIndex) != null) {
+						ler.setTimezone(csr.getString(columnIndex));
+					}
+					continue;
+				}
+				if (csr.getColumnName(columnIndex).equalsIgnoreCase(
+						LocationExercise.GMT_HOUR_OFFSET)) {
+					if (csr.getString(columnIndex) != null) {
+						ler.setGmtHourOffset(csr.getInt(columnIndex));
+					}
+					continue;
+				}
+				if (csr.getColumnName(columnIndex).equalsIgnoreCase(
+						LocationExercise.GMT_MINUTE_OFFSET)) {
+					if (csr.getString(columnIndex) != null) {
+						ler.setGmtMinuteOffset(csr.getInt(columnIndex));
+					}
+					continue;
+				}
+
 			}
 		} catch (SQLException sqle) {
 			Log.e(GlobalValues.LOG_TAG,

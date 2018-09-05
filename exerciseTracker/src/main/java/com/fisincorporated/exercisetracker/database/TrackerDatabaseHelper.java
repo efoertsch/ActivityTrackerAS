@@ -139,11 +139,15 @@ public class TrackerDatabaseHelper extends SQLiteOpenHelper {
 
         if (oldVersion < 5) {
             db.execSQL("ALTER TABLE " + LocationExercise.LOCATION_EXERCISE_TABLE
-                    + "  ADD COLUMN " + LocationExercise.MIN_GPS_ALTITUDE + " NUMBER NOT NULL DEFAULT 0");
+                    + "  ADD COLUMN " + LocationExercise.MIN_ALTITUDE + " NUMBER NOT NULL DEFAULT 0");
             db.execSQL("ALTER TABLE " + LocationExercise.LOCATION_EXERCISE_TABLE
-                    + "  ADD COLUMN " + LocationExercise.MAX_GPS_ALTITUDE + " NUMBER NOT NULL DEFAULT 0");
+                    + "  ADD COLUMN " + LocationExercise.MAX_ALTITUDE + " NUMBER NOT NULL DEFAULT 0");
             db.execSQL("ALTER TABLE " + LocationExercise.LOCATION_EXERCISE_TABLE
-                    + "  ADD COLUMN " + LocationExercise.CURRENT_GPS_ALTITUDE + " NUMBER NOT NULL DEFAULT 0");
+                    + "  ADD COLUMN " + LocationExercise.CURRENT_ALTITUDE + " NUMBER NOT NULL DEFAULT 0");
+
+            db.execSQL("update location_exercise set current_altitude = (select elevation from  (select location_exercise_id, elevation from gpslog a where timestamp = (select max(timestamp) from gpslog b where a.location_exercise_id = b.location_exercise_id)) c where c.location_exercise_id = _id )");
+            db.execSQL("update location_exercise set min_altitude = (select elevation from  (select location_exercise_id, min(elevation) elevation from gpslog group by location_exercise_id) b where b.location_exercise_id = location_exercise._id)");
+            db.execSQL("update location_exercise set max_altitude = (select elevation from  (select location_exercise_id, max(elevation) elevation from gpslog group by location_exercise_id) b where b.location_exercise_id = location_exercise._id)");
         }
     }
 

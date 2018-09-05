@@ -97,9 +97,9 @@ public final class TrackerDatabase {
         public static final String LOG_INTERVAL = "log_interval";
         public static final String LOG_DETAIL = "log_detail";
         public static final String MAX_SPEED_TO_POINT = "max_speed_to_point";
-        public static final String MIN_GPS_ALTITUDE = "min_gps_altitude";
-        public static final String MAX_GPS_ALTITUDE = "max_gps_altitude";
-        public static final String CURRENT_GPS_ALTITUDE = "current_gps_altitude";
+        public static final String MIN_ALTITUDE = "min_altitude";
+        public static final String MAX_ALTITUDE = "max_altitude";
+        public static final String CURRENT_ALTITUDE = "current_altitude";
 
         public static final String DEFAULT_SORT_ORDER = START_TIMESTAMP + " ASC";
 
@@ -109,7 +109,7 @@ public final class TrackerDatabase {
                 END_TIMESTAMP, DISTANCE, AVERAGE_SPEED, START_ALTITUDE, END_ALTITUDE,
                 ALTITUDE_GAINED, ALTITUDE_LOST, START_LATITUDE, START_LONGITUDE,
                 END_LATITUDE, END_LONGITUDE, LOG_INTERVAL, LOG_DETAIL,
-                MAX_SPEED_TO_POINT, MAX_GPS_ALTITUDE, MIN_GPS_ALTITUDE, CURRENT_GPS_ALTITUDE};
+                MAX_SPEED_TO_POINT, MAX_ALTITUDE, MIN_ALTITUDE, CURRENT_ALTITUDE};
     }
 
 
@@ -139,9 +139,9 @@ public final class TrackerDatabase {
                 + LocationExercise.LOG_INTERVAL + " NUMBER, "
                 + LocationExercise.LOG_DETAIL + " INTEGER NOT NULL DEFAULT 0, "
                 + LocationExercise.MAX_SPEED_TO_POINT + " NUMBER NOT NULL DEFAULT 0,"
-                + LocationExercise.MIN_GPS_ALTITUDE + "INTEGER NOT NULL DEFAULT 0,"
-                + LocationExercise.MAX_GPS_ALTITUDE + "INTEGER NOT NULL DEFAULT 0,"
-                + LocationExercise.CURRENT_GPS_ALTITUDE + "INTEGER NOT NULL DEFAULT 0"
+                + LocationExercise.MIN_ALTITUDE + "NUMBER NOT NULL DEFAULT 0,"
+                + LocationExercise.MAX_ALTITUDE + "NUMBER NOT NULL DEFAULT 0,"
+                + LocationExercise.CURRENT_ALTITUDE + "NUMBER NOT NULL DEFAULT 0"
                 + ");";
 
     }

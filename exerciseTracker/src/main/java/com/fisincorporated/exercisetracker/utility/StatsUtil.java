@@ -73,16 +73,21 @@ public class StatsUtil {
 
         int altitude;
 
+        altitude = Math.round(isImperialDisplay ?  metersToFeet(ler.getStartAltitude()) : ler.getStartAltitude());
+        stats.add(new String[]{res.getString(R.string.start_altitude), String.format("%d %s", altitude, feetMeters)});
+
+        altitude = Math.round(isImperialDisplay ?   metersToFeet(ler.getCurrentAltitude()) : ler.getCurrentAltitude());
         if (currentlyActive) {
-            altitude = (isImperialDisplay ? (int) metersToFeet(ler.getCurrentGpsAltitude()) : ler.getCurrentGpsAltitude());
-            stats.add(new String[]{res.getString(R.string.current_gps_altitude), String.format("%d %s", altitude, feetMeters)});
+            stats.add(new String[]{res.getString(R.string.current_altitude), String.format("%d %s", altitude, feetMeters)});
+        } else {
+            stats.add(new String[]{res.getString(R.string.end_altitude), String.format("%d %s", altitude, feetMeters)});
         }
 
-        altitude = (isImperialDisplay ? (int)metersToFeet(ler.getMinGpsAltitude()) : ler.getMinGpsAltitude());
-        stats.add(new String[]{res.getString(R.string.min_gps_altitude), String.format("%d %s", altitude, feetMeters)});
+        altitude = Math.round(isImperialDisplay ?  metersToFeet(ler.getMinAltitude()) : ler.getMinAltitude());
+        stats.add(new String[]{res.getString(R.string.min_altitude), String.format("%d %s", altitude, feetMeters)});
 
-        altitude = (isImperialDisplay ? (int)metersToFeet(ler.getMaxGpsAltitude()) : ler.getMaxGpsAltitude());
-        stats.add(new String[]{res.getString(R.string.max_gps_altitude), String.format("%d %s", altitude, feetMeters)});
+        altitude = Math.round(isImperialDisplay ? (int)metersToFeet(ler.getMaxAltitude()) : ler.getMaxAltitude());
+        stats.add(new String[]{res.getString(R.string.max_altitude), String.format("%d %s", altitude, feetMeters)});
 
 
                 altitude = (int) (isImperialDisplay ? (int)metersToFeet(ler.getAltitudeGained()) : ler.getAltitudeGained());

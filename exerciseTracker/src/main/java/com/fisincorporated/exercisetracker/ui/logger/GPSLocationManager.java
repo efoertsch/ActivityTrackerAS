@@ -253,10 +253,10 @@ public class GPSLocationManager {
             ler.setAverageSpeed(0f);
             ler.setMaxSpeedToPoint(0f);
 
-            altitude = location.getAltitude() < 0 ? 0 : location.getAltitude();
-            ler.setCurrentGpsAltitude((int) altitude );
-            ler.setMinGpsAltitude((int) altitude);
-            ler.setMaxGpsAltitude((int) altitude);
+            altitude = location.getAltitude();
+            ler.setCurrentAltitude((float) altitude );
+            ler.setMinAltitude((float) altitude);
+            ler.setMaxAltitude((float) altitude);
 
         } else {
             // 2nd or subsequent time or restarting so calc distance from where you
@@ -267,7 +267,7 @@ public class GPSLocationManager {
             // see if elevation difference should be taken into account for
             // calc'ing distance from last point
             if (sElevationInDistcalcs == 0) {
-                distance = (int) Math.round(results[0]);
+                distance =  Math.round(results[0]);
             } else {
                 distance = (int) Math
                         .round(Math.hypot(
@@ -280,7 +280,6 @@ public class GPSLocationManager {
             altitudeLost = ler.getAltitudeLost();
 
             altitude = location.getAltitude();
-            altitude = altitude < 0 ? 0 : altitude;
 
             if (altitude > ler.getEndAltitude()) {
                 altitudeGained += altitude - ler.getEndAltitude();
@@ -304,14 +303,14 @@ public class GPSLocationManager {
             ler.setEndTimestamp(new Timestamp(location.getTime()));
             ler.setEndLatitude((float) location.getLatitude());
             ler.setEndLongitude((float) (location.getLongitude()));
-            ler.setEndAltitude((float) (location.getAltitude()));
+            ler.setEndAltitude((float)altitude);
 
-            ler.setCurrentGpsAltitude((int) altitude);
-            if (altitude < ler.getMinGpsAltitude()) {
-                ler.setMinGpsAltitude((int) altitude);
+            ler.setCurrentAltitude( (float) altitude);
+            if (altitude < ler.getMinAltitude()) {
+                ler.setMinAltitude( (float)altitude);
             }
-            if (altitude > ler.getMaxGpsAltitude()) {
-                ler.setMaxGpsAltitude((int) altitude);
+            if (altitude > ler.getMaxAltitude()) {
+                ler.setMaxAltitude( (float) altitude);
             }
         }
         sLeDAO.updateLocationExercise(ler);

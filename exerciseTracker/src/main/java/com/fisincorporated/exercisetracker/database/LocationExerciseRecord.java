@@ -27,10 +27,10 @@ public class LocationExerciseRecord implements Comparable<LocationExerciseRecord
     private Integer logInterval = null;
     private Integer logDetail = null;
     private Float maxSpeedToPoint = null;
-    private Integer minGpsAltitude = null;
-    private Integer maxGpsAltitude = null;
+    private Float minAltitude = null;
+    private Float maxAltitude = null;
     //current or last GPS altitude recorded
-    private Integer currentGpsAltitude = null;
+    private Float currentAltitude = null;
 
     private boolean mSelectable = true;
 
@@ -44,7 +44,7 @@ public class LocationExerciseRecord implements Comparable<LocationExerciseRecord
                                   Float endAltitude, Float altitudeGained, Float altitudeLost
             , Float startLatitude, Float startLongitude, Float endLatitude,
                                   Float endLongitude, Integer logInterval, Integer logDetail, Float maxSpeedToPoint
-            , Integer minGpsAltitude, Integer maxGpsAltitude, Integer currentGpsAltitude) {
+            , Float minAltitude, Float maxAltitude, Float currentAltitude) {
         super();
         this._id = _id;
         this.locationId = locationId;
@@ -65,9 +65,9 @@ public class LocationExerciseRecord implements Comparable<LocationExerciseRecord
         this.logInterval = logInterval;
         this.logDetail = logDetail;
         this.maxSpeedToPoint = maxSpeedToPoint;
-        this.minGpsAltitude = minGpsAltitude;
-        this.maxGpsAltitude = maxGpsAltitude;
-        this.currentGpsAltitude = currentGpsAltitude;
+        this.minAltitude = minAltitude;
+        this.maxAltitude = maxAltitude;
+        this.currentAltitude = currentAltitude;
     }
 
     public boolean isSelectable() {
@@ -239,28 +239,28 @@ public class LocationExerciseRecord implements Comparable<LocationExerciseRecord
         this.maxSpeedToPoint = maxSpeedToPoint;
     }
 
-    public Integer getMinGpsAltitude() {
-        return minGpsAltitude;
+    public Float getMinAltitude() {
+        return minAltitude;
     }
 
-    public void setMinGpsAltitude(Integer minGpsAltitude) {
-        this.minGpsAltitude = minGpsAltitude;
+    public void setMinAltitude(Float minAltitude) {
+        this.minAltitude = minAltitude;
     }
 
-    public Integer getMaxGpsAltitude() {
-        return maxGpsAltitude;
+    public Float getMaxAltitude() {
+        return maxAltitude;
     }
 
-    public void setMaxGpsAltitude(Integer maxGpsAltitude) {
-        this.maxGpsAltitude = maxGpsAltitude;
+    public void setMaxAltitude(Float maxAltitude) {
+        this.maxAltitude = maxAltitude;
     }
 
-    public Integer getCurrentGpsAltitude() {
-        return currentGpsAltitude;
+    public Float getCurrentAltitude() {
+        return currentAltitude;
     }
 
-    public void setCurrentGpsAltitude(Integer currentGpsAltitude) {
-        this.currentGpsAltitude = currentGpsAltitude;
+    public void setCurrentAltitude(Float currentAltitude) {
+        this.currentAltitude = currentAltitude;
     }
 
     public static final Parcelable.Creator<LocationExerciseRecord> CREATOR = new Parcelable.Creator<LocationExerciseRecord>() {
@@ -408,22 +408,22 @@ public class LocationExerciseRecord implements Comparable<LocationExerciseRecord
         } else {
             dest.writeInt(0);
         }
-        if (minGpsAltitude != null) {
+        if (minAltitude != null) {
             dest.writeInt(1);
-            dest.writeFloat(minGpsAltitude);
+            dest.writeFloat(minAltitude);
         } else {
             dest.writeInt(0);
         }
-        if (maxGpsAltitude != null) {
+        if (maxAltitude != null) {
             dest.writeInt(1);
-            dest.writeInt(maxGpsAltitude);
+            dest.writeFloat(maxAltitude);
         } else {
             dest.writeInt(0);
         }
 
-        if (currentGpsAltitude != null) {
+        if (currentAltitude != null) {
             dest.writeInt(1);
-            dest.writeInt(currentGpsAltitude);
+            dest.writeFloat(currentAltitude);
         } else {
             dest.writeInt(0);
         }
@@ -492,13 +492,13 @@ public class LocationExerciseRecord implements Comparable<LocationExerciseRecord
             maxSpeedToPoint = src.readFloat();
         }
         if (1 == src.readInt()) {
-            minGpsAltitude = src.readInt();
+            minAltitude = src.readFloat();
         }
         if (1 == src.readInt()) {
-            maxGpsAltitude = src.readInt();
+            maxAltitude = src.readFloat();
         }
         if (1 == src.readInt()) {
-            currentGpsAltitude = src.readInt();
+            currentAltitude = src.readFloat();
         }
 
     }

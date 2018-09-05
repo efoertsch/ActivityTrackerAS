@@ -96,19 +96,19 @@ public class LocationExerciseDAO extends BaseDAO {
 					.getMaxSpeedToPoint().toString());
 		}
 
-		if (ler.getCurrentGpsAltitude() != null) {
-			values.put(LocationExercise.CURRENT_GPS_ALTITUDE, ler
-					.getCurrentGpsAltitude().toString());
+		if (ler.getCurrentAltitude() != null) {
+			values.put(LocationExercise.CURRENT_ALTITUDE, ler
+					.getCurrentAltitude().toString());
 		}
 
-		if (ler.getMinGpsAltitude() != null) {
-			values.put(LocationExercise.MIN_GPS_ALTITUDE, ler
-					.getMinGpsAltitude().toString());
+		if (ler.getMinAltitude() != null) {
+			values.put(LocationExercise.MIN_ALTITUDE, ler
+					.getMinAltitude().toString());
 		}
 
-		if (ler.getMaxGpsAltitude() != null) {
-			values.put(LocationExercise.MAX_GPS_ALTITUDE, ler
-					.getMaxGpsAltitude().toString());
+		if (ler.getMaxAltitude() != null) {
+			values.put(LocationExercise.MAX_ALTITUDE, ler
+					.getMaxAltitude().toString());
 		}
 
 		try {
@@ -203,19 +203,19 @@ public class LocationExerciseDAO extends BaseDAO {
 					.getMaxSpeedToPoint().toString());
 		}
 
-		if (ler.getCurrentGpsAltitude() != null) {
-			values.put(LocationExercise.CURRENT_GPS_ALTITUDE, ler
-					.getCurrentGpsAltitude().toString());
+		if (ler.getCurrentAltitude() != null) {
+			values.put(LocationExercise.CURRENT_ALTITUDE, ler
+					.getCurrentAltitude().toString());
 		}
 
-		if (ler.getMinGpsAltitude() != null) {
-			values.put(LocationExercise.MIN_GPS_ALTITUDE, ler
-					.getMinGpsAltitude().toString());
+		if (ler.getMinAltitude() != null) {
+			values.put(LocationExercise.MIN_ALTITUDE, ler
+					.getMinAltitude().toString());
 		}
 
-		if (ler.getMaxGpsAltitude() != null) {
-			values.put(LocationExercise.MAX_GPS_ALTITUDE, ler
-					.getMaxGpsAltitude().toString());
+		if (ler.getMaxAltitude() != null) {
+			values.put(LocationExercise.MAX_ALTITUDE, ler
+					.getMaxAltitude().toString());
 		}
 
 		try {
@@ -434,23 +434,23 @@ public class LocationExerciseDAO extends BaseDAO {
 					continue;
 				}
 				if (csr.getColumnName(columnIndex).equalsIgnoreCase(
-						LocationExercise.CURRENT_GPS_ALTITUDE)) {
+						LocationExercise.CURRENT_ALTITUDE)) {
 					if (csr.getString(columnIndex) != null) {
-						ler.setCurrentGpsAltitude(csr.getInt(columnIndex));
+						ler.setCurrentAltitude(csr.getFloat(columnIndex));
 					}
 					continue;
 				}
 				if (csr.getColumnName(columnIndex).equalsIgnoreCase(
-						LocationExercise.MIN_GPS_ALTITUDE)) {
+						LocationExercise.MIN_ALTITUDE)) {
 					if (csr.getString(columnIndex) != null) {
-						ler.setMinGpsAltitude(csr.getInt(columnIndex));
+						ler.setMinAltitude(csr.getFloat(columnIndex));
 					}
 					continue;
 				}
 				if (csr.getColumnName(columnIndex).equalsIgnoreCase(
-						LocationExercise.MAX_GPS_ALTITUDE)) {
+						LocationExercise.MAX_ALTITUDE)) {
 					if (csr.getString(columnIndex) != null) {
-						ler.setMaxGpsAltitude(csr.getInt(columnIndex));
+						ler.setMaxAltitude(csr.getFloat(columnIndex));
 					}
 					continue;
 				}

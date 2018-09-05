@@ -2,6 +2,7 @@ package com.fisincorporated.exercisetracker.dagger.ui;
 
 
 import com.fisincorporated.exercisetracker.broadcastreceiver.LocationReceiver;
+import com.fisincorporated.exercisetracker.ui.about.AboutFragment;
 import com.fisincorporated.exercisetracker.ui.backuprestore.RestoreFragment;
 import com.fisincorporated.exercisetracker.ui.charts.AltitudeVsDistanceGraphFragment;
 import com.fisincorporated.exercisetracker.ui.charts.DistancePerExerciseFragment;
@@ -91,6 +92,9 @@ public abstract class UIBuildersModule {
 
     @ContributesAndroidInjector(modules = {})
     abstract RestoreFragment bindRestoreFragment();
+
+    @ContributesAndroidInjector(modules = {})
+    abstract AboutFragment bindAboutFragment();
 
 
     // Add more bindings here for other sub components

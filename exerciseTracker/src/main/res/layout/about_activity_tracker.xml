@@ -13,6 +13,30 @@
         android:padding="@dimen/margin_double">
 
         <TextView
+            android:id="@+id/about_app_version_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            />
+
+        <TextView
+            android:id="@+id/about_app_version_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+           />
+
+        <TextView
+
+            android:id="@+id/about_database_version"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_marginBottom="@dimen/margin_standard"
+            />
+
+
+        <TextView
             android:id="@+id/about_activity_tracker_tvAbout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

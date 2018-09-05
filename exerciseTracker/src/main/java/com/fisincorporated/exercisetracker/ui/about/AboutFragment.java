@@ -2,7 +2,6 @@ package com.fisincorporated.exercisetracker.ui.about;
 
 import android.content.res.AssetManager;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -11,7 +10,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fisincorporated.exercisetracker.BuildConfig;
 import com.fisincorporated.exercisetracker.R;
+import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerFragment;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -20,7 +21,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 
-public class AboutFragment extends Fragment {
+public class AboutFragment extends ExerciseDaggerFragment {
 
     public AboutFragment() {
     }
@@ -35,8 +36,18 @@ public class AboutFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.about_activity_tracker, container, false);
         TextView tvAbout = (TextView) view.findViewById(R.id.about_activity_tracker_tvAbout);
+
         tvAbout.setMovementMethod(LinkMovementMethod.getInstance());
         tvAbout.setText(Html.fromHtml(loadAboutText()));
+
+        TextView tvAppVersionCode = (TextView) view.findViewById(R.id.about_app_version_code);
+        tvAppVersionCode.setText(getString(R.string.app_version_code, getAppVersionCode()));
+
+        TextView tvAppVersionName = (TextView) view.findViewById(R.id.about_app_version_name);
+        tvAppVersionName.setText(getString(R.string.app_version_name, getAppVersionName()));
+
+        TextView tvDbVersion = (TextView) view.findViewById(R.id.about_database_version);
+        tvDbVersion.setText(getString(R.string.db_version, getDatabaseVersion()));
         return view;
     }
 
@@ -63,6 +74,19 @@ public class AboutFragment extends Fragment {
                     Toast.LENGTH_LONG).show();
         }
         return sb.toString();
+    }
 
+    private int getDatabaseVersion(){
+        int version = database.getVersion();
+        return version;
+    }
+
+    private int getAppVersionCode(){
+        return  BuildConfig.VERSION_CODE;
+
+    }
+
+    private String getAppVersionName(){
+        return  BuildConfig.VERSION_NAME;
     }
 }

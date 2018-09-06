@@ -46,6 +46,7 @@ repositories {
 
 dependencies {
 
+    final CONSTRAINT_LAYOUT = '1.0.2'
     final SUPPORT_LIBRARY_VERSION = '25.4.0'
     final GOOGLE_MAPS_VERSION = '11.6.2'
     final GOOGLE_DRIVE_VERSION = '11.6.2'
@@ -55,8 +56,14 @@ dependencies {
     final FIREBASE_VERSION = '0.8.5'
     final DAGGER_VERSION="2.14.1"
     final JSR250_VERSION = '1.0'
+    final MPANDROIDCHART = 'v3.0.3'
+    final GLIDE = '3.8.0'
+    final PHOTO_VIEW = '2.1.3'
+    final MOCKITO_CORE = '2.7.6'
+    final JUNIT = '4.12'
+    final RX_RELAY = '2.0.0'
 
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation "com.android.support.constraint:constraint-layout:$CONSTRAINT_LAYOUT"
     implementation "com.android.support:support-v4:$SUPPORT_LIBRARY_VERSION"
     implementation "com.google.android.gms:play-services-maps:$GOOGLE_MAPS_VERSION"
     implementation "com.android.support:appcompat-v7:$SUPPORT_LIBRARY_VERSION"
@@ -70,7 +77,7 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxjava:$RX_JAVA"
 
     //RXJava eventbus
-    implementation 'com.jakewharton.rxrelay2:rxrelay:2.0.0'
+    implementation "com.jakewharton.rxrelay2:rxrelay:$RX_RELAY"
 
     // Google Drive
     implementation "com.google.android.gms:play-services-drive:$GOOGLE_DRIVE_VERSION"
@@ -80,13 +87,13 @@ dependencies {
     implementation "com.firebase:firebase-jobdispatcher:$FIREBASE_VERSION"
 
     // For charting
-    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'
+    implementation "com.github.PhilJay:MPAndroidChart:$MPANDROIDCHART"
 
     // Glide for photos
-    implementation 'com.github.bumptech.glide:glide:3.8.0'
+    implementation "com.github.bumptech.glide:glide:$GLIDE"
 
     // Pinch photos
-    implementation 'com.github.chrisbanes:PhotoView:2.1.3'
+    implementation "com.github.chrisbanes:PhotoView:$PHOTO_VIEW"
 
     //Dagger2
     implementation "com.google.dagger:dagger:$DAGGER_VERSION"
@@ -98,8 +105,8 @@ dependencies {
     provided "javax.annotation:jsr250-api:$JSR250_VERSION"
 
     // Unit testing dependencies
-    testCompile 'junit:junit:4.12'
-    testCompile "org.mockito:mockito-core:2.7.6"
+    testCompile "junit:junit:$JUNIT"
+    testCompile "org.mockito:mockito-core:$MOCKITO_CORE"
     // from
     // https://io2015codelabs.appspot.com/codelabs/android-studio-testing#6
     // https://developer.android.com/training/testing/unit-testing/instrumented-unit-tests.html

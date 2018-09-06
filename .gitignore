@@ -37,6 +37,9 @@ build/
 exerciseTracker/src/debug/res/values/api_keys.xml
 exerciseTracker/src/release/res/values/api_keys.xml
 
+exerciseTracker/release/
+
+
 # Local configuration file (sdk path, etc)
 local.properties
 

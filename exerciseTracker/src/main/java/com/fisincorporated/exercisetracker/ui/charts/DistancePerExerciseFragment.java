@@ -498,6 +498,11 @@ public class DistancePerExerciseFragment extends ExerciseDaggerFragment {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
                 // show years, months or days
+                // hack - not sure why this is just yet
+                // if only 1 time period may get value of -1
+                if (value < 0 || value > xLabels.length -1) {
+                    return "";
+                }
                 return xLabels[(int)value];
             }
         });

@@ -6,7 +6,7 @@ The app was started way back around 2011 or so, updated as time and interest con
 
 Main ToDos 
 
-* Convert to DataBinding/MVVM
+* Convert to ViewModel/LiveData/Room
 
 Interesting code used in this project:
 

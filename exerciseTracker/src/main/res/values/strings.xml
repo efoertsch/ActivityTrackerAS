@@ -320,6 +320,12 @@
     <string name="app_version_code">App Version Code: %1$d</string>
     <string name="app_version_name">App Version Name: %1$s</string>
     <string name="db_version">Database Version: %1$d</string>
-
+    <string name="camera_and_location_rationale">Location Permission is needed to determine your distance and trace your route.\nCamera Permission is needed to use camera from app.</string>
+    <string name="location_rationale">Location Permission is needed to determine your distance and trace your route.</string>
+    <string name="camera_rationale">Camera Permission is needed to use the camera from the app.</string>
+    <string name="rationale_ask_ok">OK</string>
+    <string name="rationale_ask_cancel">Cancel</string>
+    <string name="can_not_use_app_without_location_permission">Oh-oh! You can\'t use this app without allowing the Location Permission. Redisplay permission request?</string>
+    <string name="quit_app">Quit</string>
 
 </resources>

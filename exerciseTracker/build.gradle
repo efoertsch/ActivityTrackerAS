@@ -2,21 +2,21 @@ apply plugin: 'com.android.application'
 
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 27
     buildToolsVersion '27.0.3'
 
     defaultConfig {
         // don't change applicationID unless API keys changed on https://console.cloud.google.com/...
         applicationId "com.fisincorporated.ExerciseTracker"
         minSdkVersion 19
-        targetSdkVersion 25
+        targetSdkVersion 27
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         // For vector drawable icons in button/imageviews
         vectorDrawables.useSupportLibrary = true
 
         // Set app version code and version name.
-        versionCode 22
+        versionCode 23
         versionName "1.7.4"
 
     }
@@ -46,12 +46,12 @@ repositories {
 
 dependencies {
 
-    final CONSTRAINT_LAYOUT = '1.0.2'
-    final SUPPORT_LIBRARY_VERSION = '25.4.0'
-    final GOOGLE_MAPS_VERSION = '11.6.2'
-    final GOOGLE_DRIVE_VERSION = '11.6.2'
+    final CONSTRAINT_LAYOUT = '1.1.3'
+    final SUPPORT_LIBRARY_VERSION = '27.1.1'
+    final GOOGLE_MAPS_VERSION = '15.0.1'
+    final GOOGLE_DRIVE_VERSION = '15.0.1'
     final ESPRESSO_CORE = '3.0.1'
-    final RX_ANDROID = '2.0.1'
+    final RX_ANDROID = '2.0.2'
     final RX_JAVA = '2.1.7'
     final FIREBASE_VERSION = '0.8.5'
     final DAGGER_VERSION="2.14.1"
@@ -62,6 +62,7 @@ dependencies {
     final MOCKITO_CORE = '2.7.6'
     final JUNIT = '4.12'
     final RX_RELAY = '2.0.0'
+    final EASY_PERMISSIONS = '1.3.0'
 
     implementation "com.android.support.constraint:constraint-layout:$CONSTRAINT_LAYOUT"
     implementation "com.android.support:support-v4:$SUPPORT_LIBRARY_VERSION"
@@ -101,6 +102,10 @@ dependencies {
     implementation "com.google.dagger:dagger-android-support:$DAGGER_VERSION"
     annotationProcessor "com.google.dagger:dagger-android-processor:$DAGGER_VERSION"
     annotationProcessor "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
+
+    //Permissions
+    implementation "pub.devrel:easypermissions:$EASY_PERMISSIONS"
+
 
     provided "javax.annotation:jsr250-api:$JSR250_VERSION"
 

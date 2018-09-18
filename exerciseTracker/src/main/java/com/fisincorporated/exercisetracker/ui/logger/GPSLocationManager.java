@@ -239,7 +239,7 @@ public class GPSLocationManager {
         int totalDistance = 0;
         float averageSpeed = 0;
         float maxSpeedToPoint = 0;
-        double altitude  = 0;
+        double altitude = 0;
 
         // if startTime null then first time in.
         if (ler.getStartTimestamp() == null) {
@@ -258,13 +258,12 @@ public class GPSLocationManager {
             ler.setMaxSpeedToPoint(0f);
 
             altitude = location.getAltitude();
-            ler.setCurrentAltitude((float) altitude );
+            ler.setCurrentAltitude((float) altitude);
             ler.setMinAltitude((float) altitude);
             ler.setMaxAltitude((float) altitude);
             ler.setTimezone(timeZoneUtils.getDeviceTimeZone());
             ler.setGmtHourOffset(timeZoneUtils.getGmtHourOffset());
             ler.setGmtMinuteOffset(timeZoneUtils.getGmtMinuteOffest());
-
 
         } else {
             // 2nd or subsequent time or restarting so calc distance from where you
@@ -275,7 +274,7 @@ public class GPSLocationManager {
             // see if elevation difference should be taken into account for
             // calc'ing distance from last point
             if (sElevationInDistcalcs == 0) {
-                distance =  Math.round(results[0]);
+                distance = Math.round(results[0]);
             } else {
                 distance = (int) Math
                         .round(Math.hypot(
@@ -311,14 +310,14 @@ public class GPSLocationManager {
             ler.setEndTimestamp(new Timestamp(location.getTime()));
             ler.setEndLatitude((float) location.getLatitude());
             ler.setEndLongitude((float) (location.getLongitude()));
-            ler.setEndAltitude((float)altitude);
+            ler.setEndAltitude((float) altitude);
 
-            ler.setCurrentAltitude( (float) altitude);
+            ler.setCurrentAltitude((float) altitude);
             if (altitude < ler.getMinAltitude()) {
-                ler.setMinAltitude( (float)altitude);
+                ler.setMinAltitude((float) altitude);
             }
             if (altitude > ler.getMaxAltitude()) {
-                ler.setMaxAltitude( (float) altitude);
+                ler.setMaxAltitude((float) altitude);
             }
         }
         sLeDAO.updateLocationExercise(ler);
@@ -348,13 +347,16 @@ public class GPSLocationManager {
      * Generate notification and update as you go
      */
     private void generateNotification() {
-        if (sLer == null || sLer.getDistance() == null) return;
+        if (sLer == null || sLer.getDistance() == null) {
+            return;
+        }
+
         // Only update notification every so often
         if (System.currentTimeMillis() - sLastNotificationTime < sNotificationInterval) {
             return;
         }
         sLastNotificationTime = System.currentTimeMillis();
-        statsUtil.formatActivityStats(sStats, sLer, true);
+        statsUtil.formatActivityStats(sStats, sLer, true, true);
         String notificationText = sExercise + "@" + sExrcsLocation + '\n';
 
         NotificationCompat.Builder builder =

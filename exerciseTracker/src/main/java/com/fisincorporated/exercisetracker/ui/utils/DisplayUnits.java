@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 
-import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 
 import javax.inject.Inject;
@@ -22,22 +21,25 @@ public class DisplayUnits {
     public DisplayUnits(SharedPreferences sharedPreferences, Context context) {
         this.sharedPreferences = sharedPreferences;
         resources = context.getResources();
+        sharedPreferences.registerOnSharedPreferenceChangeListener(prefsListener);
         getUnits();
     }
 
-
+    public void refreshUnits(){
+        getUnits();
+    }
 
     private SharedPreferences.OnSharedPreferenceChangeListener prefsListener = (prefs, key) -> {
-        if(key.equals(GlobalValues.DISPLAY_UNITS_PREFERENCE_KEY)) {
+        if(key.equals(resources.getString(R.string.display_units_preference_key))) {
             getUnits();
         }
     };
 
     private void getUnits() {
-        imperialMetric = sharedPreferences.getString(resources.getString(R.string.display_units)
+        imperialMetric = sharedPreferences.getString(resources.getString(R.string.display_units_preference_key)
                 , resources.getString(R.string.imperial));
         assignUnits();
-        sharedPreferences.registerOnSharedPreferenceChangeListener(prefsListener);
+
     }
 
     private void assignUnits() {

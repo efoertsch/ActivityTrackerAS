@@ -304,7 +304,7 @@
     <string name="delete_activity_n">Delete(%1$d)</string>
 
     <string name="error_playing_media_file">Error playing media file %1$s.</string>
-    <string name="hours_and_minutes">%d %s  %.1f %S</string>
+    <string name="hours_and_minutes">%d %s  %d %s</string>
     <string name="hrs">hrs</string>
     <string name="mins">mins</string>
 
@@ -327,5 +327,6 @@
     <string name="rationale_ask_cancel">Cancel</string>
     <string name="can_not_use_app_without_location_permission">Oh-oh! You can\'t use this app without allowing the Location Permission. Redisplay permission request?</string>
     <string name="quit_app">Quit</string>
+    <string name="display_units_preference_key" translatable="false">DISPLAY_UNITS_PREFERENCE_KEY</string>
 
 </resources>

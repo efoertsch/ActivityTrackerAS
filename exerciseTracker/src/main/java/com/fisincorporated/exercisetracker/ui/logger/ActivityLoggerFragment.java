@@ -302,7 +302,7 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
     }
 
     private void formatLerStarts(LocationExerciseRecord ler) {
-        statsUtil.formatActivityStats(stats, ler, true);
+        statsUtil.formatActivityStats(stats, ler, true, false);
     }
 
     private void checkStopRestartButton() {

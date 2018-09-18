@@ -284,7 +284,7 @@ public class ActivityDetailFragment extends ExerciseDaggerFragment {
     }
 
     public void formatActivityStats() {
-        statsUtil.formatActivityStats(stats, ler,false);
+        statsUtil.formatActivityStats(stats, ler,false, false);
     }
 
     public float calcMaxSpeedToPoint(Long lerId) {

@@ -18,6 +18,7 @@ import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.backupandrestore.BackupScheduler;
 import com.fisincorporated.exercisetracker.ui.drive.DriveSignOnActivity;
+import com.fisincorporated.exercisetracker.ui.utils.DisplayUnits;
 import com.fisincorporated.exercisetracker.utility.PhotoUtils;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -38,6 +39,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
     @Inject
     SharedPreferences sharedPreferences;
+
+    @Inject
+    DisplayUnits displayUnits;
 
     public static SettingsFragment newInstance(Bundle bundle) {
         SettingsFragment settingsFragment = new SettingsFragment();
@@ -130,6 +134,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 displayBackupNowDialog(GlobalValues.BACKUP_TO_LOCAL);
             }
             return;
+        }
+        if (key.equals(getString(R.string.display_units_preference_key))){
+            displayUnits.refreshUnits();
         }
 
     }

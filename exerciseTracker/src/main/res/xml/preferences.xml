@@ -12,7 +12,7 @@
         android:dialogTitle="@string/display_units"
         android:entries="@array/displayUnits"
         android:entryValues="@array/displayUnits"
-        android:key="DISPLAY_UNITS_PREFERENCE_KEY"
+        android:key="@string/display_units_preference_key"
         android:summary="%s"
         android:title="@string/display_units"/>
 

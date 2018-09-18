@@ -39,6 +39,7 @@ public class ApplicationModule {
         return new PhotoUtils(context);
     }
 
+    //TODO combine into AppPreferences or Repository
     @Provides
     @Singleton
     DisplayUnits provideDisplayUnits(SharedPreferences sharedPreferences, Context context) {
@@ -72,6 +73,8 @@ public class ApplicationModule {
         return PublishRelay.create();
     }
 
+
+    //TODO combine into AppPreferences or Repository
     @Provides
     @Singleton
     SharedPreferences providesSharedPreferences(Context appContext) {

@@ -1,6 +1,6 @@
 
-<p> ActivityTracker helps keep track of your exercise activities.
-Activities can be tracked at a summary level( 
+<p> ActivityTracker helps keep track of your exercise activities.</p>
+<p>Activities can be tracked at a summary level (
 start/finish time and points along with distance covered), 
 or at a detail level by recording a GPS track.    
 The GPS track can then be used to display the exercise track on Google Maps. 

@@ -1,7 +1,9 @@
 package com.fisincorporated.exercisetracker.ui.startup;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -9,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -21,30 +24,40 @@ import com.fisincorporated.exercisetracker.ui.maintenance.ExerciseMaintenanceLis
 import com.fisincorporated.exercisetracker.ui.settings.SettingsActivity;
 import com.fisincorporated.exercisetracker.ui.startactivity.StartExerciseActivity;
 
-public class ExerciseDrawerActivity  extends AppCompatActivity {
+import java.util.List;
 
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
+import pub.devrel.easypermissions.PermissionRequest;
+
+public class ExerciseDrawerActivity  extends AppCompatActivity  implements EasyPermissions.PermissionCallbacks {
+
+    private static final int RC_LOCATION_CAMERA = 123;
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
     private ActionBarDrawerToggle drawerToggle;
+    private  NavigationView navigationView;
+    private int appVersion = Build.VERSION.SDK_INT;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.app_nav_drawer);
-
-        drawerLayout = (DrawerLayout) findViewById(R.id.app_drawer_layout);
-
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        drawerLayout = findViewById(R.id.app_drawer_layout);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         drawerToggle = setupDrawerToggle();
         drawerToggle.syncState();
         drawerLayout.addDrawerListener(drawerToggle);
+        navigationView = findViewById(R.id.app_navigation_drawer);
+        if (appVersion > Build.VERSION_CODES.LOLLIPOP_MR1) {
+            checkRequiredPermissions();
+        } else {
+            continueWithStartup();
+        }
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.app_navigation_drawer);
-        setupDrawerContent(navigationView);
-        displayPhotoFragment();
+
     }
 
     @Override
@@ -71,6 +84,70 @@ public class ExerciseDrawerActivity  extends AppCompatActivity {
         super.onConfigurationChanged(newConfig);
         // Pass any configuration change to the drawer toggles
         drawerToggle.onConfigurationChanged(newConfig);
+    }
+
+
+
+    private void checkRequiredPermissions() {
+        String[] perms = {Manifest.permission.CAMERA
+                , Manifest.permission.ACCESS_FINE_LOCATION};
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            continueWithStartup();
+        } else {
+            // Do not have permissions, request them now
+            EasyPermissions.requestPermissions(new PermissionRequest.Builder(this, RC_LOCATION_CAMERA, perms)
+                    .setRationale(R.string.camera_and_location_rationale)
+                    .setPositiveButtonText(R.string.rationale_ask_ok)
+                    .setNegativeButtonText(R.string.quit_app)
+                    .build());
+            ;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> list) {
+       if (permissionInList(list,Manifest.permission.ACCESS_FINE_LOCATION )){
+           continueWithStartup();
+       }
+    }
+
+    private void displayCanNotProceed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.can_not_use_app_without_location_permission)
+                .setPositiveButton(R.string.ok, (dialog, id) -> checkRequiredPermissions())
+                .setNegativeButton(R.string.cancel, (dialog, id) -> finish());
+        // Create the AlertDialog object and return it
+        builder.create().show();
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> list) {
+        if (permissionInList(list,Manifest.permission.ACCESS_FINE_LOCATION )){
+            displayCanNotProceed();
+        }
+    }
+
+    private boolean permissionInList(List<String> permissions, String permission){
+        for (int i = 0; i < permissions.size(); i++){
+            if (permissions.get(i).equals(permission)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    @AfterPermissionGranted(RC_LOCATION_CAMERA)
+    private void continueWithStartup() {
+        setupDrawerContent(navigationView);
+        displayPhotoFragment();
     }
 
     private ActionBarDrawerToggle setupDrawerToggle() {

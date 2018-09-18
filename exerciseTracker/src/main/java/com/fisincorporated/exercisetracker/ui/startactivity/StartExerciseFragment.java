@@ -1,5 +1,6 @@
 package com.fisincorporated.exercisetracker.ui.startactivity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentValues;
@@ -8,6 +9,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteQueryBuilder;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
@@ -24,9 +26,6 @@ import android.widget.FilterQueryProvider;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
-import com.fisincorporated.exercisetracker.ui.utils.ActivityDialogFragment;
-import com.fisincorporated.exercisetracker.ui.logger.ActivityLoggerActivity;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.database.ExerciseDAO;
@@ -35,14 +34,21 @@ import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.ExrcsLocation;
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
+import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
+import com.fisincorporated.exercisetracker.ui.logger.ActivityLoggerActivity;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerFragment;
+import com.fisincorporated.exercisetracker.ui.utils.ActivityDialogFragment;
 
 import java.util.Locale;
 
 import javax.inject.Inject;
 
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
+
 public class StartExerciseFragment extends ExerciseDaggerFragment {
     private static final String TAG = "StartExerciseFragment";
+    private static final int RC_LOCATION = 123;
 
     protected Cursor csrLocationAutoComplete;
     protected Cursor csrExerciseAutoComplete;
@@ -67,6 +73,7 @@ public class StartExerciseFragment extends ExerciseDaggerFragment {
     private boolean startPressed = false;
     private ActivityDialogFragment activityDialog = null;
     private OnFocusChangeListener locationOnFocusChangeListener;
+    private int appVersion = Build.VERSION.SDK_INT;
 
     @Inject
     TrackerDatabaseHelper trackerDatabaseHelper;
@@ -79,12 +86,15 @@ public class StartExerciseFragment extends ExerciseDaggerFragment {
         getReferencedViews(view);
         setUpAutoCompletes();
         return view;
-
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        checkVersion();
+    }
+
+    private void checkForSelectedExercise() {
         actvLocation.setOnFocusChangeListener(locationOnFocusChangeListener);
         if (ler != null && selectedExercisePosition != -1) {
             spnrExercise.setSelection(selectedExercisePosition);
@@ -95,6 +105,34 @@ public class StartExerciseFragment extends ExerciseDaggerFragment {
     public void onStop() {
         super.onStop();
         removeListeners();
+    }
+
+    private void checkVersion() {
+        if (appVersion > Build.VERSION_CODES.LOLLIPOP_MR1) {
+            checkRequiredPermissions();
+        } else {
+            checkForSelectedExercise();
+        }
+    }
+
+
+    @AfterPermissionGranted(RC_LOCATION)
+    private void checkRequiredPermissions() {
+        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION};
+        if (EasyPermissions.hasPermissions(getContext(), perms)) {
+            checkForSelectedExercise();
+        } else {
+            // Do not have permissions, request them now
+            EasyPermissions.requestPermissions(this, getString(R.string.location_rationale),
+                    RC_LOCATION, perms);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
     private void getReferencedViews(View view) {
@@ -144,7 +182,6 @@ public class StartExerciseFragment extends ExerciseDaggerFragment {
                 }
             }
         });
-
 
         // Add and remove listener in onStop to avoid IllegalStateException: Can not perform this action after onSaveInstanceState
         locationOnFocusChangeListener = new OnFocusChangeListener() {
@@ -303,7 +340,8 @@ public class StartExerciseFragment extends ExerciseDaggerFragment {
             if (csr != null) {
                 try {
                     csr.close();
-                } catch (SQLException sqle) {}
+                } catch (SQLException sqle) {
+                }
             }
         }
         if (locationRowId > 0)
@@ -340,7 +378,8 @@ public class StartExerciseFragment extends ExerciseDaggerFragment {
             if (csr != null) {
                 try {
                     csr.close();
-                } catch (SQLException sqle) {}
+                } catch (SQLException sqle) {
+                }
             }
         }
 
@@ -449,7 +488,8 @@ public class StartExerciseFragment extends ExerciseDaggerFragment {
             if (csr != null) {
                 try {
                     csr.close();
-                } catch (SQLException sqle) {}
+                } catch (SQLException sqle) {
+                }
             }
         }
         return leFoundForToday;

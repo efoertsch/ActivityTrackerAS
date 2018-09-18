@@ -168,9 +168,9 @@ public class GPSLocationManager {
         Log.d(TAG, "Starting GPS");
     }
 
+    //TODO Convert to using EasyPermissions
     private boolean isLocationPermissionGranted() {
-        return (ActivityCompat.checkSelfPermission(sAppContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(sAppContext, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED);
+        return ActivityCompat.checkSelfPermission(sAppContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
     public boolean isTrackingLer() {

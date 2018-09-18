@@ -17,7 +17,7 @@ android {
 
         // Set app version code and version name.
         versionCode 23
-        versionName "1.7.4"
+        versionName "1.7.5"
 
     }
 

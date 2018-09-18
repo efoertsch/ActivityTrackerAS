@@ -16,8 +16,8 @@ android {
         vectorDrawables.useSupportLibrary = true
 
         // Set app version code and version name.
-        versionCode 23
-        versionName "1.7.5"
+        versionCode 24
+        versionName "1.7.6"
 
     }
 

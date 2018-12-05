@@ -1,6 +1,9 @@
 package com.fisincorporated.exercisetracker.application;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 
 import com.bumptech.glide.request.target.ViewTarget;
 import com.fisincorporated.exercisetracker.R;
@@ -9,6 +12,7 @@ import com.fisincorporated.exercisetracker.dagger.application.DaggerApplicationC
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import dagger.android.AndroidInjector;
 import dagger.android.support.DaggerApplication;
@@ -20,6 +24,10 @@ public class ActivityTrackerApplication extends DaggerApplication {
     private static ApplicationComponent appComponent;
 
     @Inject
+    @Named("CHANNEL_ID")
+    String channelId;
+
+    @Inject
     TrackerDatabaseHelper trackerDatabaseHelper;
 
     @Override
@@ -29,6 +37,7 @@ public class ActivityTrackerApplication extends DaggerApplication {
         opendDatabase();
         // To be able to use setTag with Glide
         ViewTarget.setTagId(R.id.glide_tag);
+        createNotificationChannel();
     }
 
     @Override
@@ -48,6 +57,22 @@ public class ActivityTrackerApplication extends DaggerApplication {
             database.close();
         }
         super.onTerminate();
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getApplicationContext().getString(R.string.channel_name);
+            String description = getApplicationContext().getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(channelId, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getApplicationContext().getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
     public static ApplicationComponent getDaggerApplicationComponent(){

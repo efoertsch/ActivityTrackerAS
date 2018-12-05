@@ -11,19 +11,20 @@ import com.fisincorporated.exercisetracker.ui.master.ExerciseMasterActivity;
 
 public class ActivityLoggerActivity extends ExerciseMasterActivity {
 
-	@Override
-	protected Fragment createFragment() {
-		Intent intent = getIntent();
-	// put what StartExerciseFragment is sending into Bundle for fragment
-		Bundle bundle = new Bundle();
-		bundle.putParcelable(LocationExercise.LOCATION_EXERCISE_TABLE, intent.getParcelableExtra(LocationExercise.LOCATION_EXERCISE_TABLE));
-		bundle.putString(Exercise.EXERCISE,intent.getStringExtra(Exercise.EXERCISE));
-		bundle.putString(ExrcsLocation.LOCATION, intent.getStringExtra(ExrcsLocation.LOCATION));
-		bundle.putFloat(Exercise.MIN_DISTANCE_TO_LOG, intent.getFloatExtra(Exercise.MIN_DISTANCE_TO_LOG, 10));
-		bundle.putInt(Exercise.ELEVATION_IN_DIST_CALCS,intent.getIntExtra(Exercise.ELEVATION_IN_DIST_CALCS,0));
-		bundle.putString(LocationExercise.DESCRIPTION, intent.getStringExtra(LocationExercise.DESCRIPTION));
-		return  ActivityLoggerFragment.newInstance(bundle);
-	
-	}
+    @Override
+    protected Fragment createFragment() {
+        //TODO Create ActivityLoggerFragment.Builder
+        Intent intent = getIntent();
+        // put what StartExerciseFragment is sending into Bundle for fragment
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(LocationExercise.LOCATION_EXERCISE_TABLE, intent.getParcelableExtra(LocationExercise.LOCATION_EXERCISE_TABLE));
+        bundle.putString(Exercise.EXERCISE, intent.getStringExtra(Exercise.EXERCISE));
+        bundle.putString(ExrcsLocation.LOCATION, intent.getStringExtra(ExrcsLocation.LOCATION));
+        bundle.putFloat(Exercise.MIN_DISTANCE_TO_LOG, intent.getFloatExtra(Exercise.MIN_DISTANCE_TO_LOG, 10));
+        bundle.putInt(Exercise.ELEVATION_IN_DIST_CALCS, intent.getIntExtra(Exercise.ELEVATION_IN_DIST_CALCS, 0));
+        bundle.putString(LocationExercise.DESCRIPTION, intent.getStringExtra(LocationExercise.DESCRIPTION));
+        return ActivityLoggerFragment.newInstance(bundle);
+
+    }
 
 }

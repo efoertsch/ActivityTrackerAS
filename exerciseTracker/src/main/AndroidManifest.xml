@@ -281,6 +281,12 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/GoogleMapsKey"/>
 
+
+        <service
+            android:name="ui.logger.LocationUpdatesService"
+            android:description="@string/provide_gps_service_to_activity_tracker"
+            android:exported="false">
+        </service>
         <service
             android:name=".backupandrestore.BackupJobService"
             android:exported="false">

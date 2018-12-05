@@ -328,5 +328,9 @@
     <string name="can_not_use_app_without_location_permission">Oh-oh! You can\'t use this app without allowing the Location Permission. Redisplay permission request?</string>
     <string name="quit_app">Quit</string>
     <string name="display_units_preference_key" translatable="false">DISPLAY_UNITS_PREFERENCE_KEY</string>
+    <string name="channel_name">ActivityTracker</string>
+    <string name="channel_description">ActivityTracker Location Update</string>
+
+    <string name="provide_gps_service_to_activity_tracker">Provides GPS location to ActivityTracker.</string>
 
 </resources>

@@ -18,7 +18,6 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.LocalBroadcastManager;
@@ -37,7 +36,6 @@ import com.fisincorporated.exercisetracker.database.TrackerDatabase;
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 import com.fisincorporated.exercisetracker.utility.StatsUtil;
 import com.fisincorporated.exercisetracker.utility.TimeZoneUtils;
-import com.github.mikephil.charting.utils.Utils;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -45,7 +43,6 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.jakewharton.rxrelay2.PublishRelay;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -53,7 +50,6 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import dagger.android.AndroidInjection;
 import dagger.android.DaggerService;
 import io.reactivex.disposables.Disposable;
 
@@ -119,29 +115,25 @@ public class LocationUpdatesService extends DaggerService {
      */
     private Location mLocation;
 
-
     // ActivityTracker custom code
     @Inject
-    private Context sAppContext;
+     Context sAppContext;
 
     @Inject
-    private StatsUtil statsUtil;
-
-    @Inject
-    private PublishRelay<Object> publishRelay;
+     StatsUtil statsUtil;
 
     @Inject
     TrackerDatabaseHelper trackerDatabaseHelper;
 
     @Inject
-    private TimeZoneUtils timeZoneUtils;
+    TimeZoneUtils timeZoneUtils;
 
     @Inject
-    private AppPreferences appPreferences;
+    AppPreferences appPreferences;
 
     @Inject
     @Named("CHANNEL_ID")
-    private String channelId;
+    String channelId;
 
     private static final String ACTION_LOCATION = "com.fisincorporated.ExerciseTracker.ACTION_LOCATION";
     private static final String UPDATE_RATE = "GPSLocationManager.UPDATE_RATE";
@@ -158,7 +150,7 @@ public class LocationUpdatesService extends DaggerService {
 
     private Disposable publishRelayDisposable;
 
-    protected LocationExerciseRecord ler;
+    private LocationExerciseRecord ler;
 
     private  LocationExerciseDAO sLeDAO = null;
     private  GPSLogDAO sGpslrDAO = null;
@@ -172,9 +164,11 @@ public class LocationUpdatesService extends DaggerService {
     private float sMinDistanceToLog = 20;
     private int sUpdateRate = 60000;
     private int sElevationInDistcalcs = 0;
-    private LocationExerciseRecord sLer = null;
+   // private LocationExerciseRecord sLer = null;
     private long sLastNotificationTime = 0;
     private long sNotificationInterval = 60 * 1000;
+    private boolean running = false;
+    private Bundle bundle;
 
 
     public LocationUpdatesService() {
@@ -182,7 +176,7 @@ public class LocationUpdatesService extends DaggerService {
 
     @Override
     public void onCreate() {
-        AndroidInjection.inject(this);
+        super.onCreate();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mLocationCallback = new LocationCallback() {
             @Override
@@ -191,9 +185,6 @@ public class LocationUpdatesService extends DaggerService {
                 onNewLocation(locationResult.getLastLocation());
             }
         };
-
-        createLocationRequest();
-        getLastLocation();
 
         HandlerThread handlerThread = new HandlerThread(TAG);
         handlerThread.start();
@@ -212,14 +203,12 @@ public class LocationUpdatesService extends DaggerService {
         }
     }
 
-
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "Service started");
-
+        getDAOs();
         lookForArguments(intent);
-        setUpActivityTrackerInfo();
+        getLastLocation();
 
         boolean startedFromNotification = intent.getBooleanExtra(EXTRA_STARTED_FROM_NOTIFICATION,
                 false);
@@ -245,6 +234,7 @@ public class LocationUpdatesService extends DaggerService {
         // and binds with this service. The service should cease to be a foreground service
         // when that happens.
         Log.i(TAG, "in onBind()");
+        lookForArguments(intent);
         stopForeground(true);
         mChangingConfiguration = false;
         return mBinder;
@@ -252,10 +242,11 @@ public class LocationUpdatesService extends DaggerService {
 
     @Override
     public void onRebind(Intent intent) {
-        // Called when a client (MainActivity in case of this sample) returns to the foreground
+        // Called when a client (Activity/Fragment) returns to the foreground
         // and binds once again with this service. The service should cease to be a foreground
         // service when that happens.
         Log.i(TAG, "in onRebind()");
+        lookForArguments(intent);
         stopForeground(true);
         mChangingConfiguration = false;
         super.onRebind(intent);
@@ -265,21 +256,23 @@ public class LocationUpdatesService extends DaggerService {
     public boolean onUnbind(Intent intent) {
         Log.i(TAG, "Last client unbound from service");
 
-        // Called when the last client (MainActivity in case of this sample) unbinds from this
-        // service. If this method is called due to a configuration change in MainActivity, we
+        // Called when the last client (Activity/Fragment) unbinds from this
+        // service. If this method is called due to a configuration change, we
         // do nothing. Otherwise, we make this service a foreground service.
         if (!mChangingConfiguration) {
             Log.i(TAG, "Starting foreground service");
-            /*
-            // TODO(developer). If targeting O, use the following code.
-            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O) {
-                mNotificationManager.startServiceInForeground(new Intent(this,
-                        LocationUpdatesService.class), NOTIFICATION_ID, getNotification());
-            } else {
-                startForeground(NOTIFICATION_ID, getNotification());
+            Notification notification = getNotification();
+            // If targeting O, use the following code.
+//            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O) {
+//                mNotificationManager.startServiceInForeground(new Intent(this,
+//                        LocationUpdatesService.class), NOTIFICATION_ID, getNotification());
+//            } else {
+//                startForeground(NOTIFICATION_ID, getNotification());
+//            }
+
+            if (notification != null) {
+                startForeground(NOTIFICATION_ID, notification);
             }
-             */
-            startForeground(NOTIFICATION_ID, getNotification());
         }
         return true; // Ensures onRebind() is called when a client re-binds.
     }
@@ -289,19 +282,21 @@ public class LocationUpdatesService extends DaggerService {
         mServiceHandler.removeCallbacksAndMessages(null);
     }
 
+    //TODO replace bundle with ?
     /**
      * Makes a request for location updates. Note that in this sample we merely log the
      * {@link SecurityException}.
      */
     public void requestLocationUpdates() {
         Log.i(TAG, "Requesting location updates");
-
-        startService(new Intent(getApplicationContext(), LocationUpdatesService.class));
+        running = true;
+        Intent intent = new Intent(getApplicationContext(), LocationUpdatesService.class);
+        intent.putExtra(GlobalValues.BUNDLE, bundle);
+        startService(intent);
         try {
             mFusedLocationClient.requestLocationUpdates(mLocationRequest,
                     mLocationCallback, Looper.myLooper());
         } catch (SecurityException unlikely) {
-
             Log.e(TAG, "Lost location permission. Could not request updates. " + unlikely);
         }
     }
@@ -312,53 +307,14 @@ public class LocationUpdatesService extends DaggerService {
      */
     public void removeLocationUpdates() {
         Log.i(TAG, "Removing location updates");
+        running = false;
         try {
             mFusedLocationClient.removeLocationUpdates(mLocationCallback);
-            stopSelf();
         } catch (SecurityException unlikely) {
             Log.e(TAG, "Lost location permission. Could not remove updates. " + unlikely);
         }
+        stopTrackingLer();
     }
-
-    /**
-     * Returns the {@link NotificationCompat} used as part of the foreground service.
-     */
-//    private Notification getNotification() {
-//        Intent intent = new Intent(this, LocationUpdatesService.class);
-//
-//        CharSequence text = Utils.getLocationText(mLocation);
-//
-//        // Extra to help us figure out if we arrived in onStartCommand via the notification or not.
-//        intent.putExtra(EXTRA_STARTED_FROM_NOTIFICATION, true);
-//
-//        // The PendingIntent that leads to a call to onStartCommand() in this service.
-//        PendingIntent servicePendingIntent = PendingIntent.getService(this, 0, intent,
-//                PendingIntent.FLAG_UPDATE_CURRENT);
-//
-//        // The PendingIntent to launch activity.
-//        PendingIntent activityPendingIntent = PendingIntent.getActivity(this, 0,
-//                new Intent(this, MainActivity.class), 0);
-//
-//        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-//                .addAction(R.drawable.ic_launch, getString(R.string.launch_activity),
-//                        activityPendingIntent)
-//                .addAction(R.drawable.ic_cancel, getString(R.string.remove_location_updates),
-//                        servicePendingIntent)
-//                .setContentText(text)
-//                .setContentTitle(Utils.getLocationTitle(this))
-//                .setOngoing(true)
-//                .setPriority(Notification.PRIORITY_HIGH)
-//                .setSmallIcon(R.mipmap.ic_launcher)
-//                .setTicker(text)
-//                .setWhen(System.currentTimeMillis());
-//
-//        // Set the Channel ID for Android O.
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            builder.setChannelId(channelId); // Channel ID
-//        }
-//
-//        return builder.build();
-//    }
 
     private void getLastLocation() {
         try {
@@ -368,6 +324,7 @@ public class LocationUpdatesService extends DaggerService {
                         public void onComplete(@NonNull Task<Location> task) {
                             if (task.isSuccessful() && task.getResult() != null) {
                                 mLocation = task.getResult();
+                                onNewLocation(mLocation);
                             } else {
                                 Log.w(TAG, "Failed to get location.");
                             }
@@ -379,29 +336,28 @@ public class LocationUpdatesService extends DaggerService {
     }
 
     private void onNewLocation(Location location) {
-        Log.i(TAG, "New location: " + location);
+       // Log.i(TAG, "New location: " + location);
 
         mLocation = location;
+        updateLer(location);
 
         // Notify anyone listening for broadcasts about the new location.
         Intent intent = new Intent(ACTION_BROADCAST);
         intent.putExtra(EXTRA_LOCATION, location);
+        intent.putExtra(TrackerDatabase.LocationExercise.LOCATION_EXERCISE_TABLE, ler);
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
 
         // Update notification content if running as a foreground service.
         if (serviceIsRunningInForeground(this)) {
-            mNotificationManager.notify(NOTIFICATION_ID, getNotification());
+            Notification notification = getNotification();
+            if (notification != null) {
+                mNotificationManager.notify(NOTIFICATION_ID, notification);
+            }
         }
     }
 
-    /**
-     * Sets the location request parameters.
-     */
-    private void createLocationRequest() {
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
-        mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    public boolean isRunning() {
+        return running;
     }
 
     /**
@@ -433,32 +389,41 @@ public class LocationUpdatesService extends DaggerService {
         return false;
     }
 
+    // TODO only send in LER and then get all values based on that
     private void lookForArguments(Intent intent) {
-        Bundle bundle = intent.getBundleExtra(GlobalValues.BUNDLE);
+        bundle = intent.getBundleExtra(GlobalValues.BUNDLE);
         if (bundle != null) {
             ler = bundle.getParcelable(TrackerDatabase.LocationExercise.LOCATION_EXERCISE_TABLE);
-            // exerciseRowId = ler.get_id();
+            sUpdateRate =  ler.getLogInterval() * 1000;
             exercise = bundle.getString(TrackerDatabase.Exercise.EXERCISE);
-            // locationRowid = ler.getLocationId();
+            sMinDistanceToLog = bundle.getFloat(TrackerDatabase.Exercise.MIN_DISTANCE_TO_LOG,10);
+            sElevationInDistcalcs = bundle.getInt(TrackerDatabase.Exercise.ELEVATION_IN_DIST_CALCS, 0);
             exrcsLocation = bundle.getString(TrackerDatabase.ExrcsLocation.LOCATION);
             description = bundle.getString(TrackerDatabase.LocationExercise.DESCRIPTION);
             if (description == null) {
                 description = "";
             }
+            startTrackingLer(ler);
+            createLocationRequest();
         } else {
             stopSelf();
         }
     }
 
-    public void setUpActivityTrackerInfo() {
-        sCurrentLerId = appPreferences.getActivityId();
-        if (sCurrentLerId != -1) {
-            sUpdateRate = sPrefs.getInt(UPDATE_RATE, 60000);
-            sMinDistanceToLog = sPrefs.getFloat(UPDATE_RATE, 10);
-            sElevationInDistcalcs = sPrefs.getInt(ELEVATION_IN_DIST_CALCS, 0);
+    /**
+     * Sets the location request parameters.
+     */
+    private void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(sUpdateRate);
+        mLocationRequest.setFastestInterval(sUpdateRate);
+        mLocationRequest.setSmallestDisplacement(sMinDistanceToLog);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
 
-        }
 
+    // TODO move all this to a repository
+    public void getDAOs() {
         if (sLeDAO == null)
             sLeDAO = trackerDatabaseHelper.getLocationExerciseDAO();
         if (sGpslrDAO == null)
@@ -468,37 +433,23 @@ public class LocationUpdatesService extends DaggerService {
         }
     }
 
-    void startNewLer(LocationExerciseRecord ler) {
-        // insert the activity into the db
-        sLer = ler;
-        // start tracking the run
-        startTrackingLer(sLer);
-    }
-
     void startTrackingLer(LocationExerciseRecord ler) {
-        // keep the ID
-        sCurrentLerId = ler.get_id();
-        // store it in shared preferences
-        appPreferences.setActivityId(sCurrentLerId);
-        // start location updates
-        startLocationUpdates();
+        appPreferences.setActivityId(ler.get_id());
     }
 
     public void stopTrackingLer() {
-        stopLocationUpdates();
-        sCurrentLerId = -1;
         appPreferences.deleteActivityId();
         cancelNotifications();
-
+        stopSelf();
     }
 
-
+    //If stopped tracker (and service stopped) then continued get up to date record.
     private LocationExerciseRecord getLer() {
-        return sLer = sLeDAO.loadLocationExerciseRecordById(sCurrentLerId);
+        return ler = sLeDAO.loadLocationExerciseRecordById(ler.get_id());
     }
 
     public void updateLer(Location location) {
-        LocationExerciseRecord ler = getLer();
+        getLer();
         // on the off chance the trace was canceled prior to this update occurring
         // sCurrentLerId will be -1 resulting in the ler object having id -1 so
         // just return.
@@ -601,7 +552,6 @@ public class LocationUpdatesService extends DaggerService {
         if (ler.getLogDetail() == 1) {
             insertGPSLogRecord(ler.get_id(), location, distance);
         }
-        broadcastLerUpdate(ler, location);
 
     }
 
@@ -622,22 +572,22 @@ public class LocationUpdatesService extends DaggerService {
      * Generate notification and update as you go
      */
     private Notification getNotification() {
-        if (sLer == null || sLer.getDistance() == null) {
-            return;
+        if (ler == null || ler.getDistance() == null) {
+            return null;
         }
 
         // Only update notification every so often
         if (System.currentTimeMillis() - sLastNotificationTime < sNotificationInterval) {
-            return;
+            return null;
         }
         sLastNotificationTime = System.currentTimeMillis();
-        statsUtil.formatActivityStats(sStats, sLer, true, true);
+        statsUtil.formatActivityStats(sStats, ler, true, true);
         String notificationText = sExercise + "@" + sExrcsLocation + '\n';
 
         NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(sActivity)
+                new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_stat_device_gps_fixed)
-                        .setContentTitle(sActivity.getResources().getString(R.string.app_name))
+                        .setContentTitle(getResources().getString(R.string.app_name))
                         .setContentText(notificationText);
         NotificationCompat.InboxStyle inboxStyle =
                 new NotificationCompat.InboxStyle();
@@ -682,13 +632,13 @@ public class LocationUpdatesService extends DaggerService {
 
     private Intent createNotificationIntent() {
         Intent intent = new Intent(sAppContext, ActivityLoggerActivity.class);
-        intent.putExtra(TrackerDatabase.LocationExercise.LOCATION_EXERCISE_TABLE, sLer);
-        intent.putExtra(TrackerDatabase.Exercise.EXERCISE, sLeDAO.getExercise(sLer.getExerciseId()));
+        intent.putExtra(TrackerDatabase.LocationExercise.LOCATION_EXERCISE_TABLE, ler);
+        intent.putExtra(TrackerDatabase.Exercise.EXERCISE, sLeDAO.getExercise(ler.getExerciseId()));
         intent.putExtra(TrackerDatabase.ExrcsLocation.LOCATION,
-                sLeDAO.getLocation(sLer.getLocationId()));
+                sLeDAO.getLocation(ler.getLocationId()));
         intent.putExtra(TrackerDatabase.LocationExercise.DESCRIPTION,
-                sLer.getDescription() == null ? "" : sLer.getDescription());
-        sEr = sEDao.loadExerciseRecordById(sLer.getExerciseId());
+                ler.getDescription() == null ? "" : ler.getDescription());
+        sEr = sEDao.loadExerciseRecordById(ler.getExerciseId());
         intent.putExtra(TrackerDatabase.Exercise.MIN_DISTANCE_TO_LOG, sEr.getMinDistanceToLog());
         intent.putExtra(TrackerDatabase.Exercise.ELEVATION_IN_DIST_CALCS,
                 sEr.getElevationInDistCalcs());

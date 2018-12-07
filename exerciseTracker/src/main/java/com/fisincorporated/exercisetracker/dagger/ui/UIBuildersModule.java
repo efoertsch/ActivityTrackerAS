@@ -10,6 +10,8 @@ import com.fisincorporated.exercisetracker.ui.filters.ExerciseFilterDialog;
 import com.fisincorporated.exercisetracker.ui.filters.LocationFilterDialog;
 import com.fisincorporated.exercisetracker.ui.history.ActivityFragmentHistory;
 import com.fisincorporated.exercisetracker.ui.logger.ActivityLoggerFragment;
+import com.fisincorporated.exercisetracker.ui.logger.ActivityLoggerServiceFragment;
+import com.fisincorporated.exercisetracker.ui.logger.LocationUpdatesService;
 import com.fisincorporated.exercisetracker.ui.maintenance.ExerciseMaintenanceDetailFragment;
 import com.fisincorporated.exercisetracker.ui.maintenance.ExerciseMaintenanceListActivity;
 import com.fisincorporated.exercisetracker.ui.maintenance.ExerciseMaintenanceListFragment;
@@ -47,6 +49,9 @@ public abstract class UIBuildersModule {
 
     @ContributesAndroidInjector(modules = { })
     abstract ActivityLoggerFragment bindActivityLoggerFragment();
+
+    @ContributesAndroidInjector(modules = { })
+    abstract ActivityLoggerServiceFragment bindActivityLoggerServiceFragment();
 
     @ContributesAndroidInjector(modules = { })
     abstract SettingsFragment bindSettingsFragment();
@@ -95,6 +100,9 @@ public abstract class UIBuildersModule {
 
     @ContributesAndroidInjector(modules = {})
     abstract AboutFragment bindAboutFragment();
+
+    @ContributesAndroidInjector(modules = {})
+    abstract LocationUpdatesService bindLocationUpdatesService();
 
 
     // Add more bindings here for other sub components

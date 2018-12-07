@@ -23,7 +23,7 @@ public class ActivityLoggerActivity extends ExerciseMasterActivity {
         bundle.putFloat(Exercise.MIN_DISTANCE_TO_LOG, intent.getFloatExtra(Exercise.MIN_DISTANCE_TO_LOG, 10));
         bundle.putInt(Exercise.ELEVATION_IN_DIST_CALCS, intent.getIntExtra(Exercise.ELEVATION_IN_DIST_CALCS, 0));
         bundle.putString(LocationExercise.DESCRIPTION, intent.getStringExtra(LocationExercise.DESCRIPTION));
-        return ActivityLoggerFragment.newInstance(bundle);
+        return ActivityLoggerServiceFragment.newInstance(bundle);
 
     }
 

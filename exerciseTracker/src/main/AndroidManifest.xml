@@ -266,6 +266,7 @@
                 android:value="splitActionBarWhenNarrow"/>
         </activity>
 
+        <!--
         <receiver
             android:name=".broadcastreceiver.LocationReceiver"
             android:exported="false">
@@ -273,6 +274,7 @@
                 <action android:name="com.fisincorporated.ExerciseTracker.ACTION_LOCATION"/>
             </intent-filter>
         </receiver>
+        -->
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -283,10 +285,12 @@
 
 
         <service
-            android:name="ui.logger.LocationUpdatesService"
+            android:name=".ui.logger.LocationUpdatesService"
             android:description="@string/provide_gps_service_to_activity_tracker"
+            android:enabled="true"
             android:exported="false">
         </service>
+
         <service
             android:name=".backupandrestore.BackupJobService"
             android:exported="false">

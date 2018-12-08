@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
+import com.fisincorporated.exercisetracker.application.AppPreferences;
 import com.fisincorporated.exercisetracker.database.GPSLogDAO;
 import com.fisincorporated.exercisetracker.database.LocationExerciseDAO;
 import com.fisincorporated.exercisetracker.database.SQLiteCursorLoader;
@@ -28,7 +29,6 @@ import com.fisincorporated.exercisetracker.database.TrackerDatabase;
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 import com.fisincorporated.exercisetracker.ui.filters.ExerciseFilterDialog;
 import com.fisincorporated.exercisetracker.ui.filters.LocationFilterDialog;
-import com.fisincorporated.exercisetracker.ui.logger.GPSLocationManager;
 import com.fisincorporated.exercisetracker.ui.master.ChangeToolbarEvent;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerFragment;
 import com.fisincorporated.exercisetracker.ui.master.IHandleSelectedAction;
@@ -87,8 +87,7 @@ public class ActivityFragmentHistory extends ExerciseDaggerFragment implements L
     private Disposable publishRelayDisposable;
 
     @Inject
-    GPSLocationManager gpsLocationManager;
-
+    AppPreferences appPreferences;
     @Inject
     PublishRelay<Object> publishRelay;
 
@@ -452,11 +451,11 @@ public class ActivityFragmentHistory extends ExerciseDaggerFragment implements L
                 GlobalValues.DELETE_ACTIVITY_LIST_LOADER, null, this);
     }
 
-    //TODO move sql transaction to database helper
+    //TODO move sql transaction to repository
     private void deleteActivitiesFromDatabase() {
         Long key;
-        // May want to delete activity that is currently running
-        long currentLerId = gpsLocationManager.getCurrentLer();
+        // Skip activity if it is  currently running
+        long currentLerId = appPreferences.getActivityId();
         if (leDAO == null) {
             leDAO = trackerDatabaseHelper.getLocationExerciseDAO();
         }
@@ -468,10 +467,9 @@ public class ActivityFragmentHistory extends ExerciseDaggerFragment implements L
             Iterator<Long> iter = deleteSet.iterator();
             while (iter.hasNext()) {
                 key = iter.next();
-                if (key == currentLerId) {
-                    gpsLocationManager.stopTrackingLer();
+                if (key != currentLerId) {
+                    gpslrDAO.deleteGPSLogbyLerRowId(key);
                 }
-                gpslrDAO.deleteGPSLogbyLerRowId(key);
                 if (deleteDetailType == 1) {
                     leDAO.deleteLocationExercise(key);
                 }

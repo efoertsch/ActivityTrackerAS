@@ -1,14 +1,24 @@
 package com.fisincorporated.exercisetracker.ui.logger;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,30 +29,22 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.fisincorporated.exercisetracker.BuildConfig;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
 import com.fisincorporated.exercisetracker.backupandrestore.BackupScheduler;
 import com.fisincorporated.exercisetracker.database.LocationExerciseDAO;
 import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
-import com.fisincorporated.exercisetracker.database.TrackerDatabase.Exercise;
-import com.fisincorporated.exercisetracker.database.TrackerDatabase.ExrcsLocation;
-import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
+import com.fisincorporated.exercisetracker.database.TrackerDatabase;
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerFragment;
 import com.fisincorporated.exercisetracker.ui.stats.StatsArrayAdapter;
 import com.fisincorporated.exercisetracker.utility.StatsUtil;
-import com.jakewharton.rxrelay2.PublishRelay;
 
 import java.util.ArrayList;
 
 import javax.inject.Inject;
-
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
-
-//Removed service logic and updated to location logic from Android Programming - The Big Nerd Ranch Guide
 
 public class ActivityLoggerFragment extends ExerciseDaggerFragment {
 
@@ -63,18 +65,11 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
     private String description;
     private ArrayList<String[]> stats = new ArrayList<>();
 
-    private Disposable publishRelayDisposable;
-
     protected LocationExerciseRecord ler;
+    private Bundle bundle;
 
     @Inject
     StatsUtil statsUtil;
-
-    @Inject
-    GPSLocationManager gpsLocationManager;
-
-    @Inject
-    PublishRelay<Object> publishRelay;
 
     @Inject
     SharedPreferences sharedPreferences;
@@ -82,38 +77,48 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
     @Inject
     TrackerDatabaseHelper trackerDatabaseHelper;
 
+    // The BroadcastReceiver used to listen from broadcasts from the service.
+    private MyReceiver myReceiver;
 
-    private Observer<Object> publishRelayObserver = new Observer<Object>() {
+    // A reference to the service used to get location updates.
+    private LocationUpdatesService mService = null;
+
+    // Tracks the bound state of the service.
+    private boolean mBound = false;
+
+    // Monitors the state of the connection to the service.
+    private final ServiceConnection mServiceConnection = new ServiceConnection() {
+
         @Override
-        public void onSubscribe(Disposable disposable) {
-            publishRelayDisposable = disposable;
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            LocationUpdatesService.LocalBinder binder = (LocationUpdatesService.LocalBinder) service;
+            mService = binder.getService();
+            setStopContinueButton(true);
+            mService.requestLocationUpdates();
+            mBound = true;
         }
 
         @Override
-        public void onNext(Object o) {
-            if (o instanceof  LocationExerciseRecord) {
-                if (isVisible())
-                    displayActivityStats((LocationExerciseRecord) o);
-            }
-            if (o instanceof NeedLocationPermission) {
-                checkLocationPermission();
-            }
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            // Big Trouble - PublishRelay should never throw
-            Log.e(TAG, "PublishRelay throwing error:" + e.toString());
-            // TODO Do something more
-        }
-
-        @Override
-        public void onComplete() {
-            // Big Trouble - PublishRelay should never call
-            Log.e(TAG, "PublishRelay onComplete Thrown");
-            // TODO Do something more
+        public void onServiceDisconnected(ComponentName name) {
+            mService = null;
+            mBound = false;
+            setStopContinueButton(false);
         }
     };
+
+    /**
+     * Receiver for broadcasts sent by {@link LocationUpdatesService}.
+     */
+    private class MyReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //TODO  get LocationExerciseRecord from intent
+            //displayActivityStats((LocationExerciseRecord) o);
+            Location location = intent.getParcelableExtra(LocationUpdatesService.EXTRA_LOCATION);
+            ler = intent.getParcelableExtra(TrackerDatabase.LocationExercise.LOCATION_EXERCISE_TABLE);
+            displayActivityStats();
+        }
+    }
 
     public static ActivityLoggerFragment newInstance(Bundle bundle) {
         Bundle args = new Bundle();
@@ -126,14 +131,22 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        myReceiver = new MyReceiver();
+        bundle = lookForArguments(savedInstanceState);
         setRetainInstance(true);
-        Bundle bundle = lookForArguments(savedInstanceState);
-        // Created 2nd call for notification as passing in the get() method above would cause
-        // problem in LocationReceiver.onLocationReceived() with passes just context
-        gpsLocationManager.setNotification(getActivity(), exercise, exrcsLocation);
-        GPSLocationManager.setActivityDetails(bundle);
-        gpsLocationManager.startNewLer(ler);
         setHasOptionsMenu(true);
+        if (!checkPermissions()) {
+            requestLocationPermission();
+        }
+    }
+
+    private void startLocationUpdateService() {
+        // use this to start and trigger a service
+        Intent intent = new Intent(getActivity(), LocationUpdatesService.class);
+        intent.putExtra(GlobalValues.BUNDLE, bundle);
+        boolean goodRequest = getActivity().bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
+        Log.i(TAG, "Good bind request:" + goodRequest);
+
     }
 
     private Bundle lookForArguments(Bundle savedInstanceState) {
@@ -145,14 +158,16 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
         } else if (savedInstanceState != null) {
             bundle = savedInstanceState;
         }
-        ler = bundle.getParcelable(LocationExercise.LOCATION_EXERCISE_TABLE);
-        // exerciseRowId = ler.get_id();
-        exercise = bundle.getString(Exercise.EXERCISE);
-        // locationRowid = ler.getLocationId();
-        exrcsLocation = bundle.getString(ExrcsLocation.LOCATION);
-        description = bundle.getString(LocationExercise.DESCRIPTION);
-        if (description == null)
-            description = "";
+        if (bundle != null) {
+            ler = bundle.getParcelable(TrackerDatabase.LocationExercise.LOCATION_EXERCISE_TABLE);
+            // exerciseRowId = ler.get_id();
+            exercise = bundle.getString(TrackerDatabase.Exercise.EXERCISE);
+            // locationRowid = ler.getLocationId();
+            exrcsLocation = bundle.getString(TrackerDatabase.ExrcsLocation.LOCATION);
+            description = bundle.getString(TrackerDatabase.LocationExercise.DESCRIPTION);
+            if (description == null)
+                description = "";
+        }
         return bundle;
 
     }
@@ -167,27 +182,50 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        if (ler.get_id() != -1) {
-            // may be coming back from showing map so make sure ler is most current
-            getCurrentLer();
-            displayActivityStats(ler);
-        }
+    public void onStart() {
+        super.onStart();
+        // Bind to the service. If the service is in foreground mode, this signals to the service
+        // that since this activity is in the foreground, the service can exit foreground mode.
+        startLocationUpdateService();
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        publishRelay.subscribe(publishRelayObserver);
+    public void onResume() {
+        super.onResume();
+        if (ler != null) {
+            // may be coming back from showing map so make sure ler is most current
+            getCurrentLer();
+            displayActivityStats();
+        }
+        registerLocationUpdatesServiceReceiver();
+    }
+
+    private void registerLocationUpdatesServiceReceiver() {
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(myReceiver,
+                new IntentFilter(LocationUpdatesService.ACTION_BROADCAST));
+    }
+
+    @Override
+    public void onPause() {
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(myReceiver);
+        super.onPause();
     }
 
     @Override
     public void onStop() {
-        if (publishRelayDisposable != null) {
-            publishRelayDisposable.dispose();
+        if (mBound) {
+            if (mService.isRunning()) {
+                // Still tracking
+                // Unbind from the service. This signals to the service that this activity is no longer
+                // in the foreground, and the service can respond by promoting itself to a foreground
+                // service.
+                getActivity().unbindService(mServiceConnection);
+                mBound = false;
+            } else {
+                // Not tracking so stop service;
+                mService.stopSelf();
+            }
         }
-        publishRelayDisposable = null;
         super.onStop();
     }
 
@@ -212,15 +250,28 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
                 .findViewById(R.id.activity_stats_stop_restart);
         btnStopRestart.setOnClickListener(v -> {
             if (btnStopRestart.getText().equals(getResources().getString(R.string.stop))) {
-                gpsLocationManager.stopTrackingLer();
-                Toast.makeText(getActivity(), "Stopping GPS logging",
-                        Toast.LENGTH_SHORT).show();
-                checkStopRestartButton();
+                stopService();
+                Snackbar.make(layoutView, "Stopping GPS logging",
+                        Snackbar.LENGTH_SHORT).show();
                 startBackups();
             } else {
                 checkLocationPermission();
             }
         });
+    }
+
+    private void stopService(){
+        setStopContinueButton(false);
+        if (mBound) {
+            if (mService != null) {
+                mService.removeLocationUpdates();
+            }
+            // Unbind from the service. This signals to the service that this activity is no longer
+            // in the foreground, and the service can respond by promoting itself to a foreground
+            // service.
+            getActivity().unbindService(mServiceConnection);
+            mBound = false;
+        }
     }
 
     private void startBackups() {
@@ -245,32 +296,31 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
         switch (item.getItemId()) {
             case R.id.activity_detail_showMap:
                 if (ler.getStartLatitude() != null) {
-                    args.putLong(LocationExercise._ID, ler.get_id());
+                    args.putLong(TrackerDatabase.LocationExercise._ID, ler.get_id());
                     args.putString(GlobalValues.TITLE, getString(R.string.exercise_at_location, exercise, exrcsLocation));
-                    args.putString(LocationExercise.DESCRIPTION, description);
+                    args.putString(TrackerDatabase.LocationExercise.DESCRIPTION, description);
                     args.putInt(GlobalValues.DISPLAY_TARGET, GlobalValues.DISPLAY_MAP);
-                    Toast.makeText(getActivity().getBaseContext(),
-                            getActivity().getResources().getString(R.string.displaying_the_map_may_take_a_moment), Toast.LENGTH_SHORT)
+                    Snackbar.make(layoutView, getString(R.string.displaying_the_map_may_take_a_moment)
+                            , Snackbar.LENGTH_SHORT)
                             .show();
                     callBacks.onSelectedAction(args);
                 } else {
-                    Toast.makeText(
-                            getActivity(),
+                    Snackbar.make(layoutView,
                             "The GPS hasn't provided a location yet. Please wait a couple more seconds",
-                            Toast.LENGTH_LONG).show();
+                            Snackbar.LENGTH_LONG).show();
                 }
 
                 return true;
             case R.id.activity_detail_showChart:
-                args.putLong(LocationExercise._ID, ler.get_id());
+                args.putLong(TrackerDatabase.LocationExercise._ID, ler.get_id());
                 args.putString(GlobalValues.TITLE, getString(R.string.exercise_at_location, exercise, exrcsLocation));
-                args.putString(LocationExercise.DESCRIPTION, description);
+                args.putString(TrackerDatabase.LocationExercise.DESCRIPTION, description);
                 args.putInt(GlobalValues.DISPLAY_TARGET, GlobalValues.DISPLAY_CHART);
                 args.putInt(GlobalValues.BAR_CHART_TYPE, GlobalValues.DISTANCE_VS_ELEVATION);
                 callBacks.onSelectedAction(args);
                 return true;
             case R.id.activity_logger_camera:
-               checkCameraPermission();
+                checkCameraPermission();
                 return true;
 
             default:
@@ -285,8 +335,7 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
         }
     }
 
-    public void displayActivityStats(LocationExerciseRecord ler) {
-        this.ler = ler;
+    public void displayActivityStats() {
         if (ler != null && ler.getStartAltitude() != null) {
             statsArrayAdapter.clear();
             formatLerStarts(ler);
@@ -294,30 +343,25 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
             statsList.postInvalidate();
             statsList.refreshDrawableState();
         } else {
-            Toast.makeText(getActivity(),
-                    "Location not yet available. Please wait.", Toast.LENGTH_LONG)
+            Snackbar.make(layoutView,
+                    "Location not yet available. Please wait.", Snackbar.LENGTH_SHORT)
                     .show();
         }
-        checkStopRestartButton();
     }
 
     private void formatLerStarts(LocationExerciseRecord ler) {
         statsUtil.formatActivityStats(stats, ler, true, false);
     }
 
-    private void checkStopRestartButton() {
-        if (gpsLocationManager == null)
-            return;
-        boolean started = gpsLocationManager.isTrackingLer();
-        if (started) {
+    private void setStopContinueButton(boolean isStop) {
+        if (isStop) {
             btnStopRestart.setText(getResources()
                     .getString(R.string.stop));
             displayCameraMenuIcon(true);
         } else {
-            // why does 'continue' for string resource name give an error?
-            btnStopRestart.setText(getResources().getString(
-                    R.string.continuex));
+            // set to continue
             displayCameraMenuIcon(false);
+            btnStopRestart.setText(R.string.continuex);
         }
     }
 
@@ -327,22 +371,27 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
         }
     }
 
-    private void startTracking() {
-        gpsLocationManager.startTrackingLer(ler);
-        checkStopRestartButton();
+
+
+    /**
+     * Returns the current state of the permissions needed.
+     */
+    private boolean checkPermissions() {
+        return PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(getContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION);
     }
 
     private void checkLocationPermission() {
         // Check if the Location permission has been granted
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            startTracking();
+            startLocationUpdateService();
         } else {
             // Permission is missing and must be requested.
             requestLocationPermission();
         }
     }
 
-    private void checkCameraPermission(){
+    private void checkCameraPermission() {
         // Check if the Location permission has been granted
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             startCameraApp();
@@ -363,7 +412,7 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
             // Provide an additional rationale to the user if the permission was not granted
             // and the user would benefit from additional context for the use of the permission.
             // Display a SnackBar with a button to request the missing permission.
-            Snackbar.make(layoutView, "Location access is required to display to record GPS points.",
+            Snackbar.make(layoutView, "Location access is required to display and record GPS points.",
                     Snackbar.LENGTH_INDEFINITE).setAction("OK", view -> {
                 // Request the permission
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
@@ -388,11 +437,11 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
             // Display a SnackBar with a button to request the missing permission.
             Snackbar.make(layoutView, "Camera permission is required to use the camera.",
                     Snackbar.LENGTH_INDEFINITE).setAction("OK", view -> {
-                        // Request the permission
-                        ActivityCompat.requestPermissions(getActivity(),
-                                new String[]{Manifest.permission.CAMERA},
-                                PERMISSION_REQUEST_CAMERA);
-                    }).show();
+                // Request the permission
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[]{Manifest.permission.CAMERA},
+                        PERMISSION_REQUEST_CAMERA);
+            }).show();
         } else {
             Snackbar.make(layoutView,
                     "Permission is not available. Requesting camera permission.",
@@ -409,11 +458,30 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
         if (requestCode == PERMISSION_REQUEST_LOCATION) {
             // Request for location permission.
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startTracking();
+                startLocationUpdateService();
             } else {
                 // Permission request was denied.
-                Snackbar.make(layoutView, "Location permission request was denied.",
-                        Snackbar.LENGTH_SHORT).show();
+//                Snackbar.make(layoutView, "Location permission request was denied.",
+//                        Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(
+                        layoutView,
+                        R.string.permission_denied_explanation,
+                        Snackbar.LENGTH_INDEFINITE)
+                        .setAction(R.string.settings, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                // Build intent that displays the App settings screen.
+                                Intent intent = new Intent();
+                                intent.setAction(
+                                        Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                Uri uri = Uri.fromParts("package",
+                                        BuildConfig.APPLICATION_ID, null);
+                                intent.setData(uri);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                            }
+                        })
+                        .show();
             }
         }
         if (requestCode == PERMISSION_REQUEST_CAMERA) {

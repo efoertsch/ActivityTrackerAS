@@ -1,7 +1,6 @@
 package com.fisincorporated.exercisetracker.dagger.ui;
 
 
-import com.fisincorporated.exercisetracker.broadcastreceiver.LocationReceiver;
 import com.fisincorporated.exercisetracker.ui.about.AboutFragment;
 import com.fisincorporated.exercisetracker.ui.backuprestore.RestoreFragment;
 import com.fisincorporated.exercisetracker.ui.charts.AltitudeVsDistanceGraphFragment;
@@ -10,7 +9,6 @@ import com.fisincorporated.exercisetracker.ui.filters.ExerciseFilterDialog;
 import com.fisincorporated.exercisetracker.ui.filters.LocationFilterDialog;
 import com.fisincorporated.exercisetracker.ui.history.ActivityFragmentHistory;
 import com.fisincorporated.exercisetracker.ui.logger.ActivityLoggerFragment;
-import com.fisincorporated.exercisetracker.ui.logger.ActivityLoggerServiceFragment;
 import com.fisincorporated.exercisetracker.ui.logger.LocationUpdatesService;
 import com.fisincorporated.exercisetracker.ui.maintenance.ExerciseMaintenanceDetailFragment;
 import com.fisincorporated.exercisetracker.ui.maintenance.ExerciseMaintenanceListActivity;
@@ -47,11 +45,11 @@ public abstract class UIBuildersModule {
     @ContributesAndroidInjector(modules = { })
     abstract ActivityFragmentHistory bindActivityFragmentHistory();
 
-    @ContributesAndroidInjector(modules = { })
-    abstract ActivityLoggerFragment bindActivityLoggerFragment();
+    @ContributesAndroidInjector(modules = {})
+    abstract LocationUpdatesService bindLocationUpdatesService();
 
     @ContributesAndroidInjector(modules = { })
-    abstract ActivityLoggerServiceFragment bindActivityLoggerServiceFragment();
+    abstract ActivityLoggerFragment bindActivityLoggerFragment();
 
     @ContributesAndroidInjector(modules = { })
     abstract SettingsFragment bindSettingsFragment();
@@ -86,8 +84,6 @@ public abstract class UIBuildersModule {
     @ContributesAndroidInjector(modules = { })
     abstract ActivityMapFragment bindActivityMapFragment();
 
-    @ContributesAndroidInjector(modules = {})
-    abstract LocationReceiver bindLocationReceiver();
 
     @ContributesAndroidInjector(modules = {})
     abstract ExerciseMaintenancePagerActivity bindExerciseMaintenancePagerActivity();
@@ -100,9 +96,6 @@ public abstract class UIBuildersModule {
 
     @ContributesAndroidInjector(modules = {})
     abstract AboutFragment bindAboutFragment();
-
-    @ContributesAndroidInjector(modules = {})
-    abstract LocationUpdatesService bindLocationUpdatesService();
 
 
     // Add more bindings here for other sub components

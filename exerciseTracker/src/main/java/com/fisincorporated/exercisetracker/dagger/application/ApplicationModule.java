@@ -8,7 +8,6 @@ import android.support.v7.preference.PreferenceManager;
 import com.fisincorporated.exercisetracker.application.ActivityTrackerApplication;
 import com.fisincorporated.exercisetracker.application.AppPreferences;
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
-import com.fisincorporated.exercisetracker.ui.logger.GPSLocationManager;
 import com.fisincorporated.exercisetracker.ui.utils.DisplayUnits;
 import com.fisincorporated.exercisetracker.utility.PhotoUtils;
 import com.fisincorporated.exercisetracker.utility.StatsUtil;
@@ -80,14 +79,6 @@ public class ApplicationModule {
     @Singleton
     TimeZoneUtils provideTimeZoneUtils() {
         return new TimeZoneUtils();
-    }
-
-    @Provides
-    @Singleton
-    GPSLocationManager provideGpsLocationManager(Context context, StatsUtil statsUtil
-            , PublishRelay<Object> publishRelay
-            , TrackerDatabaseHelper trackerDatabaseHelper, TimeZoneUtils timeZoneUtils) {
-        return new GPSLocationManager(context, statsUtil, publishRelay, trackerDatabaseHelper, timeZoneUtils);
     }
 
     // RxJava Bus to replace callback interfaces

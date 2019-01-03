@@ -333,5 +333,16 @@
 
     <string name="provide_gps_service_to_activity_tracker">Provides GPS location to ActivityTracker.</string>
     <string name="permission_denied_explanation">Permission was denied, but is needed for core functionality.</string>
+    <string name="stopping_gps_loggin">Stopping GPS logging</string>
+    <string name="gps_has_not_provided_a_location_yet">GPS hasn\'t provided a location yet. Please wait a couple more seconds</string>
+    <string name="location_not_yet_available">Location not yet available. Please wait.</string>
+    <string name="location_permission_not_available">Permission is not available. Requesting location permission.</string>
+    <string name="camera_permission_is_not_available">Permission is not available. Requesting camera permission.</string>
+    <string name="storage_permission_is_required">Storage permission is required to look for photos.</string>
+    <string name="storage_permission_is_not_available">Permission is not available. Requesting storage permission.</string>
+    <string name="camera_permission_denied">Camera permission request was denied.</string>
+    <string name="storage_permission_denied">Storage permission request was denied.</string>
+    <string name="camera_permission_is_required">Camera permission is required to use the camera.</string>
+    <string name="location_permission_is_required">Location permission is required to use GPS.</string>
 
 </resources>

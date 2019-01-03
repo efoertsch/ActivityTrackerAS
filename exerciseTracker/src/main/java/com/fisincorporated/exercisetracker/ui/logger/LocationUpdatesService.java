@@ -177,14 +177,14 @@ public class LocationUpdatesService extends DaggerService {
         lookForArguments(intent);
         getLastLocation();
 
-        boolean startedFromNotification = intent.getBooleanExtra(EXTRA_STARTED_FROM_NOTIFICATION,
-                false);
-
-        // We got here because the user decided to remove location updates from the notification.
-        if (startedFromNotification) {
-            removeLocationUpdates();
-            stopSelf();
-        }
+//        boolean startedFromNotification = intent.getBooleanExtra(EXTRA_STARTED_FROM_NOTIFICATION,
+//                false);
+//
+//        // We got here because the user decided to remove location updates from the notification.
+//        if (startedFromNotification) {
+//            removeLocationUpdates();
+//            stopSelf();
+//        }
         // Tells the system to not try to recreate the service after it has been killed.
         return START_NOT_STICKY;
     }
@@ -308,13 +308,6 @@ public class LocationUpdatesService extends DaggerService {
 
         this.location = location;
         updateLer(location);
-
-        // Notify anyone listening for broadcasts about the new location.
-//        Intent intent = new Intent(ACTION_BROADCAST);
-//        intent.putExtra(EXTRA_LOCATION, location);
-//        intent.putExtra(TrackerDatabase.LocationExercise.LOCATION_EXERCISE_TABLE, ler);
-//        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
-
         // Update notification content if running as a foreground service.
         if (serviceIsRunningInForeground(this)) {
             Notification notification = getNotification();
@@ -411,7 +404,7 @@ public class LocationUpdatesService extends DaggerService {
         stopSelf();
     }
 
-    //If stopped tracker (and service stopped) then continued get up to date record.
+    //If stopped tracker (and service stopped) then continued, get up to date record.
     private LocationExerciseRecord getLer() {
         return ler = sLeDAO.loadLocationExerciseRecordById(ler.get_id());
     }
@@ -569,6 +562,8 @@ public class LocationUpdatesService extends DaggerService {
         // Set the Channel ID for Android O.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             builder.setChannelId(channelId); // Channel ID
+        } else {
+            builder.setPriority(Notification.PRIORITY_MIN);
         }
 
         // Creates an explicit intent for an Activity in your app

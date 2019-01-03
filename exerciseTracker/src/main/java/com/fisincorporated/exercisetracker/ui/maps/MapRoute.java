@@ -86,6 +86,7 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
     private String title;
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private boolean displayPhotoPoints;
 
     @Inject
     public MapRoute(DisplayUnits displayUnits, PhotoUtils photoUtils, StatsUtil statsUtil, TrackerDatabaseHelper trackerDatabaseHelper) {
@@ -93,6 +94,10 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
         this.photoUtils = photoUtils;
         this.statsUtil = statsUtil;
         this.trackerDatabaseHelper = trackerDatabaseHelper;
+    }
+
+    public void displayPhotoPoints(boolean display){
+        this.displayPhotoPoints =  display;
     }
 
     public MapRoute setSupportMapFragment(SupportMapFragment supportMapFragment) {
@@ -245,7 +250,9 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
                 calcDistanceToPlacePin(fromLatLng, toLatLng, googleMap);
                 updateMapLatLongCorners(toLatLng);
                 Log.d(TAG, "toTime:" + csr.getString(timestampIndex));
-                photoStartIndex = setPhotoMarkers(fromLatLng, fromTime, toTime, groupTime, photoStartIndex);
+                if (displayPhotoPoints) {
+                    photoStartIndex = setPhotoMarkers(fromLatLng, fromTime, toTime, groupTime, photoStartIndex);
+                }
                 fromLatLng = toLatLng;
                 fromTime = toTime;
                 csr.moveToNext();
@@ -256,7 +263,9 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
             googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds(
                     southwest, northeast), 500, 500, 0));
 
-            placePhotoPoints();
+            if (displayPhotoPoints) {
+                placePhotoPoints();
+            }
 
         }
     }
@@ -415,7 +424,11 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
         long endTimeLong;
         startTimeLong = ler.getStartTimestamp().getTime();
         endTimeLong = ler.getEndTimestamp().getTime();
-        getPhotosTaken(context, startTimeLong, endTimeLong);
+        if (displayPhotoPoints) {
+            getPhotosTaken(context, startTimeLong, endTimeLong);
+        } else {
+            startPlotting();
+        }
     }
 
 
@@ -426,7 +439,11 @@ public class MapRoute implements GoogleMap.OnMarkerClickListener {
         // find 1 sec prior to midnight at end of activity (might be next day or later);
         long endTimeLong = ler.getEndTimestamp().getTime();
         long endOfDay = endTimeLong - (endTimeLong % (24 * 60 * 60 * 1000)) + (1000 * (59 + (59 * 60) + (11 * 60 * 60)));
-        getPhotosTaken(context, startMidnight, endOfDay);
+        if (displayPhotoPoints) {
+            getPhotosTaken(context, startMidnight, endOfDay);
+        } else {
+            startPlotting();
+        }
     }
 
     public void getPhotosTaken(Context context, long startTime, long endTime) {

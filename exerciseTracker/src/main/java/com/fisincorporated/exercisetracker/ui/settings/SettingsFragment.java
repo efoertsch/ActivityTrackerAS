@@ -165,8 +165,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                     // sees the explanation, try again to request the permission.
                 } else {
                     // No explanation needed, we can request the permission.
-                    ActivityCompat.requestPermissions(getActivity(),
-                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                             GlobalValues.PICK_PHOTO);
 
                     // MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an
@@ -174,8 +173,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                     // result of the request.
                 }
             } else {
-                ActivityCompat.requestPermissions(getActivity(),
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                         GlobalValues.PICK_PHOTO);
             }
         } else {

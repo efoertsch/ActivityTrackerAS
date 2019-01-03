@@ -100,6 +100,10 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
+            // This is called when the connection with the service has been
+            // unexpectedly disconnected -- that is, its process crashed.
+            // Because it is running in our same process, we should never
+            // see this happen.
             mService = null;
             mBound = false;
             setStopContinueButton(false);
@@ -251,7 +255,7 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
         btnStopRestart.setOnClickListener(v -> {
             if (btnStopRestart.getText().equals(getResources().getString(R.string.stop))) {
                 stopService();
-                Snackbar.make(layoutView, "Stopping GPS logging",
+                Snackbar.make(layoutView, R.string.stopping_gps_loggin,
                         Snackbar.LENGTH_SHORT).show();
                 startBackups();
             } else {
@@ -260,16 +264,16 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
         });
     }
 
+    /**
+     * Call when user clicks on stop button to stop logging
+     * Stop the location service
+     */
     private void stopService(){
         setStopContinueButton(false);
         if (mBound) {
             if (mService != null) {
                 mService.removeLocationUpdates();
             }
-            // Unbind from the service. This signals to the service that this activity is no longer
-            // in the foreground, and the service can respond by promoting itself to a foreground
-            // service.
-            getActivity().unbindService(mServiceConnection);
             mBound = false;
         }
     }
@@ -306,7 +310,7 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
                     callBacks.onSelectedAction(args);
                 } else {
                     Snackbar.make(layoutView,
-                            "The GPS hasn't provided a location yet. Please wait a couple more seconds",
+                            R.string.gps_has_not_provided_a_location_yet,
                             Snackbar.LENGTH_LONG).show();
                 }
 
@@ -344,7 +348,7 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
             statsList.refreshDrawableState();
         } else {
             Snackbar.make(layoutView,
-                    "Location not yet available. Please wait.", Snackbar.LENGTH_SHORT)
+                    R.string.location_not_yet_available, Snackbar.LENGTH_SHORT)
                     .show();
         }
     }
@@ -412,19 +416,19 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
             // Provide an additional rationale to the user if the permission was not granted
             // and the user would benefit from additional context for the use of the permission.
             // Display a SnackBar with a button to request the missing permission.
-            Snackbar.make(layoutView, "Location access is required to display and record GPS points.",
+            Snackbar.make(layoutView, R.string.location_permission_is_required,
                     Snackbar.LENGTH_INDEFINITE).setAction("OK", view -> {
                 // Request the permission
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                requestPermissions( new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         PERMISSION_REQUEST_LOCATION);
             }).show();
 
         } else {
             Snackbar.make(layoutView,
-                    "Permission is not available. Requesting location permission.",
+                    R.string.location_permission_not_available,
                     Snackbar.LENGTH_SHORT).show();
             // Request the permission. The result will be received in onRequestPermissionResult().
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSION_REQUEST_LOCATION);
         }
     }
@@ -435,19 +439,18 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
             // Provide an additional rationale to the user if the permission was not granted
             // and the user would benefit from additional context for the use of the permission.
             // Display a SnackBar with a button to request the missing permission.
-            Snackbar.make(layoutView, "Camera permission is required to use the camera.",
+            Snackbar.make(layoutView, R.string.camera_permission_is_required,
                     Snackbar.LENGTH_INDEFINITE).setAction("OK", view -> {
                 // Request the permission
-                ActivityCompat.requestPermissions(getActivity(),
-                        new String[]{Manifest.permission.CAMERA},
+                requestPermissions( new String[]{Manifest.permission.CAMERA},
                         PERMISSION_REQUEST_CAMERA);
             }).show();
         } else {
             Snackbar.make(layoutView,
-                    "Permission is not available. Requesting camera permission.",
+                    R.string.camera_permission_is_not_available,
                     Snackbar.LENGTH_SHORT).show();
             // Request the permission. The result will be received in onRequestPermissionResult().
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA},
+            requestPermissions(new String[]{Manifest.permission.CAMERA},
                     PERMISSION_REQUEST_CAMERA);
         }
 
@@ -490,7 +493,7 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
                 startCameraApp();
             } else {
                 // Permission request was denied.
-                Snackbar.make(layoutView, "Camera permission request was denied.",
+                Snackbar.make(layoutView, R.string.camera_permission_denied,
                         Snackbar.LENGTH_SHORT)
                         .show();
             }

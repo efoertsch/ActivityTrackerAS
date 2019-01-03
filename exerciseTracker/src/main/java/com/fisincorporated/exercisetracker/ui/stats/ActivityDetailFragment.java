@@ -1,5 +1,6 @@
 package com.fisincorporated.exercisetracker.ui.stats;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -139,10 +140,12 @@ public class ActivityDetailFragment extends ExerciseDaggerFragment {
         super.onSaveInstanceState(savedInstanceState);
     }
 
+    @SuppressLint("RestrictedApi")
+    // above to stop error syntax display on mapFab.setVisibility()
     private void getReferencedViews(View view) {
-        tvExerciseLocation = (TextView) view
+        tvExerciseLocation =  view
                 .findViewById(R.id.activity_detail_tvExerciseLocation);
-        mapFab = (FloatingActionButton) view.findViewById(R.id.activity_detail_map_fab);
+        mapFab = view.findViewById(R.id.activity_detail_map_fab);
         mapFab.setVisibility(View.VISIBLE);
         mapFab.setOnClickListener(v -> {
             Bundle args = new Bundle();
@@ -155,7 +158,7 @@ public class ActivityDetailFragment extends ExerciseDaggerFragment {
                     .show();
             callBacks.onSelectedAction(args);
         });
-        photosFab = (FloatingActionButton) view.findViewById(R.id.activity_detail_photos_fab);
+        photosFab = view.findViewById(R.id.activity_detail_photos_fab);
         photosFab.setOnClickListener(v -> {
             Intent intent;
             if (mediaDetails.size() == 1) {
@@ -364,6 +367,8 @@ public class ActivityDetailFragment extends ExerciseDaggerFragment {
                         }));
     }
 
+    @SuppressLint("RestrictedApi")
+    // https://stackoverflow.com/questions/50343634/android-p-visibilityawareimagebutton-setvisibility-can-only-be-called-from-the-s
     private void displayPhotoFab(ArrayList<MediaDetail> photoList) {
         mediaDetails = photoList;
         if (mediaDetails != null && mediaDetails.size() > 0) {

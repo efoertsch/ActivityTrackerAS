@@ -7,9 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -33,6 +31,7 @@ import android.widget.TextView;
 import com.fisincorporated.exercisetracker.BuildConfig;
 import com.fisincorporated.exercisetracker.GlobalValues;
 import com.fisincorporated.exercisetracker.R;
+import com.fisincorporated.exercisetracker.application.AppPreferences;
 import com.fisincorporated.exercisetracker.backupandrestore.BackupScheduler;
 import com.fisincorporated.exercisetracker.database.LocationExerciseDAO;
 import com.fisincorporated.exercisetracker.database.LocationExerciseRecord;
@@ -72,30 +71,29 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
     StatsUtil statsUtil;
 
     @Inject
-    SharedPreferences sharedPreferences;
+    AppPreferences appPreferences;
 
     @Inject
     TrackerDatabaseHelper trackerDatabaseHelper;
 
     // The BroadcastReceiver used to listen from broadcasts from the service.
-    private MyReceiver myReceiver;
+    private LocationUpdateReceiver locationUpdateReceiver;
 
     // A reference to the service used to get location updates.
-    private LocationUpdatesService mService = null;
+    private LocationUpdatesService service = null;
 
     // Tracks the bound state of the service.
-    private boolean mBound = false;
+    private boolean bound = false;
 
-    // Monitors the state of the connection to the service.
-    private final ServiceConnection mServiceConnection = new ServiceConnection() {
+    // Used to be able to call service methods
+    private final ServiceConnection serviceConnection = new ServiceConnection() {
 
         @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            LocationUpdatesService.LocalBinder binder = (LocationUpdatesService.LocalBinder) service;
-            mService = binder.getService();
-            setStopContinueButton(true);
-            mService.requestLocationUpdates();
-            mBound = true;
+        public void onServiceConnected(ComponentName name, IBinder iBinder) {
+            LocationUpdatesService.LocalBinder binder = (LocationUpdatesService.LocalBinder) iBinder;
+            service = binder.getService();
+            service.requestLocationUpdates();
+            bound = true;
         }
 
         @Override
@@ -104,8 +102,8 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
             // unexpectedly disconnected -- that is, its process crashed.
             // Because it is running in our same process, we should never
             // see this happen.
-            mService = null;
-            mBound = false;
+            service = null;
+            bound = false;
             setStopContinueButton(false);
         }
     };
@@ -113,12 +111,9 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
     /**
      * Receiver for broadcasts sent by {@link LocationUpdatesService}.
      */
-    private class MyReceiver extends BroadcastReceiver {
+    private class LocationUpdateReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            //TODO  get LocationExerciseRecord from intent
-            //displayActivityStats((LocationExerciseRecord) o);
-            Location location = intent.getParcelableExtra(LocationUpdatesService.EXTRA_LOCATION);
             ler = intent.getParcelableExtra(TrackerDatabase.LocationExercise.LOCATION_EXERCISE_TABLE);
             displayActivityStats();
         }
@@ -135,22 +130,13 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        myReceiver = new MyReceiver();
+        locationUpdateReceiver = new LocationUpdateReceiver();
         bundle = lookForArguments(savedInstanceState);
         setRetainInstance(true);
         setHasOptionsMenu(true);
-        if (!checkPermissions()) {
+        if (!haveLocationPermission()) {
             requestLocationPermission();
         }
-    }
-
-    private void startLocationUpdateService() {
-        // use this to start and trigger a service
-        Intent intent = new Intent(getActivity(), LocationUpdatesService.class);
-        intent.putExtra(GlobalValues.BUNDLE, bundle);
-        boolean goodRequest = getActivity().bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
-        Log.i(TAG, "Good bind request:" + goodRequest);
-
     }
 
     private Bundle lookForArguments(Bundle savedInstanceState) {
@@ -190,7 +176,9 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
         super.onStart();
         // Bind to the service. If the service is in foreground mode, this signals to the service
         // that since this activity is in the foreground, the service can exit foreground mode.
-        startLocationUpdateService();
+        if (shouldBeTrackingLocation()) {
+            startLocationUpdateService();
+        }
     }
 
     @Override
@@ -201,36 +189,50 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
             getCurrentLer();
             displayActivityStats();
         }
-        registerLocationUpdatesServiceReceiver();
+        if (shouldBeTrackingLocation()) {
+            registerLocationUpdatesServiceReceiver();
+        }
     }
 
-    private void registerLocationUpdatesServiceReceiver() {
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(myReceiver,
-                new IntentFilter(LocationUpdatesService.ACTION_BROADCAST));
-    }
+
 
     @Override
     public void onPause() {
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(myReceiver);
+        unregisterLocationUpdatesServiceReceiver();
         super.onPause();
     }
 
     @Override
     public void onStop() {
-        if (mBound) {
-            if (mService.isRunning()) {
-                // Still tracking
-                // Unbind from the service. This signals to the service that this activity is no longer
-                // in the foreground, and the service can respond by promoting itself to a foreground
-                // service.
-                getActivity().unbindService(mServiceConnection);
-                mBound = false;
-            } else {
-                // Not tracking so stop service;
-                mService.stopSelf();
-            }
+        // Service not stopped unless/until user hits stop button
+        if (bound) {
+            // Still tracking
+            // Unbind from the service. This signals to the service that this activity is no longer
+            // in the foreground, and the service can respond by promoting itself to a foreground
+            // service.
+            getActivity().unbindService(serviceConnection);
+            bound = false;
         }
         super.onStop();
+    }
+
+    private void registerLocationUpdatesServiceReceiver() {
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(locationUpdateReceiver,
+                new IntentFilter(LocationUpdatesService.ACTION_BROADCAST));
+    }
+
+    private void unregisterLocationUpdatesServiceReceiver() {
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(locationUpdateReceiver);
+    }
+
+    private void startLocationUpdateService() {
+        // use this to start and trigger a service
+        Intent intent = new Intent(getActivity(), LocationUpdatesService.class);
+        intent.putExtra(GlobalValues.BUNDLE, bundle);
+        boolean goodRequest = getActivity().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        Log.i(TAG, "Good bind request:" + goodRequest);
+        setStopContinueButton(true);
+
     }
 
     private void getCurrentLer() {
@@ -239,23 +241,22 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
     }
 
     private void getReferencedViews(View view) {
-        TextView tvExerciseLocation = (TextView) view
+        TextView tvExerciseLocation = view
                 .findViewById(R.id.activity_detail_tvExerciseLocation);
         tvExerciseLocation.setText(getString(R.string.exercise_at_location_plus_description, exercise, exrcsLocation, description));
         View buttonView = view.findViewById(R.id.activity_detail_buttonfooter);
         buttonView.setVisibility(View.VISIBLE);
-        // stats.add(new String[] {"xxxx", "yyyy"});
         statsArrayAdapter = new StatsArrayAdapter(getActivity(),
                 stats.toArray(new String[][]{}));
-        statsList = (ListView) view.findViewById(R.id.activity_detail_list);
+        statsList = view.findViewById(R.id.activity_detail_list);
         statsList.setAdapter(statsArrayAdapter);
 
-        btnStopRestart = (Button) view
+        btnStopRestart = view
                 .findViewById(R.id.activity_stats_stop_restart);
         btnStopRestart.setOnClickListener(v -> {
-            if (btnStopRestart.getText().equals(getResources().getString(R.string.stop))) {
+            if (shouldBeTrackingLocation()) {
                 stopService();
-                Snackbar.make(layoutView, R.string.stopping_gps_loggin,
+                Snackbar.make(layoutView, R.string.stopping_gps_logging,
                         Snackbar.LENGTH_SHORT).show();
                 startBackups();
             } else {
@@ -265,24 +266,28 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
     }
 
     /**
+     * Use to indicate if app should be tracking (button text = Stop) location
+     * or if tracking stopped (button text = Continue)
+     * @return
+     */
+    private boolean shouldBeTrackingLocation() {
+        return btnStopRestart.getText().equals(getResources().getString(R.string.stop));
+    }
+
+    /**
      * Call when user clicks on stop button to stop logging
      * Stop the location service
      */
-    private void stopService(){
+    private void stopService() {
         setStopContinueButton(false);
-        if (mBound) {
-            if (mService != null) {
-                mService.removeLocationUpdates();
-            }
-            mBound = false;
-        }
+        service.removeLocationUpdates();
     }
 
     private void startBackups() {
-        if (sharedPreferences.getBoolean(getString(R.string.drive_backup), false)) {
+        if (appPreferences.doBackToDrive()) {
             BackupScheduler.scheduleBackupJob(getActivity().getApplicationContext(), GlobalValues.BACKUP_TO_DRIVE);
         }
-        if (sharedPreferences.getBoolean(getString(R.string.local_backup), false)) {
+        if (appPreferences.doLocalBackup()) {
             BackupScheduler.scheduleBackupJob(getActivity().getApplicationContext(), GlobalValues.BACKUP_TO_LOCAL);
         }
     }
@@ -299,7 +304,7 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
         Bundle args = new Bundle();
         switch (item.getItemId()) {
             case R.id.activity_detail_showMap:
-                if (ler.getStartLatitude() != null) {
+                if (ler != null && ler.getStartLatitude() != null) {
                     args.putLong(TrackerDatabase.LocationExercise._ID, ler.get_id());
                     args.putString(GlobalValues.TITLE, getString(R.string.exercise_at_location, exercise, exrcsLocation));
                     args.putString(TrackerDatabase.LocationExercise.DESCRIPTION, description);
@@ -380,15 +385,20 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
     /**
      * Returns the current state of the permissions needed.
      */
-    private boolean checkPermissions() {
+    private boolean haveLocationPermission() {
         return PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(getContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION);
     }
 
     private void checkLocationPermission() {
         // Check if the Location permission has been granted
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            startLocationUpdateService();
+        if (haveLocationPermission()) {
+            if (bound) {
+                service.requestLocationUpdates();
+                setStopContinueButton(true);
+            } else {
+                startLocationUpdateService();
+            }
         } else {
             // Permission is missing and must be requested.
             requestLocationPermission();
@@ -419,7 +429,7 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
             Snackbar.make(layoutView, R.string.location_permission_is_required,
                     Snackbar.LENGTH_INDEFINITE).setAction("OK", view -> {
                 // Request the permission
-                requestPermissions( new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         PERMISSION_REQUEST_LOCATION);
             }).show();
 
@@ -442,7 +452,7 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
             Snackbar.make(layoutView, R.string.camera_permission_is_required,
                     Snackbar.LENGTH_INDEFINITE).setAction("OK", view -> {
                 // Request the permission
-                requestPermissions( new String[]{Manifest.permission.CAMERA},
+                requestPermissions(new String[]{Manifest.permission.CAMERA},
                         PERMISSION_REQUEST_CAMERA);
             }).show();
         } else {

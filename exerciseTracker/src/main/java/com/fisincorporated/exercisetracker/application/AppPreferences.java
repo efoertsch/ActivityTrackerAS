@@ -3,6 +3,8 @@ package com.fisincorporated.exercisetracker.application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.fisincorporated.exercisetracker.R;
+
 import static android.content.Context.MODE_PRIVATE;
 
 public class AppPreferences {
@@ -16,8 +18,7 @@ public class AppPreferences {
         sharedPreferences = context.getSharedPreferences(activityTrackerPrefs, MODE_PRIVATE);
     }
 
-
-    public long getActivityId(){
+    public long getActivityId() {
         return sharedPreferences.getLong(PREF_CURRENT_LER_ID, -1);
     }
 
@@ -25,7 +26,17 @@ public class AppPreferences {
         sharedPreferences.edit().putLong(PREF_CURRENT_LER_ID, lerId).apply();
     }
 
-    public void deleteActivityId(){
+    public void deleteActivityId() {
         sharedPreferences.edit().remove(PREF_CURRENT_LER_ID).apply();
     }
+
+    // -------- Backups -------------------------
+    public boolean doBackToDrive() {
+        return sharedPreferences.getBoolean(context.getString(R.string.drive_backup), false);
+    }
+
+    public boolean doLocalBackup(){
+        return sharedPreferences.getBoolean(context.getString(R.string.local_backup), false);
+    }
+
 }

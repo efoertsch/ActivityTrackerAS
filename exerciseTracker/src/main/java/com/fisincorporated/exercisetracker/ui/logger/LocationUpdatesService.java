@@ -16,9 +16,9 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
-import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.fisincorporated.exercisetracker.GlobalValues;
@@ -39,11 +39,10 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -125,18 +124,18 @@ public class LocationUpdatesService extends DaggerService {
 
     private LocationExerciseRecord ler;
 
-    private LocationExerciseDAO sLeDAO = null;
-    private GPSLogDAO sGpslrDAO = null;
-    private ExerciseDAO sEDao = null;
-    private ExerciseRecord sEr = null;
+    private LocationExerciseDAO leDAO = null;
+    private GPSLogDAO gpslrDAO = null;
+    private ExerciseDAO eDao = null;
+    private ExerciseRecord er = null;
 
     private float minDistanceToLog = 20;
     private int updateRate = 60000;
     private int elevationInDistcalcs = 0;
     private long lastNotificationTime = 0;
     private long notificationInterval = 60 * 1000;
-    private boolean running = false;
     private Bundle bundle;
+    private boolean keepTracking;
 
     public LocationUpdatesService() {
     }
@@ -170,30 +169,23 @@ public class LocationUpdatesService extends DaggerService {
         }
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i(TAG, "Service started");
-        getDAOs();
-        lookForArguments(intent);
-        getLastLocation();
-
-//        boolean startedFromNotification = intent.getBooleanExtra(EXTRA_STARTED_FROM_NOTIFICATION,
-//                false);
-//
-//        // We got here because the user decided to remove location updates from the notification.
-//        if (startedFromNotification) {
-//            removeLocationUpdates();
-//            stopSelf();
-//        }
-        // Tells the system to not try to recreate the service after it has been killed.
-        return START_NOT_STICKY;
-    }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         changingConfiguration = true;
     }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.i(TAG, "Service started");
+        getDAOs();
+        //lookForArguments(intent);
+        getLastLocation();
+        // Tells the system to not try to recreate the service after it has been killed.
+        return START_NOT_STICKY;
+    }
+
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -213,7 +205,7 @@ public class LocationUpdatesService extends DaggerService {
         // and binds once again with this service. The service should cease to be a foreground
         // service when that happens.
         Log.i(TAG, "in onRebind()");
-        lookForArguments(intent);
+        // lookForArguments(intent);
         stopForeground(true);
         changingConfiguration = false;
         super.onRebind(intent);
@@ -226,30 +218,19 @@ public class LocationUpdatesService extends DaggerService {
         // Called when the last client (Activity/Fragment) unbinds from this
         // service. If this method is called due to a configuration change, we
         // do nothing. Otherwise, we make this service a foreground service.
-        if (!changingConfiguration) {
+        if (!changingConfiguration && keepTracking) {
             Log.i(TAG, "Starting foreground service");
-            Notification notification = getNotification();
-            // If targeting O, use the following code.
-//            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O) {
-//                notificationManager.startServiceInForeground(new Intent(this,
-//                        LocationUpdatesService.class), NOTIFICATION_ID, getNotification());
-//            } else {
-//                startForeground(NOTIFICATION_ID, getNotification());
-//            }
+            startForeground(NOTIFICATION_ID, getNotification(true));
 
-            if (notification != null) {
-                startForeground(NOTIFICATION_ID, notification);
-            }
         }
         return true; // Ensures onRebind() is called when a client re-binds.
     }
 
     @Override
     public void onDestroy() {
+        Log.i(TAG, "onDestroy called");
         serviceHandler.removeCallbacksAndMessages(null);
     }
-
-    //TODO replace bundle with ?
 
     /**
      * Makes a request for location updates. Note that in this sample we merely log the
@@ -257,13 +238,13 @@ public class LocationUpdatesService extends DaggerService {
      */
     public void requestLocationUpdates() {
         Log.i(TAG, "Requesting location updates");
-        running = true;
         Intent intent = new Intent(getApplicationContext(), LocationUpdatesService.class);
         intent.putExtra(GlobalValues.BUNDLE, bundle);
         startService(intent);
         try {
             fusedLocationClient.requestLocationUpdates(locationRequest,
                     locationCallback, Looper.myLooper());
+            keepTracking = true;
         } catch (SecurityException unlikely) {
             Log.e(TAG, "Lost location permission. Could not request updates. " + unlikely);
         }
@@ -274,10 +255,11 @@ public class LocationUpdatesService extends DaggerService {
      * {@link SecurityException}.
      */
     public void removeLocationUpdates() {
-        Log.i(TAG, "Removing location updates");
-        running = false;
+        Log.i(TAG, "Removing location updates and stopping service");
         try {
             fusedLocationClient.removeLocationUpdates(locationCallback);
+            keepTracking = false;
+            stopSelf();
         } catch (SecurityException unlikely) {
             Log.e(TAG, "Lost location permission. Could not remove updates. " + unlikely);
         }
@@ -287,15 +269,11 @@ public class LocationUpdatesService extends DaggerService {
     private void getLastLocation() {
         try {
             fusedLocationClient.getLastLocation()
-                    .addOnCompleteListener(new OnCompleteListener<Location>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Location> task) {
-                            if (task.isSuccessful() && task.getResult() != null) {
-                                location = task.getResult();
-                                onNewLocation(location);
-                            } else {
-                                Log.w(TAG, "Failed to get location.");
-                            }
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            onNewLocation(task.getResult());
+                        } else {
+                            Log.w(TAG, "Failed to get location.");
                         }
                     });
         } catch (SecurityException unlikely) {
@@ -303,23 +281,13 @@ public class LocationUpdatesService extends DaggerService {
         }
     }
 
-    private void onNewLocation(Location location) {
-        // Log.i(TAG, "New location: " + location);
-
-        this.location = location;
-        updateLer(location);
-        // Update notification content if running as a foreground service.
-        if (serviceIsRunningInForeground(this)) {
-            Notification notification = getNotification();
-            if (notification != null) {
-                notificationManager.notify(NOTIFICATION_ID, notification);
-            }
-        }
+    private void broadcastUpdate() {
+        // Notify anyone listening for broadcasts about the new location.
+        Intent intent = new Intent(ACTION_BROADCAST);
+        intent.putExtra(TrackerDatabase.LocationExercise.LOCATION_EXERCISE_TABLE, ler);
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
     }
 
-    public boolean isRunning() {
-        return running;
-    }
 
     /**
      * Class used for the client Binder.  Since this service runs in the same process as its
@@ -382,15 +350,28 @@ public class LocationUpdatesService extends DaggerService {
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
+    private void onNewLocation(Location location) {
+        // Log.i(TAG, "New location: " + location);
+        this.location = location;
+        updateLer(location);
+        broadcastUpdate();
+        // Update notification content if running as a foreground service but only update notification so often
+        if (serviceIsRunningInForeground(this)) {
+            Notification notification = getNotification(false);
+            if (notification != null) {
+                notificationManager.notify(NOTIFICATION_ID, notification);
+            }
+        }
+    }
 
     // TODO move all this to a repository
     public void getDAOs() {
-        if (sLeDAO == null)
-            sLeDAO = trackerDatabaseHelper.getLocationExerciseDAO();
-        if (sGpslrDAO == null)
-            sGpslrDAO = trackerDatabaseHelper.getGPSLogDAO();
-        if (sEDao == null) {
-            sEDao = trackerDatabaseHelper.getExerciseDAO();
+        if (leDAO == null)
+            leDAO = trackerDatabaseHelper.getLocationExerciseDAO();
+        if (gpslrDAO == null)
+            gpslrDAO = trackerDatabaseHelper.getGPSLogDAO();
+        if (eDao == null) {
+            eDao = trackerDatabaseHelper.getExerciseDAO();
         }
     }
 
@@ -401,12 +382,11 @@ public class LocationUpdatesService extends DaggerService {
     public void stopTrackingLer() {
         appPreferences.deleteActivityId();
         cancelNotifications();
-        stopSelf();
     }
 
     //If stopped tracker (and service stopped) then continued, get up to date record.
     private LocationExerciseRecord getLer() {
-        return ler = sLeDAO.loadLocationExerciseRecordById(ler.get_id());
+        return ler = leDAO.loadLocationExerciseRecordById(ler.get_id());
     }
 
     public void updateLer(Location location) {
@@ -428,11 +408,15 @@ public class LocationUpdatesService extends DaggerService {
         float averageSpeed = 0;
         float maxSpeedToPoint = 0;
         double altitude = 0;
-
+        long currentTime = new Date().getTime();
         // if startTime null then first time in.
         if (ler.getStartTimestamp() == null) {
-            ler.setStartTimestamp(new Timestamp(location.getTime()));
-            ler.setEndTimestamp(new Timestamp(location.getTime()));
+            //ler.setStartTimestamp(new Timestamp(location.getTime()));
+            //ler.setEndTimestamp(new Timestamp(location.getTime()));
+            // location time can be from last gps fix not current time
+            ler.setStartTimestamp(new Timestamp(currentTime));
+            ler.setEndTimestamp(new Timestamp(currentTime));
+
             ler.setStartLatitude((float) location.getLatitude());
             ler.setEndLatitude((float) location.getLatitude());
             ler.setStartLongitude((float) (location.getLongitude()));
@@ -485,17 +469,17 @@ public class LocationUpdatesService extends DaggerService {
             ler.setAltitudeLost(altitudeLost);
             // averageSpeed in kph
             averageSpeed = (totalDistance / 1000f)
-                    / ((location.getTime() - ler.getStartTimestamp().getTime()) / GlobalValues.TIME_TO_FRACTION_HOURS);
+                    / ((currentTime - ler.getStartTimestamp().getTime()) / GlobalValues.TIME_TO_FRACTION_HOURS);
             ler.setAverageSpeed(averageSpeed);
             // max speed in kph
             maxSpeedToPoint = (distance / 1000f)
-                    / ((location.getTime() - ler.getEndTimestamp().getTime()) / GlobalValues.TIME_TO_FRACTION_HOURS);
+                    / ((currentTime - ler.getEndTimestamp().getTime()) / GlobalValues.TIME_TO_FRACTION_HOURS);
             if ((ler.getMaxSpeedToPoint() != null)
                     && maxSpeedToPoint > ler.getMaxSpeedToPoint()) {
                 ler.setMaxSpeedToPoint(maxSpeedToPoint);
             }
             // these are set whether first time through or on restart
-            ler.setEndTimestamp(new Timestamp(location.getTime()));
+            ler.setEndTimestamp(new Timestamp(currentTime));
             ler.setEndLatitude((float) location.getLatitude());
             ler.setEndLongitude((float) (location.getLongitude()));
             ler.setEndAltitude((float) altitude);
@@ -508,16 +492,14 @@ public class LocationUpdatesService extends DaggerService {
                 ler.setMaxAltitude((float) altitude);
             }
         }
-        sLeDAO.updateLocationExercise(ler);
+        leDAO.updateLocationExercise(ler);
         // distance may be 0 if first time in or >0 if restarting
         if (ler.getLogDetail() == 1) {
             insertGPSLogRecord(ler.get_id(), location, distance);
         }
-
     }
 
-    private void insertGPSLogRecord(long lerId, Location location,
-                                    int distanceFromLastPoint) {
+    private void insertGPSLogRecord(long lerId, Location location, int distanceFromLastPoint) {
         GPSLogRecord gpslr = new GPSLogRecord();
         gpslr.setLocationExerciseId(lerId);
         gpslr.setElevation((int) location.getAltitude());
@@ -525,20 +507,15 @@ public class LocationUpdatesService extends DaggerService {
         gpslr.setLongitude((float) location.getLongitude());
         gpslr.setDistanceFromLastPoint(distanceFromLastPoint);
         gpslr.setTimestamp(new java.sql.Timestamp(location.getTime()).toString());
-        sGpslrDAO.createGPSLogRecord(gpslr);
-
+        gpslrDAO.createGPSLogRecord(gpslr);
     }
 
     /**
      * Generate notification and update as you go
      */
-    private Notification getNotification() {
-        if (ler == null || ler.getDistance() == null) {
-            return null;
-        }
-
+    private Notification getNotification(boolean bypassTimeCheck) {
         // Only update notification every so often
-        if (System.currentTimeMillis() - lastNotificationTime < notificationInterval) {
+        if (!bypassTimeCheck && (System.currentTimeMillis() - lastNotificationTime) < notificationInterval) {
             return null;
         }
         lastNotificationTime = System.currentTimeMillis();
@@ -569,42 +546,35 @@ public class LocationUpdatesService extends DaggerService {
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = createNotificationIntent();
 
-        // The stack builder object will contain an artificial back stack for the
-// started Activity.
-// This ensures that navigating backward from the Activity leads out of
-// your application to the Home screen.
+        // The stack builder object will contain an artificial back stack for the started Activity.
+        // This ensures that navigating backward from the Activity leads out of
+        // your application to the Home screen.
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
-// Adds the back stack for the Intent (but not the Intent itself)
+        // Adds the back stack for the Intent (but not the Intent itself)
         stackBuilder.addParentStack(ActivityLoggerActivity.class);
-// Adds the Intent that starts the Activity to the top of the stack
+        // Adds the Intent that starts the Activity to the top of the stack
         stackBuilder.addNextIntent(resultIntent);
         PendingIntent resultPendingIntent =
                 stackBuilder.getPendingIntent(
                         0,
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
-
         builder.setContentIntent(resultPendingIntent);
         return builder.build();
-//        sNotificationManager =
-//                (NotificationManager) sAppContext.getSystemService(Context.NOTIFICATION_SERVICE);
-//// GlobalValues.NOTIFICATION_LOGGER allows you to update the notification later on.
-//        sNotificationManager.notify(GlobalValues.NOTIFICATION_LOGGER, builder.build());
-
     }
 
     private Intent createNotificationIntent() {
         Intent intent = new Intent(getApplicationContext(), ActivityLoggerActivity.class);
         intent.putExtra(TrackerDatabase.LocationExercise.LOCATION_EXERCISE_TABLE, ler);
-        intent.putExtra(TrackerDatabase.Exercise.EXERCISE, sLeDAO.getExercise(ler.getExerciseId()));
+        intent.putExtra(TrackerDatabase.Exercise.EXERCISE, leDAO.getExercise(ler.getExerciseId()));
         intent.putExtra(TrackerDatabase.ExrcsLocation.LOCATION,
-                sLeDAO.getLocation(ler.getLocationId()));
+                leDAO.getLocation(ler.getLocationId()));
         intent.putExtra(TrackerDatabase.LocationExercise.DESCRIPTION,
                 ler.getDescription() == null ? "" : ler.getDescription());
-        sEr = sEDao.loadExerciseRecordById(ler.getExerciseId());
-        intent.putExtra(TrackerDatabase.Exercise.MIN_DISTANCE_TO_LOG, sEr.getMinDistanceToLog());
+        er = eDao.loadExerciseRecordById(ler.getExerciseId());
+        intent.putExtra(TrackerDatabase.Exercise.MIN_DISTANCE_TO_LOG, er.getMinDistanceToLog());
         intent.putExtra(TrackerDatabase.Exercise.ELEVATION_IN_DIST_CALCS,
-                sEr.getElevationInDistCalcs());
+                er.getElevationInDistCalcs());
         return intent;
     }
 

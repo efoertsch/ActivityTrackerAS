@@ -343,6 +343,8 @@ public class LocationUpdatesService extends DaggerService {
      * Sets the location request parameters.
      */
     private void createLocationRequest() {
+        Log.d(TAG, "Creating location request, interval:" + updateRate + "  fastestInterval:" + updateRate
+            + "  min distance to log:" + minDistanceToLog);
         locationRequest = new LocationRequest();
         locationRequest.setInterval(updateRate);
         locationRequest.setFastestInterval(updateRate);
@@ -411,6 +413,7 @@ public class LocationUpdatesService extends DaggerService {
         long currentTime = new Date().getTime();
         // if startTime null then first time in.
         if (ler.getStartTimestamp() == null) {
+            Log.d(TAG,"Initializing ler record - first time");
             //ler.setStartTimestamp(new Timestamp(location.getTime()));
             //ler.setEndTimestamp(new Timestamp(location.getTime()));
             // location time can be from last gps fix not current time
@@ -440,6 +443,7 @@ public class LocationUpdatesService extends DaggerService {
         } else {
             // 2nd or subsequent time or restarting so calc distance from where you
             // stopped to where you are
+            Log.d(TAG,"Updating ler record with new location");
             Location.distanceBetween(location.getLatitude(),
                     location.getLongitude(), ler.getEndLatitude(),
                     ler.getEndLongitude(), results);
@@ -500,6 +504,7 @@ public class LocationUpdatesService extends DaggerService {
     }
 
     private void insertGPSLogRecord(long lerId, Location location, int distanceFromLastPoint) {
+        Log.d(TAG,"inserted new GPSLogRecord");
         GPSLogRecord gpslr = new GPSLogRecord();
         gpslr.setLocationExerciseId(lerId);
         gpslr.setElevation((int) location.getAltitude());

@@ -115,7 +115,7 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             ler = intent.getParcelableExtra(TrackerDatabase.LocationExercise.LOCATION_EXERCISE_TABLE);
-            displayActivityStats();
+                displayActivityStats();
         }
     }
 

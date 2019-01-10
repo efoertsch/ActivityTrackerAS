@@ -1,7 +1,6 @@
 package com.fisincorporated.exercisetracker.dagger.ui;
 
 
-import com.fisincorporated.exercisetracker.broadcastreceiver.LocationReceiver;
 import com.fisincorporated.exercisetracker.ui.about.AboutFragment;
 import com.fisincorporated.exercisetracker.ui.backuprestore.RestoreFragment;
 import com.fisincorporated.exercisetracker.ui.charts.AltitudeVsDistanceGraphFragment;
@@ -10,6 +9,7 @@ import com.fisincorporated.exercisetracker.ui.filters.ExerciseFilterDialog;
 import com.fisincorporated.exercisetracker.ui.filters.LocationFilterDialog;
 import com.fisincorporated.exercisetracker.ui.history.ActivityFragmentHistory;
 import com.fisincorporated.exercisetracker.ui.logger.ActivityLoggerFragment;
+import com.fisincorporated.exercisetracker.ui.logger.LocationUpdatesService;
 import com.fisincorporated.exercisetracker.ui.maintenance.ExerciseMaintenanceDetailFragment;
 import com.fisincorporated.exercisetracker.ui.maintenance.ExerciseMaintenanceListActivity;
 import com.fisincorporated.exercisetracker.ui.maintenance.ExerciseMaintenanceListFragment;
@@ -44,6 +44,9 @@ public abstract class UIBuildersModule {
 
     @ContributesAndroidInjector(modules = { })
     abstract ActivityFragmentHistory bindActivityFragmentHistory();
+
+    @ContributesAndroidInjector(modules = {})
+    abstract LocationUpdatesService bindLocationUpdatesService();
 
     @ContributesAndroidInjector(modules = { })
     abstract ActivityLoggerFragment bindActivityLoggerFragment();
@@ -81,8 +84,6 @@ public abstract class UIBuildersModule {
     @ContributesAndroidInjector(modules = { })
     abstract ActivityMapFragment bindActivityMapFragment();
 
-    @ContributesAndroidInjector(modules = {})
-    abstract LocationReceiver bindLocationReceiver();
 
     @ContributesAndroidInjector(modules = {})
     abstract ExerciseMaintenancePagerActivity bindExerciseMaintenancePagerActivity();

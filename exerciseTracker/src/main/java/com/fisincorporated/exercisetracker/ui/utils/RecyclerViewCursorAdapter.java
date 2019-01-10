@@ -2,9 +2,11 @@ package com.fisincorporated.exercisetracker.ui.utils;
 
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 // from https://forums.bignerdranch.com/t/using-a-recyclerview-with-a-loader-cursorloader/8286/3
 public abstract class RecyclerViewCursorAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
+    private final static String TAG = RecyclerViewCursorAdapter.class.getName();
     private Cursor mCursor;
     private boolean mDataValid;
     private int mRowIDColumn;
@@ -41,6 +43,7 @@ public abstract class RecyclerViewCursorAdapter<VH extends RecyclerView.ViewHold
             throw new IllegalStateException("Cannot lookup item id when cursor is in invalid state.");
         }
         if (!mCursor.moveToPosition(position)) {
+            Log.e(TAG," Attempting to move to position:" + position + " but got error");
             throw new IllegalStateException("Could not move cursor to position " + position + " when trying to get an item id");
         }
 

@@ -50,6 +50,14 @@ public class ActivityHistory extends ExerciseMasterActivity {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        if (publishRelay != null) {
+            publishRelay.subscribe(publishRelayObserver);
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         alf.setHandleSelectedActionImpl(this);
@@ -59,15 +67,6 @@ public class ActivityHistory extends ExerciseMasterActivity {
     public void onPause() {
         super.onPause();
         alf.setHandleSelectedActionImpl(null);
-
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (publishRelay != null) {
-            publishRelay.subscribe(publishRelayObserver);
-        }
     }
 
     @Override

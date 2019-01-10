@@ -12,7 +12,10 @@ import dagger.android.support.AndroidSupportInjectionModule;
 
 
 @Singleton
-@Component(modules = {UIBuildersModule.class, AndroidSupportInjectionModule.class, ApplicationModule.class})
+@Component(modules = {UIBuildersModule.class
+        , ChannelIdModule.class
+        , AndroidSupportInjectionModule.class
+        , ApplicationModule.class})
 public interface ApplicationComponent extends
         AndroidInjector<ActivityTrackerApplication> {
 

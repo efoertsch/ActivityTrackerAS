@@ -50,14 +50,24 @@ public class StatsUtil {
 
         stats.clear();
 
-        float distance = (isImperialDisplay ? metersToMiles((float) ler.getDistance()) : ((float) ler
-                .getDistance()) / 1000f);
+        float distance;
+        if (ler.getDistance() == null) {
+            distance = 0;
+        } else {
+            distance = (isImperialDisplay ? metersToMiles((float) ler.getDistance()) : ((float) ler
+                    .getDistance()) / 1000f);
+        }
         stats.add(new String[]{
                 res.getString(R.string.distance_traveled),
                 String.format("%.1f " + milesKm, distance)});
 
-        long elapsed = ler.getEndTimestamp().getTime()
-                - ler.getStartTimestamp().getTime();
+        long elapsed;
+        if (ler.getEndTimestamp() == null) {
+            elapsed = 0;
+        } else {
+            elapsed = ler.getEndTimestamp().getTime()
+                    - ler.getStartTimestamp().getTime();
+        }
         int diffHours = (int) (elapsed / GlobalValues.TIME_TO_FRACTION_HOURS);
         // find remaining minutes
         int diffMinutes = Math.round((elapsed - (diffHours * GlobalValues.TIME_TO_FRACTION_HOURS))
@@ -87,40 +97,49 @@ public class StatsUtil {
 
         int altitude;
         if (!forNotification) {
-            altitude = Math.round(isImperialDisplay ? metersToFeet(ler.getStartAltitude()) : ler.getStartAltitude());
+            if (ler.getStartAltitude() == null) {
+                altitude = 0;
+            } else {
+                altitude = Math.round(isImperialDisplay ? metersToFeet(ler.getStartAltitude()) : ler.getStartAltitude());
+            }
             stats.add(new String[]{res.getString(R.string.start_altitude), String.format("%d %s", altitude, feetMeters)});
         }
 
-        altitude = Math.round(isImperialDisplay ? metersToFeet(ler.getCurrentAltitude()) : ler.getCurrentAltitude());
-        if (currentlyActive) {
-            stats.add(new String[]{res.getString(R.string.current_altitude), String.format("%d %s", altitude, feetMeters)});
+        if (ler.getCurrentAltitude() == null) {
+            altitude = 0;
         } else {
-            stats.add(new String[]{res.getString(R.string.end_altitude), String.format("%d %s", altitude, feetMeters)});
+            altitude = Math.round(isImperialDisplay ? metersToFeet(ler.getCurrentAltitude()) : ler.getCurrentAltitude());
+            if (currentlyActive) {
+                stats.add(new String[]{res.getString(R.string.current_altitude), String.format("%d %s", altitude, feetMeters)});
+            } else {
+                stats.add(new String[]{res.getString(R.string.end_altitude), String.format("%d %s", altitude, feetMeters)});
+            }
         }
 
         if (!forNotification) {
-            altitude = Math.round(isImperialDisplay ? metersToFeet(ler.getMinAltitude()) : ler.getMinAltitude());
-            stats.add(new String[]{res.getString(R.string.min_altitude), String.format("%d %s", altitude, feetMeters)});
+            if (ler.getMinAltitude() != null) {
+                altitude = Math.round(isImperialDisplay ? metersToFeet(ler.getMinAltitude()) : ler.getMinAltitude());
+                stats.add(new String[]{res.getString(R.string.min_altitude), String.format("%d %s", altitude, feetMeters)});
 
-            altitude = Math.round(isImperialDisplay ? (int) metersToFeet(ler.getMaxAltitude()) : ler.getMaxAltitude());
-            stats.add(new String[]{res.getString(R.string.max_altitude), String.format("%d %s", altitude, feetMeters)});
+                altitude = Math.round(isImperialDisplay ? (int) metersToFeet(ler.getMaxAltitude()) : ler.getMaxAltitude());
+                stats.add(new String[]{res.getString(R.string.max_altitude), String.format("%d %s", altitude, feetMeters)});
 
-            altitude = (int) (isImperialDisplay ? (int) metersToFeet(ler.getAltitudeGained()) : ler.getAltitudeGained());
-            stats.add(new String[]{
-                    res.getString(R.string.altitude_gained),
-                    String.format("%d " + feetMeters, altitude)});
+                altitude = (int) (isImperialDisplay ? (int) metersToFeet(ler.getAltitudeGained()) : ler.getAltitudeGained());
+                stats.add(new String[]{
+                        res.getString(R.string.altitude_gained),
+                        String.format("%d " + feetMeters, altitude)});
 
-            altitude = (int) (isImperialDisplay ? (int) metersToFeet(ler.getAltitudeLost()) : ler.getAltitudeLost());
-            stats.add(new String[]{
-                    res.getString(R.string.altitude_lost),
-                    String.format("%d " + feetMeters, altitude)});
+                altitude = (int) (isImperialDisplay ? (int) metersToFeet(ler.getAltitudeLost()) : ler.getAltitudeLost());
+                stats.add(new String[]{
+                        res.getString(R.string.altitude_lost),
+                        String.format("%d " + feetMeters, altitude)});
 
-            altitude = (int) (isImperialDisplay ? (int) metersToFeet(ler.getAltitudeGained() - ler.getAltitudeLost())
-                    : ler.getAltitudeGained() - ler.getAltitudeLost());
-            stats.add(new String[]{
-                    res.getString(R.string.overall_altitude_change),
-                    String.format("%d " + feetMeters, altitude)});
-
+                altitude = (int) (isImperialDisplay ? (int) metersToFeet(ler.getAltitudeGained() - ler.getAltitudeLost())
+                        : ler.getAltitudeGained() - ler.getAltitudeLost());
+                stats.add(new String[]{
+                        res.getString(R.string.overall_altitude_change),
+                        String.format("%d " + feetMeters, altitude)});
+            }
         }
     }
 

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.fisincorporated.exercisetracker.R;
+import com.fisincorporated.exercisetracker.application.AppPreferences;
 import com.fisincorporated.exercisetracker.database.ExerciseDAO;
 import com.fisincorporated.exercisetracker.database.ExerciseRecord;
 import com.fisincorporated.exercisetracker.database.LocationExerciseDAO;
@@ -14,13 +15,12 @@ import com.fisincorporated.exercisetracker.database.TrackerDatabase.ExrcsLocatio
 import com.fisincorporated.exercisetracker.database.TrackerDatabase.LocationExercise;
 import com.fisincorporated.exercisetracker.database.TrackerDatabaseHelper;
 import com.fisincorporated.exercisetracker.ui.logger.ActivityLoggerActivity;
-import com.fisincorporated.exercisetracker.ui.logger.GPSLocationManager;
 import com.fisincorporated.exercisetracker.ui.master.ExerciseDaggerActivity;
 
 import javax.inject.Inject;
 
 public class StartExerciseActivity extends ExerciseDaggerActivity {
-	private static final String TAG = "StartExerciseActivity";
+	private static final String TAG = StartExerciseActivity.class.getName();
 	private LocationExerciseDAO leDAO = null;
 	private LocationExerciseRecord ler = null;
 	private ExerciseDAO eDAO = null;
@@ -29,12 +29,16 @@ public class StartExerciseActivity extends ExerciseDaggerActivity {
 	@Inject
 	TrackerDatabaseHelper trackerDatabaseHelper;
 
+	@Inject
+	AppPreferences appPreferences;
+
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		long id = -1;
 		super.onCreate(savedInstanceState);
         setActivityTitle(R.string.start_exercise);
-        if ((id = GPSLocationManager.checkActivityId(this)) != -1) {
+        if ((id = appPreferences.getActivityId()) != -1) {
             directToActivityLogger(id);
         }
 	}
@@ -44,6 +48,7 @@ public class StartExerciseActivity extends ExerciseDaggerActivity {
 	}
 
 	private void directToActivityLogger(long id) {
+		// TODO Create ActivityLoggerActivity.Builder to pass parms
 		Intent intent = new Intent(this, ActivityLoggerActivity.class);
 		leDAO = trackerDatabaseHelper.getLocationExerciseDAO();
 		eDAO = trackerDatabaseHelper.getExerciseDAO();

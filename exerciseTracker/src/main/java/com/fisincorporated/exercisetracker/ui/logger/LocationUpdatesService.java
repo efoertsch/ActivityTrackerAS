@@ -271,7 +271,8 @@ public class LocationUpdatesService extends DaggerService {
             fusedLocationClient.getLastLocation()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful() && task.getResult() != null) {
-                            onNewLocation(task.getResult());
+                           // onNewLocation(task.getResult());
+                            Log.i(TAG, "New location: " + location);
                         } else {
                             Log.w(TAG, "Failed to get location.");
                         }

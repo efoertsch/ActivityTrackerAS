@@ -2,11 +2,11 @@
 
 This app was originally developed to learn Android programming, but if you are a exercise oriented person (walk, hike, bike, ski,...) this is the app for you!
 
-The app was started way back around 2011 or so, updated as time and interest converge. It is slowly being updated to Material Design and current architectural standards.
+The app was started way back around 2011 or so, and updated as time and interest converge. It does need major rewritting to bring it up to current Android archectiture standards, but hey - it does what it needs to do.
 
 Main ToDos 
 
-* Convert to ViewModel/LiveData/Room
+* Rewrite to current Android archectiture standards.
 
 Interesting code used in this project:
 

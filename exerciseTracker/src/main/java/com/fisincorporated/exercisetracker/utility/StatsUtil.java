@@ -50,6 +50,13 @@ public class StatsUtil {
 
         stats.clear();
 
+        // User may go immediately into background before first fix is available
+        if (ler == null){
+            stats.add(new String[]{
+                    res.getString(R.string.waiting_for_gps_fix), ""});
+            return;
+            }
+
         float distance;
         if (ler.getDistance() == null) {
             distance = 0;

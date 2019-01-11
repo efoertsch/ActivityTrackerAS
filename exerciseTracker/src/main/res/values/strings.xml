@@ -345,5 +345,6 @@
     <string name="storage_permission_denied">Storage permission request was denied.</string>
     <string name="camera_permission_is_required">Camera permission is required to use the camera.</string>
     <string name="location_permission_is_required">Location permission is required to use GPS.</string>
+    <string name="waiting_for_gps_fix">Waiting for gps fix.</string>
 
 </resources>

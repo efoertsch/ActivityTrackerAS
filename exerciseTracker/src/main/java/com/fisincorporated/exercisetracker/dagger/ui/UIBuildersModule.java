@@ -1,6 +1,7 @@
 package com.fisincorporated.exercisetracker.dagger.ui;
 
 
+import com.fisincorporated.exercisetracker.backupandrestore.BackupJobService;
 import com.fisincorporated.exercisetracker.ui.about.AboutFragment;
 import com.fisincorporated.exercisetracker.ui.backuprestore.RestoreFragment;
 import com.fisincorporated.exercisetracker.ui.charts.AltitudeVsDistanceGraphFragment;
@@ -96,6 +97,9 @@ public abstract class UIBuildersModule {
 
     @ContributesAndroidInjector(modules = {})
     abstract AboutFragment bindAboutFragment();
+
+    @ContributesAndroidInjector(modules = {})
+    abstract BackupJobService bindBackupJobService();
 
 
     // Add more bindings here for other sub components

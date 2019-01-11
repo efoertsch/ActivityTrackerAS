@@ -19,13 +19,22 @@ import com.fisincorporated.exercisetracker.ui.startup.ExerciseDrawerActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import dagger.android.AndroidInjection;
 import io.reactivex.Completable;
 
 public class BackupJobService extends JobService {
     private static final String TAG = BackupJobService.class.getSimpleName();
 
+    @Inject
+    @Named("CHANNEL_ID")
+    String CHANNEL_ID;
+
     @Override
     public boolean onStartJob(JobParameters params) {
+        AndroidInjection.inject(this);
         Log.d(TAG, "onStartJob called");
         return startBackup(params);
     }
@@ -97,7 +106,7 @@ public class BackupJobService extends JobService {
 
     public void postSignInNotification(String notificationContent) {
         NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(this);
+                new NotificationCompat.Builder(this, CHANNEL_ID);
         Notification notification = builder
                         .setSmallIcon(R.drawable.ic_notification_info)
                         .setContentTitle(getString(R.string.app_name))
@@ -128,7 +137,7 @@ public class BackupJobService extends JobService {
 
     public void postNotification(int backupType, String notificationContent) {
         NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(this)
+                new NotificationCompat.Builder(this, CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_notification_info)
                         .setContentTitle(getString(R.string.app_name))
                         .setContentText(notificationContent);

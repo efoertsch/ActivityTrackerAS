@@ -50,8 +50,9 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
     private static final String TAG = ActivityLoggerFragment.class.getSimpleName();
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
-    private static final int PERMISSION_REQUEST_LOCATION = 234240;
-    private static final int PERMISSION_REQUEST_CAMERA = 785352;
+    private static final int PERMISSION_REQUEST_LOCATION = 2342;
+    private static final int PERMISSION_REQUEST_CAMERA = 7853;
+    private static final int PERMISSION_REQUEST_STORAGE = 6666;
 
     private View layoutView;
     private ListView statsList;
@@ -285,11 +286,18 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
 
     private void startBackups() {
         if (appPreferences.doBackToDrive()) {
-            BackupScheduler.scheduleBackupJob(getActivity().getApplicationContext(), GlobalValues.BACKUP_TO_DRIVE);
+            doBackup(GlobalValues.BACKUP_TO_DRIVE);
         }
-        if (appPreferences.doLocalBackup()) {
-            BackupScheduler.scheduleBackupJob(getActivity().getApplicationContext(), GlobalValues.BACKUP_TO_LOCAL);
-        }
+        // temp fix for local backup not working for M(23) and higher.
+       if (appPreferences.doLocalBackup() && haveStoragePermission()){
+            doBackup(GlobalValues.BACKUP_TO_LOCAL);
+        } else {
+           requestStoragePermission();
+       }
+    }
+
+    private void doBackup(int backupType){
+        BackupScheduler.scheduleBackupJob(getActivity().getApplicationContext(),backupType);
     }
 
     // Note this is called after onResume() (Seems odd time to call it)
@@ -466,6 +474,34 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
 
     }
 
+    /**
+     * Requests the {@link android.Manifest.permission#ACCESS_FINE_LOCATION} permission.
+     * If an additional rationale should be displayed, the user has to launch the request from
+     * a SnackBar that includes additional information.
+     */
+    private void requestStoragePermission() {
+        // Permission has not been granted and must be requested.
+        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            // Provide an additional rationale to the user if the permission was not granted
+            // and the user would benefit from additional context for the use of the permission.
+            // Display a SnackBar with a button to request the missing permission.
+            Snackbar.make(layoutView, R.string.storage_permission_is_required_for_local_backup,
+                    Snackbar.LENGTH_INDEFINITE).setAction("OK", view -> {
+                // Request the permission
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        PERMISSION_REQUEST_STORAGE);
+            }).show();
+
+        } else {
+//            Snackbar.make(layoutView,
+//                    R.string.storage_permission_is_not_available,
+//                    Snackbar.LENGTH_SHORT).show();
+            // Request the permission. The result will be received in onRequestPermissionResult().
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    PERMISSION_REQUEST_STORAGE);
+        }
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == PERMISSION_REQUEST_LOCATION) {
@@ -508,6 +544,40 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
                         .show();
             }
         }
+        if (requestCode == PERMISSION_REQUEST_STORAGE) {
+            // Request for storage permission.
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+               doBackup(GlobalValues.BACKUP_TO_LOCAL);
+            } else {
+                Snackbar.make(
+                        layoutView,
+                        R.string.permission_denied_explanation,
+                        Snackbar.LENGTH_INDEFINITE)
+                        .setAction(R.string.settings, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                // Build intent that displays the App settings screen.
+                                Intent intent = new Intent();
+                                intent.setAction(
+                                        Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                Uri uri = Uri.fromParts("package",
+                                        BuildConfig.APPLICATION_ID, null);
+                                intent.setData(uri);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                            }
+                        })
+                        .show();
+            }
+        }
+    }
+
+    /**
+     * Returns the current state of the permissions needed.
+     */
+    private boolean haveStoragePermission() {
+        return PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(getContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
 }

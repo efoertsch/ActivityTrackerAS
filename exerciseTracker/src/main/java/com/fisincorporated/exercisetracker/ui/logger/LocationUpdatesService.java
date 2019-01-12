@@ -98,7 +98,7 @@ public class LocationUpdatesService extends DaggerService {
     /**
      * The current location.
      */
-    private Location location;
+    //private Location location;
 
     // ActivityTracker custom code
     @Inject
@@ -136,6 +136,8 @@ public class LocationUpdatesService extends DaggerService {
     private long notificationInterval = 60 * 1000;
     private Bundle bundle;
     private boolean keepTracking;
+    private int locationCount = 0;
+    private Location firstLocation;
 
     public LocationUpdatesService() {
     }
@@ -148,6 +150,7 @@ public class LocationUpdatesService extends DaggerService {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
+                Log.i(TAG, "From LocationCallback.onLocationResult New location: " + locationResult.getLastLocation().toString());
                 onNewLocation(locationResult.getLastLocation());
             }
         };
@@ -272,7 +275,7 @@ public class LocationUpdatesService extends DaggerService {
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful() && task.getResult() != null) {
                            // onNewLocation(task.getResult());
-                            Log.i(TAG, "New location: " + location);
+                            Log.i(TAG, "from getLastLocation()New location: " + task.getResult().toString());
                         } else {
                             Log.w(TAG, "Failed to get location.");
                         }
@@ -355,7 +358,15 @@ public class LocationUpdatesService extends DaggerService {
 
     private void onNewLocation(Location location) {
         // Log.i(TAG, "New location: " + location);
-        this.location = location;
+        // Hack for MotoG(6) and maybe others. MotoG(6) can report first location miles away from actual position
+        // Check horizontal accuracy. If off by more than 300m (?) then assume location is actually coming from
+        // cell tower or other location and ignore
+        if (location.getAccuracy() < 300) {  // Is 500 m a good number????
+            logLocation(location);
+        }
+    }
+
+    private void logLocation(Location location) {
         updateLer(location);
         broadcastUpdate();
         // Update notification content if running as a foreground service but only update notification so often

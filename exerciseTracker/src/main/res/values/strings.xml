@@ -346,5 +346,6 @@
     <string name="camera_permission_is_required">Camera permission is required to use the camera.</string>
     <string name="location_permission_is_required">Location permission is required to use GPS.</string>
     <string name="waiting_for_gps_fix">Waiting for gps fix.</string>
+    <string name="ok_get_going_stats_available_shortly">OK - Get moving! Stats will be available shortly.</string>
 
 </resources>

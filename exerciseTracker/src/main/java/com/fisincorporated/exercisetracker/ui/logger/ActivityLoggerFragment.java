@@ -361,7 +361,7 @@ public class ActivityLoggerFragment extends ExerciseDaggerFragment {
             statsList.refreshDrawableState();
         } else {
             Snackbar.make(layoutView,
-                    R.string.location_not_yet_available, Snackbar.LENGTH_SHORT)
+                    R.string.ok_get_going_stats_available_shortly, Snackbar.LENGTH_SHORT)
                     .show();
         }
     }

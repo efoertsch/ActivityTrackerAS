@@ -93,14 +93,14 @@ public class StatsUtil {
                 res.getString(R.string.average_speed),
                 String.format("%.2f " + mphKph, averageSpeed)});
 
-        if (!forNotification) {
-            stats.add(new String[]{
-                    res.getString(R.string.max_speed),
-                    String.format(
-                            "%.2f " + mphKph,
-                            isImperialDisplay ? kilometersToMiles(ler.getMaxSpeedToPoint())
-                                    : ler.getMaxSpeedToPoint())});
-        }
+//        if (!forNotification) {
+//            stats.add(new String[]{
+//                    res.getString(R.string.max_speed),
+//                    String.format(
+//                            "%.2f " + mphKph,
+//                            isImperialDisplay ? kilometersToMiles(ler.getMaxSpeedToPoint())
+//                                    : ler.getMaxSpeedToPoint())});
+//        }
 
         int altitude;
         if (!forNotification) {
